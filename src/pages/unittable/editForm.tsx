@@ -1,9 +1,9 @@
 import { Button, Label, TextInput } from "flowbite-react";
-import type { Person } from "../UnitTable";
-import type { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
 import { useState } from "react";
+import { Product } from "./productsTable";
 
-export type EditFormType = Omit<Person, "x" | "profit" | "margin" | "roi">;
+export type EditFormType = Omit<Product, "x" | "profit" | "margin" | "roi">;
 
 const EditForm = ({
   data,
@@ -12,11 +12,11 @@ const EditForm = ({
 }: {
   data: EditFormType;
   setActive: Dispatch<SetStateAction<boolean>>;
-  setData: Dispatch<SetStateAction<any>>;
+  setData: Dispatch<SetStateAction<Product[]>>;
 }) => {
   const [form, setForm] = useState({ ...data });
 
-  const onSubmitClick = (e: any) => {
+  const onSubmitClick = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = {
       id: data.id,
@@ -30,17 +30,14 @@ const EditForm = ({
       marriage: form.marriage,
     };
 
-    // @ts-ignore
-    const links = JSON.parse(localStorage.getItem("unitTable"));
+    const links = JSON.parse(localStorage.getItem("unitTable") || "{}");
 
     Object.assign(
-        // @ts-ignore
-      links.find((item) => item.id === payload.id),
+      links.find((item: EditFormType) => item.id === payload.id),
       payload,
     );
     localStorage.setItem("unitTable", JSON.stringify(links));
-    // @ts-ignore
-    setData(JSON.parse(localStorage.getItem("unitTable")));
+    setData(JSON.parse(localStorage.getItem("unitTable") || "{}"));
     setActive(false);
   };
   return (
@@ -49,7 +46,7 @@ const EditForm = ({
         <div className="p-[20px] font-sans font-bold">{data?.title}</div>
       </div>
       <form onSubmit={onSubmitClick}>
-        <div className="border-y-2 pb-[15px] pt-[20px]">
+        <div className="pt-[20px] border-y-2 pb-[15px]">
           <div className="flex flex-col pl-[15px]">
             <Label htmlFor="purchase" className="m-1">
               ЗАКУПКА, Р
