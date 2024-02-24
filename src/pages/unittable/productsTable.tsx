@@ -7,7 +7,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { UniverseModalWindow } from "../../components/universalModal/universalModal";
+import { UniverseModalWindow } from "@/components/universalModal";
 import {
   getCommissionForProduct,
   getDeliveryFromPercentOfBuyout,
@@ -17,8 +17,8 @@ import {
   getTaxOnSale,
   getX,
   priceForMarriage,
-} from "../../utils/unitTable";
-import { Table } from "../../components/table";
+} from "@/utils/unitTable";
+import { Table } from "@/components/table";
 
 const test = [
   {

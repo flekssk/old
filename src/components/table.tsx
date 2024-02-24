@@ -22,47 +22,37 @@ export const Table = <T extends Record<string, any>>({
   const rows = table.getRowModel().rows;
   return (
     <TableFlowbite>
-      <thead>
+      <TableFlowbite.Head>
         {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
+          <React.Fragment key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <th
-                key={header.id}
-                className={
-                  "text-gray-400 text-sm font-gelatoBold leading-tight tracking-tight p-4 dark:text-white"
-                }
-              >
+              <TableFlowbite.HeadCell key={header.id}>
                 {header.isPlaceholder
                   ? null
                   : flexRender(
                       header.column.columnDef.header,
                       header.getContext(),
                     )}
-              </th>
+              </TableFlowbite.HeadCell>
             ))}
-          </tr>
+          </React.Fragment>
         ))}
-      </thead>
-      <tbody>
+      </TableFlowbite.Head>
+      <TableFlowbite.Body>
         {rows.map((row) => (
           <React.Fragment key={row.id}>
             {renderAdditionalRowBefore?.(row)}
-            <tr className={"border-b border-neutral-200"}>
+            <TableFlowbite.Row className={"border-b border-neutral-200"}>
               {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className={
-                    "text-gray-900 p-4 bg-white text-sm font-medium leading-tight tracking-tight  align-top dark:text-white dark:bg-black"
-                  }
-                >
+                <TableFlowbite.Cell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </TableFlowbite.Cell>
               ))}
-            </tr>
+            </TableFlowbite.Row>
             {renderAdditionalRowAfter?.(row)}
           </React.Fragment>
         ))}
-      </tbody>
+      </TableFlowbite.Body>
     </TableFlowbite>
   );
 };

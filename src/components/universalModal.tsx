@@ -1,5 +1,4 @@
 import React from "react";
-import style from "./UniverseModal.module.css";
 
 type UniverseModalWindowPropsType = {
   isActive: boolean;
@@ -15,7 +14,9 @@ export const UniverseModalWindow = ({
   return (
     <div
       className={
-        isActive ? `${style["modal"]} ${style["active"]}` : style["modal"]
+        isActive
+          ? "h-screen w-screen fixed top-0 left-0 flex items-center  bg-transparent justify-center duration-500 opacity-100 pointer-events-auto z-50"
+          : "h-screen w-screen fixed top-0 left-0 flex items-center justify-center opacity-0 duration-500 pointer-events-none"
       }
       onClick={() => setActive(false)}
       role="button"
@@ -24,8 +25,8 @@ export const UniverseModalWindow = ({
       <div
         className={
           isActive
-            ? `${style["modal__content"]} ${style["active"]}`
-            : style["modal__content"]
+            ? "rounded-xl bg-white scale-100 duration-500 cursor-default border-2 border-gray-200"
+            : "scale-50 rounded-xl bg-white duration-500 cursor-default"
         }
         onClick={(e) => e.stopPropagation()}
         role="button"
