@@ -57,13 +57,6 @@ Install [`yarn`](https://yarnpkg.com/)
 npm i -g yarn
 ```
 
-Clone this repository
-
-```sh
-git clone https://github.com/themesberg/flowbite-react-admin-dashboard.git
-cd flowbite-react-admin-dashboard
-```
-
 Install dependencies for this project
 
 ```sh

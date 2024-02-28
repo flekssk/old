@@ -25,7 +25,7 @@ import UserProfilePage from "./pages/users/profile";
 import UserSettingsPage from "./pages/users/settings";
 import FlowbiteWrapper from "./components/flowbite-wrapper";
 import ApiKeys from "./pages/keys/ApiKeys";
-import UnitTable from "./pages/unittable/unitTable";
+import UnitTable from "./pages/unittable/UnitTable";
 
 const App: FC = function () {
   return (
