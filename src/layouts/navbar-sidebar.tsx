@@ -1,12 +1,11 @@
 import { Footer } from "flowbite-react";
 import type { FC, PropsWithChildren } from "react";
-
+import Navbar from "../components/navbar";
+import Sidebar from "../components/sidebar";
 import { MdFacebook } from "react-icons/md";
 import { FaDribbble, FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
 import { SidebarProvider, useSidebarContext } from "../context/SidebarContext";
 import classNames from "classnames";
-import Navbar from "../common/navbar";
-import Sidebar from "../common/sidebar";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -35,7 +34,7 @@ const MainContent: FC<PropsWithChildren<NavbarSidebarLayoutProps>> = function ({
     <main
       className={classNames(
         "overflow-y-auto relative w-full h-full bg-gray-50 dark:bg-gray-900",
-        isSidebarOpen ? "lg:ml-16" : "lg:ml-64"
+        isSidebarOpen ? "lg:ml-16" : "lg:ml-64",
       )}
     >
       {children}
