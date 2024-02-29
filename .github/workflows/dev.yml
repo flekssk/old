@@ -16,7 +16,7 @@ jobs:
         run: docker build -f ./.github/workflows/Dockerfile -t frontend . 
 
       - name: copy data from container
-        run: docker cp $(docker create --name tmp frontend):/app/ /var/www/www-root/data/www/app.truestat.online_temp && docker rm tmp
+        run: docker cp $(docker create --name tmp frontend):/app/dist /var/www/www-root/data/www/app.truestat.online_temp && docker rm tmp
 
       - name: set privs
         run: chown -R www-root:www-root /var/www/www-root/data/www/app.truestat.online_temp
