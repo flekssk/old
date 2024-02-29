@@ -6,6 +6,5 @@ RUN apk add git
 RUN npm install
 
 RUN yarn install
-RUN yarn dev
 RUN yarn build
 
