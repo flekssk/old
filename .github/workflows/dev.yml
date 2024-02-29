@@ -15,10 +15,7 @@ jobs:
       - name: Build container image
         run: docker build -f ./.github/workflows/Dockerfile -t frontend . 
 
-      - name: stop container 
-        run: |
-          sudo -S docker stop frontend | true
-          sudo -S docker rm frontend | true
+      - name: copy data from container
+        run: docker cp $(docker create --name tmp frontend):/app/ /var/www/www-root/data/www/app.truestat.online_temp && docker rm tmp
 
-      - name: start container       
-        run: sudo -S docker run -d --name=frontend -p 127.0.0.1:3000:5173 frontend
+

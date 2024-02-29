@@ -5,6 +5,8 @@ COPY . .
 RUN apk add git
 RUN npm install
 
-EXPOSE 5173
+RUN npm i -g yarn
+RUN yarn install
+RUN yarn dev
+RUN yarn build
 
-CMD npm run dev -- --host 
