@@ -18,4 +18,11 @@ jobs:
       - name: copy data from container
         run: docker cp $(docker create --name tmp frontend):/app/ /var/www/www-root/data/www/app.truestat.online_temp && docker rm tmp
 
+      - name: set privs
+        run: chown -R www-root:www-root /var/www/www-root/data/www/app.truestat.online_temp
 
+      - name: replace sources
+        run: mv /var/www/www-root/data/www/app.truestat.online /var/www/www-root/data/www/app.truestat.online_rm && mv /var/www/www-root/data/www/app.truestat.online_temp /var/www/www-root/data/www/app.truestat.online
+
+      - name: remove old data
+        run: rm -f /var/www/www-root/data/www/app.truestat.online_rm
