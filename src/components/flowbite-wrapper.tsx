@@ -16,10 +16,10 @@ const FlowbiteWrapper: FC = function () {
 };
 
 const PersistFlowbiteThemeToLocalStorage: FC = function () {
-  const [themeMode] = useThemeMode();
+  const themeMode = useThemeMode();
 
   useEffect(() => {
-    localStorage.setItem("theme", themeMode);
+    localStorage.setItem("theme", themeMode.mode);
   }, [themeMode]);
 
   return <></>;

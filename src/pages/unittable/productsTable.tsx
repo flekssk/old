@@ -1,12 +1,11 @@
-import { FC, ReactNode, useEffect, useState } from "react";
-import EditForm, { EditFormType } from "./editForm";
+import type { FC, ReactNode } from "react";
+import { useEffect, useState } from "react";
+import type { EditFormType } from "./editForm";
+import EditForm from "./editForm";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { UniverseModalWindow } from "@/components/universalModal";
 import {
   getCommissionForProduct,
@@ -18,7 +17,7 @@ import {
   getX,
   priceForMarriage,
 } from "@/utils/unitTable";
-import { Table } from "@/components/table";
+import { Table } from "@/components/table/Table";
 
 const test = [
   {
@@ -244,7 +243,7 @@ const ProductsTable: FC = () => {
       accessorKey: "edit",
       header: "",
       cell: (info) => (
-        <div className={"w-[80px] text-sm p-2 font-medium text-blue-400"}>
+        <div className={"w-[80px] p-2 text-sm font-medium text-blue-400"}>
           <button
             className={"flex items-center gap-0.5"}
             onClick={() => {
@@ -264,7 +263,7 @@ const ProductsTable: FC = () => {
       accessorKey: "delete",
       header: "",
       cell: () => (
-        <div className={"w-[80px] text-sm p-2 font-medium text-red-500"}>
+        <div className={"w-[80px] p-2 text-sm font-medium text-red-500"}>
           <button className={"flex items-center gap-0.5"}>
             <RiDeleteBin6Line />
             Удалить

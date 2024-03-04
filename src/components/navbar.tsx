@@ -1,13 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import type { FC } from "react";
-import {
-  Avatar,
-  DarkThemeToggle,
-  Dropdown,
-  Label,
-  Navbar,
-  TextInput,
-} from "flowbite-react";
+import type { FC } from 'react';
+import { Avatar, DarkThemeToggle, Dropdown, Navbar } from 'flowbite-react';
 import {
   HiArchive,
   HiBell,
@@ -24,9 +17,9 @@ import {
   HiUsers,
   HiViewGrid,
   HiX,
-} from "react-icons/hi";
-import { useSidebarContext } from "../context/SidebarContext";
-import isSmallScreen from "../helpers/is-small-screen";
+} from 'react-icons/hi';
+import { useSidebarContext } from '../context/SidebarContext';
+import isSmallScreen from '../helpers/is-small-screen';
 
 const ExampleNavbar: FC = function () {
   const { isOpenOnSmallScreens, isPageWithSidebar, setOpenOnSmallScreens } =
@@ -44,9 +37,9 @@ const ExampleNavbar: FC = function () {
               >
                 <span className="sr-only">Toggle sidebar</span>
                 {isOpenOnSmallScreens && isSmallScreen() ? (
-                  <HiX className="h-6 w-6" />
+                  <HiX className="size-6" />
                 ) : (
-                  <HiMenuAlt1 className="h-6 w-6" />
+                  <HiMenuAlt1 className="size-6" />
                 )}
               </button>
             )}
@@ -57,23 +50,9 @@ const ExampleNavbar: FC = function () {
                 className="mr-3 h-6 sm:h-8"
               />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                Flowbite
+                Truestat
               </span>
             </Navbar.Brand>
-            <form className="ml-16 hidden md:block">
-              <Label htmlFor="search" className="sr-only">
-                Search
-              </Label>
-              <TextInput
-                icon={HiSearch}
-                id="search"
-                name="search"
-                placeholder="Search"
-                required
-                size={32}
-                type="search"
-              />
-            </form>
           </div>
           <div className="flex items-center lg:gap-3">
             <div className="flex items-center">
@@ -82,7 +61,7 @@ const ExampleNavbar: FC = function () {
                 className="cursor-pointer rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden"
               >
                 <span className="sr-only">Search</span>
-                <HiSearch className="h-6 w-6" />
+                <HiSearch className="size-6" />
               </button>
               <NotificationBellDropdown />
               <AppDrawerDropdown />
@@ -111,21 +90,21 @@ const NotificationBellDropdown: FC = function () {
       }
     >
       <div className="max-w-[24rem]">
-        <div className="block rounded-t-xl bg-gray-50 py-2 px-4 text-center text-base font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <div className="block rounded-t-xl bg-gray-50 px-4 py-2 text-center text-base font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-400">
           Notifications
         </div>
         <div>
           <a
             href="#"
-            className="flex border-y py-3 px-4 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+            className="flex border-y px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
           >
             <div className="shrink-0">
               <img
                 alt=""
                 src="../images/users/bonnie-green.png"
-                className="h-11 w-11 rounded-full"
+                className="size-11 rounded-full"
               />
-              <div className="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-primary-700 dark:border-gray-700">
+              <div className="absolute -mt-5 ml-6 flex size-5 items-center justify-center rounded-full border border-white bg-primary-700 dark:border-gray-700">
                 <NewMessageIcon />
               </div>
             </div>
@@ -144,15 +123,15 @@ const NotificationBellDropdown: FC = function () {
           </a>
           <a
             href="#"
-            className="flex border-b py-3 px-4 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+            className="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
           >
             <div className="shrink-0">
               <img
                 alt=""
                 src="../images/users/jese-leos.png"
-                className="h-11 w-11 rounded-full"
+                className="size-11 rounded-full"
               />
-              <div className="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-gray-900 dark:border-gray-700">
+              <div className="absolute -mt-5 ml-6 flex size-5 items-center justify-center rounded-full border border-white bg-gray-900 dark:border-gray-700">
                 <NewFollowIcon />
               </div>
             </div>
@@ -174,15 +153,15 @@ const NotificationBellDropdown: FC = function () {
           </a>
           <a
             href="#"
-            className="flex border-b py-3 px-4 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+            className="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
           >
             <div className="shrink-0">
               <img
                 alt=""
                 src="../images/users/joseph-mcfall.png"
-                className="h-11 w-11 rounded-full"
+                className="size-11 rounded-full"
               />
-              <div className="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-red-600 dark:border-gray-700">
+              <div className="absolute -mt-5 ml-6 flex size-5 items-center justify-center rounded-full border border-white bg-red-600 dark:border-gray-700">
                 <NewLoveIcon />
               </div>
             </div>
@@ -204,15 +183,15 @@ const NotificationBellDropdown: FC = function () {
           </a>
           <a
             href="#"
-            className="flex border-b py-3 px-4 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+            className="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
           >
             <div className="shrink-0">
               <img
                 alt=""
                 src="../images/users/leslie-livingston.png"
-                className="h-11 w-11 rounded-full"
+                className="size-11 rounded-full"
               />
-              <div className="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-green-400 dark:border-gray-700">
+              <div className="absolute -mt-5 ml-6 flex size-5 items-center justify-center rounded-full border border-white bg-green-400 dark:border-gray-700">
                 <NewMentionIcon />
               </div>
             </div>
@@ -234,15 +213,15 @@ const NotificationBellDropdown: FC = function () {
           </a>
           <a
             href="#"
-            className="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-600"
+            className="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             <div className="shrink-0">
               <img
                 alt=""
                 src="../images/users/robert-brown.png"
-                className="h-11 w-11 rounded-full"
+                className="size-11 rounded-full"
               />
-              <div className="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-purple-500 dark:border-gray-700">
+              <div className="absolute -mt-5 ml-6 flex size-5 items-center justify-center rounded-full border border-white bg-purple-500 dark:border-gray-700">
                 <NewVideoIcon />
               </div>
             </div>
@@ -265,7 +244,7 @@ const NotificationBellDropdown: FC = function () {
           className="block rounded-b-xl bg-gray-50 py-2 text-center text-base font-normal text-gray-900 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline"
         >
           <div className="inline-flex items-center gap-x-2">
-            <HiEye className="h-6 w-6" />
+            <HiEye className="size-6" />
             <span>View all</span>
           </div>
         </a>
@@ -277,7 +256,7 @@ const NotificationBellDropdown: FC = function () {
 const NewMessageIcon: FC = function () {
   return (
     <svg
-      className="h-3 w-3 text-white"
+      className="size-3 text-white"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +270,7 @@ const NewMessageIcon: FC = function () {
 const NewFollowIcon: FC = function () {
   return (
     <svg
-      className="h-3 w-3 text-white"
+      className="size-3 text-white"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +283,7 @@ const NewFollowIcon: FC = function () {
 const NewLoveIcon: FC = function () {
   return (
     <svg
-      className="h-3 w-3 text-white"
+      className="size-3 text-white"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -321,7 +300,7 @@ const NewLoveIcon: FC = function () {
 const NewMentionIcon: FC = function () {
   return (
     <svg
-      className="h-3 w-3 text-white"
+      className="size-3 text-white"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -338,7 +317,7 @@ const NewMentionIcon: FC = function () {
 const NewVideoIcon: FC = function () {
   return (
     <svg
-      className="h-3 w-3 text-white"
+      className="size-3 text-white"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +339,7 @@ const AppDrawerDropdown: FC = function () {
         </span>
       }
     >
-      <div className="block rounded-t-lg border-b bg-gray-50 py-2 px-4 text-center text-base font-medium text-gray-700 dark:border-b-gray-600 dark:bg-gray-700 dark:text-white">
+      <div className="block rounded-t-lg border-b bg-gray-50 px-4 py-2 text-center text-base font-medium text-gray-700 dark:border-b-gray-600 dark:bg-gray-700 dark:text-white">
         Apps
       </div>
       <div className="grid grid-cols-3 gap-4 p-4">
@@ -368,7 +347,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiShoppingBag className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiShoppingBag className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Sales
           </div>
@@ -377,7 +356,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiUsers className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiUsers className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Users
           </div>
@@ -386,7 +365,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiInbox className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiInbox className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Inbox
           </div>
@@ -395,7 +374,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiUserCircle className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiUserCircle className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Profile
           </div>
@@ -404,7 +383,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiCog className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiCog className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Settings
           </div>
@@ -413,7 +392,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiArchive className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiArchive className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Products
           </div>
@@ -422,7 +401,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiCurrencyDollar className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiCurrencyDollar className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Pricing
           </div>
@@ -431,7 +410,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiOutlineTicket className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiOutlineTicket className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Billing
           </div>
@@ -440,7 +419,7 @@ const AppDrawerDropdown: FC = function () {
           href="#"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
-          <HiLogout className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <HiLogout className="mx-auto mb-1 size-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Logout
           </div>

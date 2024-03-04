@@ -1,7 +1,7 @@
-import type { PropsWithChildren } from "react";
-import { createContext, useContext, useEffect, useState } from "react";
-import isBrowser from "../helpers/is-browser";
-import isSmallScreen from "../helpers/is-small-screen";
+import type { PropsWithChildren } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import isBrowser from '../helpers/is-browser';
+import isSmallScreen from '../helpers/is-small-screen';
 
 interface SidebarContextProps {
   isOpenOnSmallScreens: boolean;
@@ -13,16 +13,16 @@ interface SidebarContextProps {
 const SidebarContext = createContext<SidebarContextProps>(undefined!);
 
 export function SidebarProvider({ children }: PropsWithChildren) {
-  const location = isBrowser() ? window.location.pathname : "/";
+  const location = isBrowser() ? window.location.pathname : '/';
   const [isOpen, setOpen] = useState(
     isBrowser()
-      ? window.localStorage.getItem("isSidebarOpen") === "true"
+      ? window.localStorage.getItem('isSidebarOpen') === 'true'
       : false,
   );
 
   // Save latest state to localStorage
   useEffect(() => {
-    window.localStorage.setItem("isSidebarOpen", isOpen.toString());
+    window.localStorage.setItem('isSidebarOpen', isOpen.toString());
   }, [isOpen]);
 
   // Close Sidebar on page change on mobile
@@ -35,7 +35,7 @@ export function SidebarProvider({ children }: PropsWithChildren) {
   // Close Sidebar on mobile tap inside main content
   useEffect(() => {
     function handleMobileTapInsideMain(event: MouseEvent) {
-      const main = document.querySelector("main");
+      const main = document.querySelector('main');
       const isClickInsideMain = main?.contains(event.target as Node);
 
       if (isSmallScreen() && isClickInsideMain) {
@@ -43,9 +43,9 @@ export function SidebarProvider({ children }: PropsWithChildren) {
       }
     }
 
-    document.addEventListener("mousedown", handleMobileTapInsideMain);
+    document.addEventListener('mousedown', handleMobileTapInsideMain);
     return () => {
-      document.removeEventListener("mousedown", handleMobileTapInsideMain);
+      document.removeEventListener('mousedown', handleMobileTapInsideMain);
     };
   }, []);
 
@@ -65,9 +65,9 @@ export function SidebarProvider({ children }: PropsWithChildren) {
 export function useSidebarContext(): SidebarContextProps {
   const context = useContext(SidebarContext);
 
-  if (typeof context === "undefined") {
+  if (typeof context === 'undefined') {
     throw new Error(
-      "useSidebarContext should be used within the SidebarContext provider!",
+      'useSidebarContext should be used within the SidebarContext provider!',
     );
   }
 
