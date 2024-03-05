@@ -1,8 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
 import type { FC } from "react";
+import { Navigate } from "react-router";
 
 const ForgotPasswordPage: FC = function () {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
   return (
     <div className="flex flex-col items-center justify-center px-6 lg:h-screen lg:gap-y-12">
       <a href="/" className="my-6 flex items-center gap-x-1 lg:my-0">

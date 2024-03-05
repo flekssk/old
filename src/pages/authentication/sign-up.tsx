@@ -1,10 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import type { FC } from "react";
+import { Navigate } from "react-router";
 
 const SignUpPage: FC = function () {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
+    <section className="flex h-screen flex-col justify-center bg-gray-50 dark:bg-gray-900">
       <div className="mx-auto grid max-w-screen-xl px-4 py-8 lg:grid-cols-12 lg:gap-20 lg:py-16">
         <div className="mx-auto w-full rounded-lg bg-white p-6 shadow dark:bg-gray-800 sm:max-w-xl sm:p-8 lg:col-span-6">
           <a
@@ -16,7 +23,7 @@ const SignUpPage: FC = function () {
               src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
               className="mr-2 h-8 w-8"
             />
-            Flowbite
+            TrueStat
           </a>
           <h1 className="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
             Создать аккаунт
