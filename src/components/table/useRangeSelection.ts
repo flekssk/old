@@ -86,6 +86,7 @@ function getCellsBetweenId<T extends Record<string, unknown>>(
 
 export const useCellRangeSelection = <T extends Record<string, unknown>>(
   table: TanstackTable<T>,
+  enabled: boolean = true,
 ) => {
   const isSelectionEnabled = useRef(false);
 
@@ -127,7 +128,7 @@ export const useCellRangeSelection = <T extends Record<string, unknown>>(
       cellsSelected: result,
       ...pointers,
     };
-  }, [selectedStartCell, selectedEndCell]);
+  }, [selectedStartCell, selectedEndCell, table]);
 
   const model = table.getRowModel();
   const cellKeysByIndex: Record<number, string> =
@@ -180,24 +181,60 @@ export const useCellRangeSelection = <T extends Record<string, unknown>>(
         index <= endCellIndex,
     });
 
-    return {
-      onPointerEnter,
-      onMouseDown,
-      className,
-    };
+    return enabled
+      ? {
+          onPointerEnter,
+          onMouseDown,
+          className,
+        }
+      : {};
   };
 
   const getBodyProps = () => {
-    return {
-      onMouseDown: () => {
-        isSelectionEnabled.current = true;
-      },
-      onMouseUp: () => {
-        isSelectionEnabled.current = false;
-      },
-      onMouseLeave: () => {
-        isSelectionEnabled.current = false;
-      },
-    };
+    return enabled
+      ? {
+          onMouseDown: () => {
+            isSelectionEnabled.current = true;
+          },
+          onMouseUp: () => {
+            isSelectionEnabled.current = false;
+          },
+          onMouseLeave: () => {
+            isSelectionEnabled.current = false;
+          },
+        }
+      : {};
   };
+
+  const calculatedCellValues = useMemo(() => {
+    const result: { avg: number; count: number; sum: number } = {
+      avg: 0,
+      sum: 0,
+      count: 0,
+    };
+
+    if (enabled) {
+      const cells = Object.keys(cellsSelected);
+      const model = table.getRowModel();
+      const rows = model.rows;
+      const avg: number[] = [];
+
+      for (const cellId of cells) {
+        const [rowId] = cellId.split("_");
+        const row = rows.find((row) => row.id === rowId);
+        const cell = row?.getAllCells().find((cell) => cell.id === cellId);
+
+        const value = cell?.getValue();
+        result.count++;
+        if (value && !isNaN(Number(value))) {
+          result.sum += Number(value);
+          avg.push(Number(value));
+        }
+      }
+      result.avg = avg.length ? result.sum / avg.length : 0;
+    }
+    return result;
+  }, [table, cellsSelected, enabled]);
+
+  return { getBodyProps, getCellProps, cellsSelected, calculatedCellValues };
 };

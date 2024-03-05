@@ -94,20 +94,14 @@ export const StatTable = () => {
 
   const table = useReactTable({
     columns,
-
     data: mockByArticle as ArticleData[],
-    cellIdSplitBy: "cols_rows",
-    initialState: {
-      selectedCellIds: {},
-    },
+    columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <Card>
-      <div className="overflow-auto">
-        <Table table={table} />
-      </div>
+      <Table table={table} cellRangeSelection={true} />
     </Card>
   );
 };
