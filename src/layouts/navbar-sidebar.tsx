@@ -1,8 +1,8 @@
-import type { FC, PropsWithChildren } from 'react';
-import Navbar from '../components/navbar';
-import Sidebar from '../components/sidebar';
-import { SidebarProvider, useSidebarContext } from '../context/SidebarContext';
-import classNames from 'classnames';
+import type { FC, PropsWithChildren } from "react";
+import Navbar from "../components/navbar";
+import Sidebar from "../components/sidebar";
+import { SidebarProvider, useSidebarContext } from "../context/SidebarContext";
+import classNames from "classnames";
 
 interface NavbarSidebarLayoutProps {
   isFooter?: boolean;
@@ -29,8 +29,8 @@ const MainContent: FC<PropsWithChildren<NavbarSidebarLayoutProps>> = function ({
   return (
     <main
       className={classNames(
-        'overflow-y-auto relative w-full h-full bg-gray-50 dark:bg-gray-900',
-        isSidebarOpen ? 'lg:ml-16' : 'lg:ml-64',
+        "overflow-y-auto relative w-full h-full bg-gray-50 dark:bg-gray-900",
+        isSidebarOpen ? "lg:ml-16" : "lg:ml-64",
       )}
     >
       {children}

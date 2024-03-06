@@ -13,10 +13,15 @@ import type {
 
 export const registration = (
   payload: RegistrationRequest,
-): Promise<RegistrationResponse> =>
-  api
-    .post<RegistrationResponse>(ENDPOINTS.registration, payload)
+): Promise<RegistrationResponse> => {
+  const formData = new FormData();
+  formData.append("registration_form[email]", payload.email);
+  formData.append("registration_form[name]", payload.name);
+  formData.append("registration_form[plainPassword]", payload.plainPassword);
+  return api
+    .post<RegistrationResponse>(ENDPOINTS.registration, formData)
     .then((res) => res.data);
+};
 
 export const login = (payload: LoginRequest): Promise<LoginResponse> =>
   api.post<LoginResponse>(ENDPOINTS.login, payload).then((res) => res.data);

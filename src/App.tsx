@@ -18,6 +18,7 @@ import { z } from "zod";
 import { zodI18nMap } from "zod-i18n-map";
 // Import your language translation files
 import translation from "zod-i18n-map/locales/ru/zod.json";
+import { Logout } from "./pages/authentication/logout";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -65,12 +66,21 @@ const App: FC = function () {
               <Route path={ROUTES.login} element={<SignInPage />} />
               <Route path={ROUTES.registration} element={<SignUpPage />} />
               <Route
-                path="/authentication/forgot-password"
+                path={ROUTES.resetPassword}
                 element={<ForgotPasswordPage />}
               />
               <Route
-                path={ROUTES.resetPassword}
+                path={ROUTES.resetPasswordByToken}
                 element={<ResetPasswordPage />}
+              />
+
+              <Route
+                path={ROUTES.logout}
+                element={
+                  <ProtectedRoute>
+                    <Logout />
+                  </ProtectedRoute>
+                }
               />
             </Route>
           </Routes>

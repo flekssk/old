@@ -2,15 +2,16 @@
 import { useAuth } from "@/components/auth/AuthProvider";
 import { InputControl } from "@/components/forms/InputControl";
 import { ROUTES } from "@/constants/routes";
-import { Alert, Button, Checkbox, Label } from "flowbite-react";
+import { Alert, Button, Checkbox, Label, Spinner } from "flowbite-react";
 import type { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Navigate } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/api/auth";
-import { HiInformationCircle } from "react-icons/hi";
+import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
+import { ServerError } from "@/components/ServerError";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -23,12 +24,13 @@ const SignInPage: FC = function () {
   const { isAuthenticated, setToken } = useAuth();
 
   const loginMutation = useLoginMutation();
-  console.log("🚀 ~ loginMutation:", loginMutation);
+
+  const [params] = useSearchParams();
+  const isEmailVerified = params.get("email_verified");
 
   const onSubmit = async (data: FormSchema) => {
     const response = await loginMutation.mutateAsync(data);
     if (response) {
-      console.log("🚀 ~ response:", response);
       setToken(response.token);
     }
   };
@@ -50,15 +52,21 @@ const SignInPage: FC = function () {
               className="mb-4 inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white"
             >
               <img
-                className="mr-2 h-8 w-8"
+                className="mr-2 size-8"
                 src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
                 alt="logo"
               />
               TrueStat
             </a>
+
             <h1 className="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
               С возвращением
             </h1>
+            {isEmailVerified && (
+              <Alert color="success" icon={HiCheckCircle} className="mb-2">
+                Ваш адрес электронной почты был успешно подтвержден.
+              </Alert>
+            )}
             <p className="text-sm text-gray-500 dark:text-gray-300">
               Запустите свой сайт за считанные секунды. У вас нет учетной
               записи?&nbsp;
@@ -102,7 +110,7 @@ const SignInPage: FC = function () {
                     className="w-full hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <svg
-                      className="mr-2 h-5 w-5"
+                      className="mr-2 size-5"
                       width="20px"
                       height="20px"
                       viewBox="0 0 1024 1024"
@@ -123,7 +131,7 @@ const SignInPage: FC = function () {
                     className="w-full hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <svg
-                      className="mr-2 h-5 w-5 text-gray-900 dark:text-white"
+                      className="mr-2 size-5 text-gray-900 dark:text-white"
                       height="20px"
                       width="20px"
                       version="1.1"
@@ -157,19 +165,21 @@ const SignInPage: FC = function () {
                       </Label>
                     </div>
                   </div>
-                  <a
-                    href="#"
+                  <Link
+                    to={ROUTES.resetPassword}
                     className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Забыли пароль?
-                  </a>
+                  </Link>
                 </div>
-                {loginMutation.isError ? (
-                  <Alert color="failure" icon={HiInformationCircle}>
-                    {loginMutation.error.response?.data?.message}
-                  </Alert>
-                ) : null}
-                <Button type="submit" className="w-full">
+                <ServerError mutation={loginMutation} />
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  isProcessing={loginMutation.status === "pending"}
+                  disabled={loginMutation.status === "pending"}
+                >
                   Войти в свой аккаунт
                 </Button>
               </FormProvider>

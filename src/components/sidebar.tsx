@@ -1,63 +1,46 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import classNames from 'classnames';
-import { Sidebar, TextInput, Tooltip } from 'flowbite-react';
-import type { FC } from 'react';
-import { useEffect, useState } from 'react';
-import {
-  HiAdjustments,
-  HiCog,
-  HiLockClosed,
-  HiSearch,
-  HiOutlineClock,
-  HiUser,
-} from 'react-icons/hi';
+import classNames from "classnames";
+import { Sidebar, Tooltip } from "flowbite-react";
+import type { FC } from "react";
+import { useEffect, useState } from "react";
+import { HiAdjustments, HiCog, HiOutlineClock, HiUser } from "react-icons/hi";
 
-import { useSidebarContext } from '../context/SidebarContext';
-import isSmallScreen from '../helpers/is-small-screen';
+import { useSidebarContext } from "../context/SidebarContext";
+import isSmallScreen from "../helpers/is-small-screen";
+import { ROUTES } from "@/constants/routes";
 
 const ExampleSidebar: FC = function () {
-  const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens } =
-    useSidebarContext();
+  const { isOpenOnSmallScreens } = useSidebarContext();
 
-  const [currentPage, setCurrentPage] = useState('');
+  const [currentPage, setCurrentPage] = useState("");
   const [isAccountOpen, setAccountOpen] = useState(true);
-  
 
   useEffect(() => {
     const newPage = window.location.pathname;
 
     setCurrentPage(newPage);
-    setAccountOpen(newPage.includes('/account/'));
+    setAccountOpen(newPage.includes("/account/"));
   }, [setCurrentPage, setAccountOpen]);
 
   return (
     <div
-      className={classNames('lg:!block', {
-        hidden: !isSidebarOpenOnSmallScreens,
+      className={classNames("lg:!block relative", {
+        hidden: !isOpenOnSmallScreens,
       })}
     >
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
-        collapsed={isSidebarOpenOnSmallScreens && !isSmallScreen()}
+        collapsed={isOpenOnSmallScreens && !isSmallScreen()}
       >
         <div className="flex h-full flex-col justify-between py-2">
           <div>
-            <form className="pb-3 md:hidden">
-              <TextInput
-                icon={HiSearch}
-                type="search"
-                placeholder="Search"
-                required
-                size={32}
-              />
-            </form>
             <Sidebar.Items>
               <Sidebar.ItemGroup>
                 <Sidebar.Item
                   href="/"
                   icon={HiOutlineClock}
                   className={
-                    '/' === currentPage ? 'bg-gray-100 dark:bg-gray-700' : ''
+                    "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
                   }
                 >
                   Оцировка
@@ -68,59 +51,31 @@ const ExampleSidebar: FC = function () {
                   open={isAccountOpen}
                 >
                   <Sidebar.Item
-                    href="/account/keys"
+                    href={ROUTES.apiKeys}
                     className={
-                      '/account/keys' === currentPage
-                        ? 'bg-gray-100 dark:bg-gray-700'
-                        : ''
+                      ROUTES.apiKeys === currentPage
+                        ? "bg-gray-100 dark:bg-gray-700"
+                        : ""
                     }
                   >
                     API ключи
                   </Sidebar.Item>
-                  <Sidebar.Item
-                    href="/account/billing"
-                    className={
-                      '/account/billing' === currentPage
-                        ? 'bg-gray-100 dark:bg-gray-700'
-                        : ''
-                    }
-                  >
-                    Подписка
-                  </Sidebar.Item>
                 </Sidebar.Collapse>
                 <Sidebar.Item
-                  href="/unit"
+                  href={ROUTES.unitTable}
                   icon={HiOutlineClock}
                   className={
-                    '/unit' === currentPage
-                      ? 'bg-gray-100 dark:bg-gray-700'
-                      : ''
+                    ROUTES.unitTable === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
                   }
                 >
                   Unit экономика
                 </Sidebar.Item>
-
-                <Sidebar.Collapse icon={HiLockClosed} label="Authentication">
-                  <Sidebar.Item href="/authentication/sign-in">
-                    Sign in
-                  </Sidebar.Item>
-                  <Sidebar.Item href="/authentication/sign-up">
-                    Sign up
-                  </Sidebar.Item>
-                  <Sidebar.Item href="/authentication/forgot-password">
-                    Forgot password
-                  </Sidebar.Item>
-                  <Sidebar.Item href="/authentication/reset-password">
-                    Reset password
-                  </Sidebar.Item>
-                  <Sidebar.Item href="/authentication/profile-lock">
-                    Profile lock
-                  </Sidebar.Item>
-                </Sidebar.Collapse>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>
-          <BottomMenu />
+          {/* <BottomMenu /> */}
         </div>
       </Sidebar>
     </div>

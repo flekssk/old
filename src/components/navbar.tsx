@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import type { FC } from 'react';
-import { Avatar, DarkThemeToggle, Dropdown, Navbar } from 'flowbite-react';
+import type { FC } from "react";
+import { Avatar, DarkThemeToggle, Dropdown, Navbar } from "flowbite-react";
 import {
   HiArchive,
   HiBell,
@@ -17,9 +17,11 @@ import {
   HiUsers,
   HiViewGrid,
   HiX,
-} from 'react-icons/hi';
-import { useSidebarContext } from '../context/SidebarContext';
-import isSmallScreen from '../helpers/is-small-screen';
+} from "react-icons/hi";
+import { useSidebarContext } from "../context/SidebarContext";
+import isSmallScreen from "../helpers/is-small-screen";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/constants/routes";
 
 const ExampleNavbar: FC = function () {
   const { isOpenOnSmallScreens, isPageWithSidebar, setOpenOnSmallScreens } =
@@ -55,18 +57,6 @@ const ExampleNavbar: FC = function () {
             </Navbar.Brand>
           </div>
           <div className="flex items-center lg:gap-3">
-            <div className="flex items-center">
-              <button
-                onClick={() => setOpenOnSmallScreens(!isOpenOnSmallScreens)}
-                className="cursor-pointer rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden"
-              >
-                <span className="sr-only">Search</span>
-                <HiSearch className="size-6" />
-              </button>
-              <NotificationBellDropdown />
-              <AppDrawerDropdown />
-              <DarkThemeToggle />
-            </div>
             <div className="hidden lg:block">
               <UserDropdown />
             </div>
@@ -430,13 +420,14 @@ const AppDrawerDropdown: FC = function () {
 };
 
 const UserDropdown: FC = function () {
+  const navigate = useNavigate();
   return (
     <Dropdown
       arrowIcon={false}
       inline
       label={
         <span>
-          <span className="sr-only">User menu</span>
+          <span className="sr-only">Пользовательское меню</span>
           <Avatar
             alt=""
             img="../images/users/neil-sims.png"
@@ -452,11 +443,15 @@ const UserDropdown: FC = function () {
           neil.sims@flowbite.com
         </span>
       </Dropdown.Header>
-      <Dropdown.Item>Dashboard</Dropdown.Item>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Earnings</Dropdown.Item>
+      <Dropdown.Item>Настройки</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item>Sign out</Dropdown.Item>
+      <Dropdown.Item
+        onClick={() => {
+          navigate(ROUTES.logout);
+        }}
+      >
+        Выход
+      </Dropdown.Item>
     </Dropdown>
   );
 };
