@@ -5,10 +5,8 @@ import { Outlet } from "react-router";
 import theme from "../flowbite-theme";
 
 const FlowbiteWrapper: FC = function () {
-  const dark = localStorage.getItem("theme") === "dark";
-
   return (
-    <Flowbite theme={{ dark, theme }}>
+    <Flowbite theme={{ theme }}>
       <PersistFlowbiteThemeToLocalStorage />
       <Outlet />
     </Flowbite>

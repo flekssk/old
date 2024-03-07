@@ -2,7 +2,7 @@
 import { useAuth } from "@/components/auth/AuthProvider";
 import { InputControl } from "@/components/forms/InputControl";
 import { ROUTES } from "@/constants/routes";
-import { Alert, Button, Checkbox, Label, Spinner } from "flowbite-react";
+import { Alert, Button, Checkbox, Label } from "flowbite-react";
 import type { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Navigate } from "react-router";
@@ -10,7 +10,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/api/auth";
-import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
+import { HiCheckCircle } from "react-icons/hi";
 import { ServerError } from "@/components/ServerError";
 
 const formSchema = z.object({

@@ -28,7 +28,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "ESNext",
-    "types": ["vite/client", "./types/*.d.ts"]
+    "types": ["vite/client"]
   },
   "exclude": ["node_modules"],
   "include": ["**/*.cjs", "**/*.mjs", "./src/**/*.ts", "./src/**/*.tsx"]

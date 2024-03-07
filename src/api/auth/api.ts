@@ -30,14 +30,31 @@ export const logout = () => api.get(ENDPOINTS.logout);
 
 export const resetPassword = (
   payload: ResetPasswordRequest,
-): Promise<ResetPasswordResponse> =>
-  api
-    .post<ResetPasswordResponse>(ENDPOINTS.resetPassword, payload)
+): Promise<ResetPasswordResponse> => {
+  const formData = new FormData();
+  formData.append("email", payload.email);
+  return api
+    .post<ResetPasswordResponse>(ENDPOINTS.resetPassword, formData)
     .then((res) => res.data);
+};
 
 export const resetPasswordByToken = (
   payload: ResetPasswordByTokenRequest,
-): Promise<ResetPasswordByTokenResponse> =>
-  api
-    .post<ResetPasswordByTokenResponse>(ENDPOINTS.resetPasswordByToken, payload)
+): Promise<ResetPasswordByTokenResponse> => {
+  const formData = new FormData();
+  formData.append("reset_password_token", payload.token);
+  formData.append(
+    "change_password_form[plainPassword][first]",
+    payload.plainPassword.first,
+  );
+  formData.append(
+    "change_password_form[plainPassword][second]",
+    payload.plainPassword.second,
+  );
+  return api
+    .post<ResetPasswordByTokenResponse>(
+      ENDPOINTS.resetPasswordByToken,
+      formData,
+    )
     .then((res) => res.data);
+};

@@ -3,4 +3,6 @@ export type UserProfileResponse = {
   settings?: {
     reportTableSettings?: null;
   };
+  email: string;
+  name: string;
 };

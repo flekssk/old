@@ -3,7 +3,7 @@ export const ROUTES = {
   registration: "/registration",
   logout: "/logout",
   resetPassword: "/reset-password",
-  resetPasswordByToken: "/reset-password/reset-by-token/:token",
+  resetPasswordByToken: "/reset-password-with-token/:token",
   home: "/",
   profile: "/profile",
   unitTable: "/unit-table",

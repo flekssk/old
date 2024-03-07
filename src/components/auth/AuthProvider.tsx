@@ -1,5 +1,6 @@
 import { setToken as setAuthToken } from "@/api/instance";
 import { getProfile } from "@/api/user/api";
+import type { UserProfileResponse } from "@/api/user/types";
 import {
   createContext,
   useCallback,
@@ -12,6 +13,7 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   isPending: boolean;
   setToken: (token: string | null) => void;
+  profile?: UserProfileResponse;
 };
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -29,12 +31,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(true);
+  const [profile, setProfile] = useState<UserProfileResponse | undefined>();
 
   const checkIsAuthenticated = useCallback(async () => {
     try {
       const res = await getProfile();
       if (res) {
         setIsAuthenticated(true);
+        setProfile(res);
       }
     } catch (error) {
       setIsAuthenticated(false);
@@ -53,11 +57,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       sessionStorage.removeItem(TOKEN_KEY);
       setIsAuthenticated(false);
       setIsPending(false);
+      setProfile(undefined);
     }
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isPending, setToken }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isPending, setToken, profile }}
+    >
       {children}
     </AuthContext.Provider>
   );

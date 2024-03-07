@@ -6,9 +6,9 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { CheckboxControl } from "@/components/forms/CheckboxControl";
 import { InputControl } from "@/components/forms/InputControl";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Card, Label } from "flowbite-react";
 import type { FC } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Navigate } from "react-router";
 import { z } from "zod";
 
@@ -60,34 +60,36 @@ const ForgotPasswordPage: FC = function () {
           вышлем вам код для сброса пароля!
         </p>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="mb-6 flex flex-col gap-y-3">
-            <InputControl
-              name="email"
-              placeholder="name@company.com"
-              type="email"
-              label="Ваш email"
-            />
-          </div>
-          <div className="mb-6 flex items-center gap-x-3">
-            <CheckboxControl name="terms" />
-            <Label htmlFor="terms">
-              Я согласен &nbsp;
-              <a href="#" className="text-primary-700 dark:text-primary-300">
-                с пользовательским соглашением
-              </a>
-            </Label>
-          </div>
-          <div>
-            <Button
-              type="submit"
-              className="w-full lg:w-auto"
-              isProcessing={isLoading}
-              disabled={isLoading || !terms}
-            >
-              Сбросить пароль
-            </Button>
-          </div>
-          <ServerError mutation={resetPasswordMutation} />
+          <FormProvider {...form}>
+            <div className="mb-6 flex flex-col gap-y-3">
+              <InputControl
+                name="email"
+                placeholder="name@company.com"
+                type="email"
+                label="Ваш email"
+              />
+            </div>
+            <div className="mb-6 flex items-center gap-x-3">
+              <CheckboxControl name="terms" />
+              <Label htmlFor="terms">
+                Я согласен &nbsp;
+                <a href="#" className="text-primary-700 dark:text-primary-300">
+                  с пользовательским соглашением
+                </a>
+              </Label>
+            </div>
+            <div>
+              <Button
+                type="submit"
+                className="w-full lg:w-auto"
+                isProcessing={isLoading}
+                disabled={isLoading || !terms}
+              >
+                Сбросить пароль
+              </Button>
+            </div>
+            <ServerError mutation={resetPasswordMutation} className="mt-3" />
+          </FormProvider>
         </form>
       </Card>
     </div>
