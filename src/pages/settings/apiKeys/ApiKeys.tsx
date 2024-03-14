@@ -1,8 +1,7 @@
 import { useAccountList } from "@/api/wb";
-import { WbAccount } from "@/api/wb/types";
-import { Button, Card, TextInput } from "flowbite-react";
+import type { WbAccount } from "@/api/wb/types";
+import { Button, Card } from "flowbite-react";
 import { useState, type FC, useEffect } from "react";
-import { HiOutlineTrash } from "react-icons/hi";
 import { ApiKeysRow } from "./ApiKeysRow";
 
 export const ApiKeys: FC = function () {

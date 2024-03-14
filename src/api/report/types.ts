@@ -191,7 +191,7 @@ export interface BarcodeReportItem {
   // Рентабельность
   profitability: number;
   // Доля в общей выручке
-  shareInTotalRevenue: number;
+  shareInTotalRevenuePercent: number;
   // Доля в общей прибыли
   shareInTotalProfit: number;
   // маржинальность (в %) realization / profit

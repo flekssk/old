@@ -5,7 +5,7 @@ export const applyRouteParams = (
   let result = url;
   Object.keys(params).forEach((key) => {
     if (params[key]) {
-      result = result.replace(`:${key}`, params[key].toString());
+      result = result.replace(`:${key}`, (params[key] as string).toString());
     }
   });
   return result;
