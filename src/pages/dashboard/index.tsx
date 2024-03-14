@@ -8,8 +8,11 @@ import { MainChart } from "./MainChart";
 import { TopProductsChart } from "./TopProductsChart";
 import { StructureOfIncomeChart } from "./StructureOfIncomeChart";
 import { StatTable } from "./StatTable";
+import { useMainReport } from "@/api/report";
 
 const DashboardPage: FC = function () {
+  const mainReportRequest = useMainReport();
+  console.log("🚀 ~ mainReportRequest:", mainReportRequest.data);
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">

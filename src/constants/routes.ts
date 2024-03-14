@@ -5,7 +5,10 @@ export const ROUTES = {
   resetPassword: "/reset-password",
   resetPasswordByToken: "/reset-password-with-token/:token",
   home: "/",
-  profile: "/profile",
+  authVk: "/auth/vk",
+  authYandex: "/auth/yandex",
   unitTable: "/unit-table",
-  apiKeys: "/api-keys",
+  settingsApiKeys: "/settings/api-keys",
+  settings: "/settings/:tab?",
+  settingsProfile: "/settings/profile",
 } as const;

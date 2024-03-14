@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/api/auth";
 import { HiCheckCircle } from "react-icons/hi";
 import { ServerError } from "@/components/ServerError";
+import { getVkAuthUrl, getYandexUrl } from "./helper";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -108,6 +109,10 @@ const SignInPage: FC = function () {
                     href="#"
                     color="gray"
                     className="w-full hover:bg-gray-50 dark:hover:bg-gray-700"
+                    onClick={() => {
+                      const url = getVkAuthUrl();
+                      window.location.assign(url);
+                    }}
                   >
                     <svg
                       className="mr-2 size-5"
@@ -129,6 +134,10 @@ const SignInPage: FC = function () {
                     href="#"
                     color="gray"
                     className="w-full hover:bg-gray-50 dark:hover:bg-gray-700"
+                    onClick={() => {
+                      const url = getYandexUrl();
+                      window.location.assign(url);
+                    }}
                   >
                     <svg
                       className="mr-2 size-5 text-gray-900 dark:text-white"

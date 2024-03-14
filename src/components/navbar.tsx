@@ -76,7 +76,13 @@ const UserDropdown: FC = function () {
         <span className="block text-sm">{name}</span>
         <span className="block truncate text-sm font-medium">{email}</span>
       </Dropdown.Header>
-      <Dropdown.Item>Настройки</Dropdown.Item>
+      <Dropdown.Item
+        onClick={() => {
+          navigate(ROUTES.settingsProfile);
+        }}
+      >
+        Настройки
+      </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item
         onClick={() => {

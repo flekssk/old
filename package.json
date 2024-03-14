@@ -41,6 +41,7 @@
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.0",
     "svgmap": "^2.10.1",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4",
     "zod-i18n-map": "^2.27.0"
   },
@@ -48,6 +49,7 @@
     "@types/react": "^18.2.17",
     "@types/react-dom": "^18.2.7",
     "@types/sortablejs": "^1.15.1",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "@vitejs/plugin-react": "^4.0.3",

@@ -58,3 +58,11 @@ export const resetPasswordByToken = (
     )
     .then((res) => res.data);
 };
+
+export const vk = (payload: string): Promise<{ token: string }> => {
+  return api.get(ENDPOINTS.vk, { params: { payload } }).then((res) => res.data);
+};
+
+export const yandex = (payload: string): Promise<{ token: string }> => {
+  return api.get(ENDPOINTS.yandex + `?${payload}`).then((res) => res.data);
+};

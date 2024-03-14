@@ -4,6 +4,8 @@ import {
   registration,
   resetPassword,
   resetPasswordByToken,
+  vk,
+  yandex,
 } from "./api";
 import { createCustomMutation } from "../helper";
 
@@ -17,3 +19,7 @@ export const useResetPasswordByTokenMutation =
   createCustomMutation(resetPasswordByToken);
 
 export const useLogoutMutation = createCustomMutation(logout);
+
+export const useVkAuthMutation = createCustomMutation(vk);
+
+export const useYandexAuthNutation = createCustomMutation(yandex);

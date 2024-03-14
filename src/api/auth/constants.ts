@@ -4,6 +4,8 @@ export const ENDPOINTS = {
   logout: "/logout",
   resetPassword: "/reset-password",
   resetPasswordByToken: "/reset-password/reset-by-token",
+  vk: "/connect/vk/check",
+  yandex: "/connect/yandex/check",
 } as const;
 
 export const QUERY_KEYS = {

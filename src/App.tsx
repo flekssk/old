@@ -19,6 +19,9 @@ import { zodI18nMap } from "zod-i18n-map";
 // Import your language translation files
 import translation from "zod-i18n-map/locales/ru/zod.json";
 import { Logout } from "./pages/authentication/logout";
+import { Settings } from "./pages/settings/Settings";
+import { AuthVk } from "./pages/authentication/vk";
+import { AuthYandex } from "./pages/authentication/yanex";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -47,14 +50,8 @@ const App: FC = function () {
                 }
                 index
               />
-              <Route
-                path={ROUTES.apiKeys}
-                element={
-                  <ProtectedRoute>
-                    <ApiKeys />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path={ROUTES.authVk} element={<AuthVk />} />
+              <Route path={ROUTES.authYandex} element={<AuthYandex />} />
               <Route
                 path={ROUTES.unitTable}
                 element={
@@ -79,6 +76,14 @@ const App: FC = function () {
                 element={
                   <ProtectedRoute>
                     <Logout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={ROUTES.settings}
+                element={
+                  <ProtectedRoute>
+                    <Settings />
                   </ProtectedRoute>
                 }
               />
