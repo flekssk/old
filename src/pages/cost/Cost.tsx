@@ -1,10 +1,9 @@
 import NavbarSidebarLayout from "@/layouts/navbar-sidebar";
-import { Breadcrumb, Tabs, TabsRef } from "flowbite-react";
+import type { TabsRef } from "flowbite-react";
+import { Breadcrumb, Tabs } from "flowbite-react";
 import { useRef, type FC, useState } from "react";
 import { HiHome } from "react-icons/hi";
 import { CostByArticle } from "./CostByArticle";
-import { useArticleList } from "@/api/wb";
-import usePagination from "@/hooks/pagination";
 
 const TABS = {
   byArticle: 0,

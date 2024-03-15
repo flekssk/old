@@ -97,7 +97,6 @@ export const CostByArticle: FC = () => {
   }, [articlesQuery.data, icomeQuery.data]);
 
   const incomeSyncMutation = useIncomeSyncMutation();
-  const changeByArticle = () => {};
 
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<ArticleExtended>();
