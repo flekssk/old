@@ -202,12 +202,6 @@ export interface BarcodeReportItem {
   ddr: number;
 }
 
-export interface ProductSizesRevenue {
-  size: string;
-  barcode: string;
-  revenue: number;
-}
-
 export interface Stocks {
   warehouse: string;
   barcode: string;
@@ -232,7 +226,6 @@ export interface ReportItemResponse {
   stocks: Stocks[];
   // собирается так же как чарт только для каждого размера отдельные данные
   chartBySize: ReportChartItem[];
-  productSizesRevenues: ProductSizesRevenue[];
   stats: ReportStats;
   revenueStructure: RevenueStructure;
 }

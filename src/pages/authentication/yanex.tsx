@@ -7,9 +7,7 @@ import { useLocation } from "react-router-dom";
 
 export const AuthYandex: FC = () => {
   const location = useLocation();
-  const hash = location.hash;
   const search = location.search;
-  console.log("🚀 ~ search:", search);
 
   const { setToken } = useAuth();
 
@@ -25,12 +23,10 @@ export const AuthYandex: FC = () => {
   };
 
   useEffect(() => {
-    if (hash) {
-      login(hash.replace("#", ""));
-    } else if (search) {
-      login(search.replace("?", ""));
+    if (search) {
+      login(search);
     }
-  }, [hash, search]);
+  }, [search]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

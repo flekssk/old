@@ -3,19 +3,17 @@ import { ServerError } from "@/components/ServerError";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Spinner } from "flowbite-react";
 import { useEffect, type FC } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export const AuthVk: FC = () => {
-  const [searchParams] = useSearchParams();
-
-  const payload = searchParams.get("payload");
+  const location = useLocation();
   const { setToken } = useAuth();
 
   const vkAuthMutation = useVkAuthMutation();
 
-  const login = async () => {
-    if (payload) {
-      const data = await vkAuthMutation.mutateAsync(payload);
+  const login = async (search: string) => {
+    if (search) {
+      const data = await vkAuthMutation.mutateAsync(search);
       if (data) {
         setToken(data.token);
       }
@@ -23,8 +21,11 @@ export const AuthVk: FC = () => {
   };
 
   useEffect(() => {
-    login();
-  }, [payload]);
+    if (location.search) {
+      login(location.search);
+    }
+  }, [location.search]);
+  console.log("🚀 ~ location.search:", location.search);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

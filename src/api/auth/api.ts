@@ -59,10 +59,10 @@ export const resetPasswordByToken = (
     .then((res) => res.data);
 };
 
-export const vk = (payload: string): Promise<{ token: string }> => {
-  return api.get(ENDPOINTS.vk, { params: { payload } }).then((res) => res.data);
+export const vk = (search: string): Promise<{ token: string }> => {
+  return api.get(ENDPOINTS.vk + search).then((res) => res.data);
 };
 
-export const yandex = (payload: string): Promise<{ token: string }> => {
-  return api.get(ENDPOINTS.yandex + `?${payload}`).then((res) => res.data);
+export const yandex = (search: string): Promise<{ token: string }> => {
+  return api.get(ENDPOINTS.yandex + search).then((res) => res.data);
 };

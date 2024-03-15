@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (error) {
       setIsAuthenticated(false);
+      setToken(null);
     } finally {
       setIsPending(false);
     }

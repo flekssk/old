@@ -23,7 +23,9 @@ const DashboardPage: FC = function () {
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
-        <StatTable />
+        {mainReportRequest.data?.byProduct ? (
+          <StatTable items={mainReportRequest.data?.byProduct} />
+        ) : null}
       </div>
     </NavbarSidebarLayout>
   );

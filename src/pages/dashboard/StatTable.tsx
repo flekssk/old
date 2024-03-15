@@ -1,13 +1,17 @@
 import { mockByArticle } from "@/mocks/mock-by-article";
 import { Card } from "flowbite-react";
-import { useMemo } from "react";
+import { FC, useMemo } from "react";
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { Table } from "@/components/table/Table";
+import type { ProductReportItem } from "@/api/report/types";
 
+export type StatTableProps = {
+  items: ProductReportItem[];
+};
 type ArticleData = {
   article: string;
   avgCost: number;
@@ -32,69 +36,84 @@ type ArticleData = {
   compensationForReturns: number;
 };
 
-export const StatTable = () => {
+export const StatTable: FC<StatTableProps> = ({ items }) => {
   const columns = useMemo(() => {
-    const columnHelper = createColumnHelper<ArticleData>();
+    const columnHelper = createColumnHelper<ProductReportItem>();
     return [
-      columnHelper.accessor("article", {
-        header: "article",
+      columnHelper.accessor("orders", { header: "Заказы р." }),
+      columnHelper.accessor("image", {
+        header: "Фото",
+        cell: (row) => {
+          return (
+            <div>
+              <img src={row.getValue()?.replace("small", "big")} alt="img" />
+            </div>
+          );
+        },
       }),
-      columnHelper.accessor("avgCost", {
-        header: "avgCost",
+      columnHelper.accessor("ordersCount", { header: "Заказы шт" }),
+      columnHelper.accessor("name", { header: "Название" }),
+      columnHelper.accessor("vendorCode", { header: "Артикул" }),
+      columnHelper.accessor("brand", { header: "Бренд" }),
+      columnHelper.accessor("category", { header: "Категория" }),
+      columnHelper.accessor("article", { header: "Артикул" }),
+      columnHelper.accessor("cost", { header: "Себистоимость" }),
+      columnHelper.accessor("averagePriceBeforeSPP", {
+        header: "Средняя цена до СПП",
       }),
-      columnHelper.accessor("AvgPrice", {
-        header: "AvgPrice",
+      columnHelper.accessor("shareInTotalRevenue", {
+        header: "Реализация (сумма продаж до СПП)",
       }),
-      columnHelper.accessor("realezation", {
-        header: "realezation",
+      columnHelper.accessor("sale", { header: "Продажи" }),
+      columnHelper.accessor("toTransfer", { header: "К перечеслению" }),
+      columnHelper.accessor("returns", { header: "Возвраты" }),
+      columnHelper.accessor("costOfSales", { header: "Стоимость продаж" }),
+      columnHelper.accessor("fines", { header: "Штрафы" }),
+      columnHelper.accessor("compensationForSubstitutedGoods", {
+        header: "Компенсация подмененного товара",
       }),
-      columnHelper.accessor("sales", { header: "sales" }),
-      columnHelper.accessor("toTransfer", {
-        header: "toTransfer",
+      columnHelper.accessor("reimbursementOfTransportationCosts", {
+        header: "Компенсация поставщика",
       }),
-      columnHelper.accessor("Returns", {
-        header: "Returns",
+      columnHelper.accessor("paymentForMarriageAndLostGoods", {
+        header: "Оплата брака + потерянного товара",
       }),
-      columnHelper.accessor("costForSales", {
-        header: "costForSales",
+      columnHelper.accessor("averageLogisticsCost", {
+        header: "Ср. стоимость логистики",
       }),
-      columnHelper.accessor("penalty", {
-        header: "penalty",
+      columnHelper.accessor("logistics", { header: "Стоимость логистики" }),
+      columnHelper.accessor("storage", { header: "Хранение" }),
+      columnHelper.accessor("rejectionsAndReturns", {
+        header: "Количество отказов+ возвраты",
       }),
-      columnHelper.accessor("compensationReplacedProduct", {
-        header: "compensationReplacedProduct",
+      columnHelper.accessor("totalSales", { header: "Всего продаж" }),
+      columnHelper.accessor("averageRedemption", {
+        header: "Средний процент выкупа",
       }),
-      columnHelper.accessor("compensationLogistics", {
-        header: "compensationLogistics",
+      columnHelper.accessor("averageProfitPerPiece", {
+        header: "Средняя прибыль на 1 шт",
       }),
-      columnHelper.accessor("logistic", {
-        header: "logistic",
+      columnHelper.accessor("tax", { header: "Налоги" }),
+      columnHelper.accessor("profit", { header: "Прибыль" }),
+      columnHelper.accessor("roi", { header: "ROI" }),
+      columnHelper.accessor("profitability", { header: "Приюыльность" }),
+      columnHelper.accessor("shareInTotalRevenuePart", {
+        header: "Доля в общей выручке",
       }),
-      columnHelper.accessor("tax", { header: "tax" }),
-      columnHelper.accessor("income", { header: "income" }),
-      columnHelper.accessor("store", { header: "store" }),
-      columnHelper.accessor("roi", { header: "roi" }),
-      columnHelper.accessor("logisticsCost", {
-        header: "logisticsCost",
+      columnHelper.accessor("shareInTotalProfit", {
+        header: "Доля в общей прибыли",
       }),
-      columnHelper.accessor("salesCount", {
-        header: "salesCount",
+      columnHelper.accessor("marginality", { header: "Маржинальность" }),
+      columnHelper.accessor("advertisingExpenses", {
+        header: "Расходы на рекламу",
       }),
-      columnHelper.accessor("partOfIncome", {
-        header: "partOfIncome",
-      }),
-      columnHelper.accessor("PartOfErn", {
-        header: "PartOfErn",
-      }),
-      columnHelper.accessor("compensationForReturns", {
-        header: "compensationForReturns",
-      }),
+      columnHelper.accessor("ddr", { header: "ДДР" }),
     ];
   }, []);
 
   const table = useReactTable({
     columns,
-    data: mockByArticle as ArticleData[],
+    data: items,
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
   });
