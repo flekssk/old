@@ -25,6 +25,7 @@ export const Table = <T extends Record<string, any>>({
   renderAdditionalRowBefore,
   renderAdditionalRowAfter,
   cellRangeSelection = false,
+  className,
 }: TableProps<T>) => {
   const { getRowModel } = table;
 
@@ -40,6 +41,7 @@ export const Table = <T extends Record<string, any>>({
     <div>
       <div className="overflow-auto">
         <TableFlowbite
+          className={className}
           striped
           {...{
             style: {

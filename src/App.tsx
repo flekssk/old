@@ -21,6 +21,7 @@ import { Logout } from "./pages/authentication/logout";
 import { Settings } from "./pages/settings/Settings";
 import { AuthVk } from "./pages/authentication/vk";
 import { AuthYandex } from "./pages/authentication/yanex";
+import { Cost } from "./pages/cost/Cost";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -83,6 +84,14 @@ const App: FC = function () {
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={ROUTES.cost}
+                element={
+                  <ProtectedRoute>
+                    <Cost />
                   </ProtectedRoute>
                 }
               />

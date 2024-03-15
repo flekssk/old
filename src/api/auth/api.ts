@@ -60,9 +60,13 @@ export const resetPasswordByToken = (
 };
 
 export const vk = (search: string): Promise<{ token: string }> => {
-  return api.get(ENDPOINTS.vk + search).then((res) => res.data);
+  return api
+    .get(ENDPOINTS.vk + search + "&_route=connect_vkontakte_check")
+    .then((res) => res.data);
 };
 
 export const yandex = (search: string): Promise<{ token: string }> => {
-  return api.get(ENDPOINTS.yandex + search).then((res) => res.data);
+  return api
+    .get(ENDPOINTS.yandex + search + "&_route=connect_yandex_check")
+    .then((res) => res.data);
 };

@@ -1,3 +1,5 @@
+import { Pagination } from "../types";
+
 export type WbAccount = {
   id: number;
   accountNumber: string;
@@ -27,4 +29,31 @@ export type WbUpdateAccountResponse = {
 
 export type WbDeleteAccountResponse = {
   message: string;
+};
+
+export type Article = {
+  id: number;
+  photos: Record<string, string>;
+  nmId: string;
+  brand: string;
+  nmUUID: string;
+  subjectName: string;
+  title: string;
+  vendorCode: string;
+  barcodes?: Array<{
+    barcode: string;
+    id: number;
+    size: string;
+  }>;
+};
+
+export type ArticleListResponse = {
+  items: Article[];
+  pagination: Pagination;
+};
+
+export type ArticleListRequest = {
+  page: number;
+  limit: number;
+  withBarcodes: number;
 };

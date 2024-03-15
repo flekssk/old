@@ -11,4 +11,5 @@ export const ROUTES = {
   settingsApiKeys: "/settings/api-keys",
   settings: "/settings/:tab?",
   settingsProfile: "/settings/profile",
+  cost: "/cost",
 } as const;

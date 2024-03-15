@@ -2,6 +2,8 @@ import { applyRouteParams } from "@/helpers/url";
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {
+  ArticleListRequest,
+  ArticleListResponse,
   WbAccountListResponse,
   WbCreateAccountRequest,
   WbCreateAccountResponse,
@@ -36,4 +38,11 @@ export const deleteAccount = (id: number): Promise<WbDeleteAccountResponse> =>
     .delete<WbDeleteAccountResponse>(
       applyRouteParams(ENDPOINTS.deleteAccount, { id }),
     )
+    .then((res) => res.data);
+
+export const articleList = (
+  request: ArticleListRequest,
+): Promise<ArticleListResponse> =>
+  api
+    .get<ArticleListResponse>(ENDPOINTS.articles, { params: request })
     .then((res) => res.data);

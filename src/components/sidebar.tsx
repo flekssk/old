@@ -54,6 +54,17 @@ const ExampleSidebar: FC = function () {
                 >
                   Unit экономика
                 </Sidebar.Item>
+                <Sidebar.Item
+                  href={ROUTES.cost}
+                  icon={HiCalculator}
+                  className={
+                    ROUTES.cost === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  Себистоимость
+                </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>
