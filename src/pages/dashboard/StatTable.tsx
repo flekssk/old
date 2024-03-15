@@ -1,6 +1,6 @@
-import { mockByArticle } from "@/mocks/mock-by-article";
 import { Card } from "flowbite-react";
-import { FC, useMemo } from "react";
+import type { FC } from "react";
+import { useMemo } from "react";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -11,29 +11,6 @@ import type { ProductReportItem } from "@/api/report/types";
 
 export type StatTableProps = {
   items: ProductReportItem[];
-};
-type ArticleData = {
-  article: string;
-  avgCost: number;
-  AvgPrice: number;
-  realezation: number;
-  sales: number;
-  toTransfer: number;
-  Returns: number;
-  costForSales: number;
-  penalty: number;
-  compensationReplacedProduct: number;
-  compensationLogistics: number;
-  logistic: number;
-  tax: number;
-  income: number;
-  store: number;
-  roi: number;
-  logisticsCost: number;
-  salesCount: number;
-  partOfIncome: number;
-  PartOfErn: number;
-  compensationForReturns: number;
 };
 
 export const StatTable: FC<StatTableProps> = ({ items }) => {
@@ -111,7 +88,7 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
     ];
   }, []);
 
-  const table = useReactTable({
+  const table = useReactTable<ProductReportItem>({
     columns,
     data: items,
     columnResizeMode: "onChange",
