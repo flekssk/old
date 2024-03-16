@@ -1,6 +1,15 @@
-import { useIncomeList, useIncomeSyncMutation } from "@/api/income";
+import {
+  useIncomeCostSetBatchMutation,
+  useIncomeSyncMutation,
+  useInfinityIncomeList,
+} from "@/api/income";
+import type {
+  BatchIncome,
+  Income,
+  IncomeListResponse,
+} from "@/api/income/types";
 import { useArticleList } from "@/api/wb";
-import { Article } from "@/api/wb/types";
+import type { Article } from "@/api/wb/types";
 import { Table } from "@/components/table/Table";
 import usePagination from "@/hooks/pagination";
 import {
@@ -9,15 +18,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Button, TextInput } from "flowbite-react";
-import { useMemo, type FC } from "react";
+import { useMemo, type FC, useEffect, useState } from "react";
 
 type SubRow = Partial<Article> & { cost: number };
 type ArticleExtended = Article & {
+  cost: number;
   subRows: Array<SubRow>;
 };
 
 export const CostByArticle: FC = () => {
   const { page, limit } = usePagination({ defaultLimit: 100 });
+  const [iccomeCost, setIncomeCost] = useState<Record<string, BatchIncome>>({});
+  console.log("🚀 ~ iccomeCost:", iccomeCost);
 
   const articlesQuery = useArticleList({
     limit,
@@ -37,26 +49,55 @@ export const CostByArticle: FC = () => {
     );
   }, [articlesQuery.data]);
 
-  const icomeQuery = useIncomeList(
+  const icomeQuery = useInfinityIncomeList(
     {
       page: 1,
-      limit: 2000,
+      limit: 1000,
       barcodes,
     },
     {
       enabled: !!barcodes,
+      getNextPageParam: (lastPage) => {
+        if (
+          lastPage.pagination.page * lastPage.pagination.limit <
+          lastPage.pagination.total
+        ) {
+          return {
+            page: lastPage.pagination.page + 1,
+            limit: lastPage.pagination.limit,
+          };
+        }
+      },
     },
   );
+
+  const incomeData = useMemo(() => {
+    return (
+      (
+        icomeQuery.data as unknown as { pages: Array<IncomeListResponse> }
+      )?.pages.reduce((acc, page) => {
+        acc.push(...page.items);
+        return acc;
+      }, [] as Income[]) ?? []
+    );
+  }, [icomeQuery.data]);
+
+  useEffect(() => {
+    if (icomeQuery.hasNextPage) {
+      icomeQuery.fetchNextPage();
+    }
+  }, [icomeQuery.data]);
 
   const data = useMemo(() => {
     const result =
       articlesQuery.data?.items.map((item) => ({
         ...item,
+        cost: 0,
         subRows: [] as SubRow[],
       })) ?? ([] as ArticleExtended[]);
 
-    if (icomeQuery.data?.items) {
-      const incomesByArticle = icomeQuery.data.items.reduce(
+    if (incomeData) {
+      const incomesByArticle = incomeData.reduce(
         (acc, income) => {
           if (!acc[income.supplierArticle]) {
             acc[income.supplierArticle] = {};
@@ -75,7 +116,7 @@ export const CostByArticle: FC = () => {
             };
           }
           const icome = icomesByArticle[income.incomeId] as SubRow;
-          icome.cost += income.cost ?? 0;
+          icome.cost = income.cost ?? 0;
 
           return acc;
         },
@@ -89,14 +130,44 @@ export const CostByArticle: FC = () => {
             SubRow
           >;
           article.subRows = Object.values(incomes);
+          const costs = article.subRows.map((subRow) => subRow.cost);
+          console.log(
+            "🚀 ~ result.forEach ~ costs:",
+            costs,
+            costs.reduce((acc, cost) => acc + cost, 0) / costs.length,
+          );
+          article.cost =
+            costs.reduce((acc, cost) => acc + cost, 0) / costs.length;
         }
       });
     }
 
     return result;
-  }, [articlesQuery.data, icomeQuery.data]);
+  }, [articlesQuery.data, incomeData]);
+
+  const updateByArticle = (vendorCode: string, cost: number) => {
+    const incomes = incomeData.filter(
+      (income) => income.supplierArticle === vendorCode,
+    );
+    const article = data.find((article) => article.vendorCode === vendorCode);
+    if (article) {
+      setIncomeCost((current) => {
+        const result = { ...current };
+        incomes.forEach((income) => {
+          result[income.incomeId + "_" + income.barcode] = {
+            incomeId: income.incomeId,
+            nmId: article.nmId,
+            barcode: income.barcode,
+            cost,
+          };
+        });
+        return result;
+      });
+    }
+  };
 
   const incomeSyncMutation = useIncomeSyncMutation();
+  const incomeCostSetBatchMutation = useIncomeCostSetBatchMutation();
 
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<ArticleExtended>();
@@ -113,8 +184,20 @@ export const CostByArticle: FC = () => {
       columnHelper.accessor("brand", { header: "Бренд" }),
       columnHelper.accessor("id", {
         header: "Себистоимость",
-        cell: () => {
-          return <TextInput type="number" min={0} />;
+        cell: (cell) => {
+          return (
+            <TextInput
+              type="number"
+              defaultValue={cell.row.original.cost}
+              min={0}
+              onChange={(e) => {
+                updateByArticle(
+                  cell.row.original.vendorCode,
+                  e.target.valueAsNumber,
+                );
+              }}
+            />
+          );
         },
       }),
       columnHelper.accessor("barcodes", {
@@ -130,7 +213,6 @@ export const CostByArticle: FC = () => {
   const table = useReactTable({
     columns,
     data,
-    columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -153,6 +235,22 @@ export const CostByArticle: FC = () => {
         </Button>
       </div>
       <Table className="w-full" table={table} />
+      {Object.keys(iccomeCost).length ? (
+        <div className="flex justify-end px-2">
+          <Button
+            color="blue"
+            isProcessing={incomeCostSetBatchMutation.isPending}
+            disabled={incomeCostSetBatchMutation.isPending}
+            onClick={() => {
+              incomeCostSetBatchMutation.mutate({
+                incomes: Object.values(iccomeCost),
+              });
+            }}
+          >
+            Сохранить
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

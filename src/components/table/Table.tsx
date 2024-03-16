@@ -12,6 +12,7 @@ type TableProps<T extends Record<string, unknown>> = {
   loading?: boolean;
   showFooter?: boolean;
   loadingRows?: number;
+  resizeColumns?: boolean;
   renderAdditionalRowBefore?: (row: Row<T>) => React.ReactNode;
   renderAdditionalRowAfter?: (row: Row<T>) => React.ReactNode;
   getRowClassName?: (row: T) => string;
@@ -25,6 +26,7 @@ export const Table = <T extends Record<string, any>>({
   renderAdditionalRowBefore,
   renderAdditionalRowAfter,
   cellRangeSelection = false,
+  resizeColumns = false,
   className,
 }: TableProps<T>) => {
   const { getRowModel } = table;
@@ -45,7 +47,7 @@ export const Table = <T extends Record<string, any>>({
           striped
           {...{
             style: {
-              width: table.getCenterTotalSize(),
+              width: resizeColumns ? table.getCenterTotalSize() : undefined,
             },
           }}
         >

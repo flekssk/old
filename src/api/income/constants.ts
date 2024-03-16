@@ -6,4 +6,5 @@ export const ENDPOINTS = {
 
 export const QUERY_KEYS = {
   incomeList: "incomeList",
+  incomeListInfinity: "incomeListInfinity",
 } as const;

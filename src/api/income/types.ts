@@ -33,7 +33,7 @@ export type IncomeSyncResponse = {
 };
 
 export type IncomeCostSetBatchRequest = {
-  items: Income[];
+  incomes: BatchIncome[];
 };
 
 export type IncomeCostSetBatchResponse = {
