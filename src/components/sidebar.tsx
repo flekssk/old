@@ -8,6 +8,7 @@ import { HiViewGrid, HiCalculator } from "react-icons/hi";
 import { useSidebarContext } from "../context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
 import { ROUTES } from "@/constants/routes";
+import { Link } from "react-router-dom";
 
 const ExampleSidebar: FC = function () {
   const { isOpenOnSmallScreens } = useSidebarContext();
@@ -35,7 +36,8 @@ const ExampleSidebar: FC = function () {
             <Sidebar.Items>
               <Sidebar.ItemGroup>
                 <Sidebar.Item
-                  href="/"
+                  as={Link}
+                  to="/"
                   icon={HiViewGrid}
                   className={
                     "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
@@ -44,7 +46,8 @@ const ExampleSidebar: FC = function () {
                   Оцировка
                 </Sidebar.Item>
                 <Sidebar.Item
-                  href={ROUTES.unitTable}
+                  as={Link}
+                  to={ROUTES.unitTable}
                   icon={HiCalculator}
                   className={
                     ROUTES.unitTable === currentPage
@@ -55,7 +58,8 @@ const ExampleSidebar: FC = function () {
                   Unit экономика
                 </Sidebar.Item>
                 <Sidebar.Item
-                  href={ROUTES.cost}
+                  as={Link}
+                  to={ROUTES.cost}
                   icon={HiCalculator}
                   className={
                     ROUTES.cost === currentPage

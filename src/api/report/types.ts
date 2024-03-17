@@ -134,6 +134,11 @@ export interface ReportResponse {
   revenueStructure: RevenueStructure;
 }
 
+export interface ReportRequest {
+  dateFrom?: string;
+  dateTo?: string;
+}
+
 // филтры и сортировки по всем полям кроме img, url
 export interface BarcodeReportItem {
   // ссылка на изображение
@@ -229,3 +234,9 @@ export interface ReportItemResponse {
   stats: ReportStats;
   revenueStructure: RevenueStructure;
 }
+
+export type ReportFilterAggregationResponse = {
+  date: { minDate: string; maxDate: string } | null;
+  brands: string[];
+  categories: string[];
+};

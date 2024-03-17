@@ -3,6 +3,9 @@ export function isFloat(value: string | number) {
 }
 
 export function displayNumber(value: string | number) {
+  if (isNaN(+value)) {
+    return value;
+  }
   if (isFloat(value)) {
     return Number(value).toLocaleString("en-US", {
       minimumFractionDigits: 2,

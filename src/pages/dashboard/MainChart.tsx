@@ -1,14 +1,28 @@
+import type { ReportResponse } from "@/api/report/types";
 import { Toggle } from "@/components/Toggle";
-import { salesChartMock } from "@/mocks/sales-chart";
+import { DATE_FORMAT } from "@/helpers/date";
+import { format, parse } from "date-fns";
+
 import { Card, useThemeMode } from "flowbite-react";
+import type { FC } from "react";
 import Chart from "react-apexcharts";
 
-export const MainChart = () => {
+type MainChartProps = {
+  data: ReportResponse["chart"];
+};
+
+export const MainChart: FC<MainChartProps> = ({ data }) => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 
   const borderColor = isDarkTheme ? "#374151" : "#F3F4F6";
   const labelColor = isDarkTheme ? "#93ACAF" : "#6B7280";
+
+  const sortedData = data.sort((a, b) => {
+    const aDate = new Date(a.date).getTime();
+    const bDate = new Date(b.date).getTime();
+    return aDate - bDate;
+  });
 
   const options: ApexCharts.ApexOptions = {
     stroke: {
@@ -50,7 +64,13 @@ export const MainChart = () => {
       },
     },
     xaxis: {
-      categories: salesChartMock.map((item) => item.Date),
+      categories: sortedData.map(
+        (item) =>
+          format(
+            parse(item.date, DATE_FORMAT.SERVER_DATE, new Date()),
+            DATE_FORMAT.DAY_MONTH,
+          ) as string,
+      ),
       labels: {
         style: {
           colors: [labelColor],
@@ -129,20 +149,43 @@ export const MainChart = () => {
   const series: ApexAxisChartSeries = [
     {
       name: "Продажи",
-      data: salesChartMock.map((item) => item.sales),
-      color: "#1A56DB",
+      data: sortedData.map((item) => item.sale),
       group: "price",
     },
     {
       name: "Средняя цена",
-      data: salesChartMock.map((item) => item.avgPrice),
-      color: "#FDBA8C",
+      data: sortedData.map((item) => item.averagePriceBeforeSPP),
       group: "price",
     },
     {
       name: "Заказы",
-      data: salesChartMock.map((item) => item.orders),
-      color: "#93C5FD",
+      data: sortedData.map((item) => item.ordersCount),
+      group: "quantity",
+    },
+    {
+      name: "Заказы р.",
+      data: sortedData.map((item) => item.orders),
+      group: "quantity",
+    },
+
+    {
+      name: "ДДР %",
+      data: sortedData.map((item) => item.ddr),
+      group: "quantity",
+    },
+    {
+      name: "Логистика",
+      data: sortedData.map((item) => item.logistics),
+      group: "price",
+    },
+    {
+      name: "Возвраты",
+      data: sortedData.map((item) => item.returns),
+      group: "quantity",
+    },
+    {
+      name: "Прибыль",
+      data: sortedData.map((item) => item.profit),
       group: "quantity",
     },
   ];
