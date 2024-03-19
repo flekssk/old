@@ -1,3 +1,4 @@
+import { ENV } from "@/env";
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {
@@ -60,13 +61,19 @@ export const resetPasswordByToken = (
 };
 
 export const vk = (search: string): Promise<{ token: string }> => {
+  const callbackUrl = ENV.VK_AUTH_REDIRECT_URL;
   return api
-    .get(ENDPOINTS.vk + search + "&_route=connect_vkontakte_check")
+    .get(
+      `${ENDPOINTS.vk}${search}&_route=connect_vkontakte_check&redirect_uri=${callbackUrl}`,
+    )
     .then((res) => res.data);
 };
 
 export const yandex = (search: string): Promise<{ token: string }> => {
+  const callbackUrl = ENV.YANDEX_AUTH_REDIRECT_URL;
   return api
-    .get(ENDPOINTS.yandex + search + "&_route=connect_yandex_check")
+    .get(
+      `${ENDPOINTS.yandex}${search}&_route=connect_yandex_check&redirect_uri=${callbackUrl}`,
+    )
     .then((res) => res.data);
 };

@@ -64,18 +64,17 @@ export const MainChart: FC<MainChartProps> = ({ data }) => {
       },
     },
     xaxis: {
-      categories: sortedData.map(
-        (item) =>
-          format(
-            parse(item.date, DATE_FORMAT.SERVER_DATE, new Date()),
-            DATE_FORMAT.DAY_MONTH,
-          ) as string,
+      categories: sortedData.map((item) =>
+        parse(item.date, DATE_FORMAT.SERVER_DATE, new Date()),
       ),
       labels: {
         style: {
           colors: [labelColor],
           fontSize: "14px",
           fontWeight: 500,
+        },
+        formatter: (value) => {
+          return value ? format(value, DATE_FORMAT.DAY_MONTH) : "";
         },
       },
       axisBorder: {
@@ -104,7 +103,7 @@ export const MainChart: FC<MainChartProps> = ({ data }) => {
             colors: [labelColor],
           },
           formatter: (value) => {
-            return `${value.toFixed(0)} Р`;
+            return value ? `${value.toFixed(0)} Р` : "0 Р";
           },
         },
       },
@@ -115,7 +114,7 @@ export const MainChart: FC<MainChartProps> = ({ data }) => {
         },
         labels: {
           formatter: (value) => {
-            return `${value.toFixed(0)} шт`;
+            return value ? `${value.toFixed(0)} шт` : "0 шт";
           },
         },
       },

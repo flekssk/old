@@ -2,7 +2,7 @@ import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
 import { DATE_FORMAT } from "@/helpers/date";
-import { endOfWeek, formatDate, startOfWeek, subWeeks } from "date-fns";
+import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
 import { Datepicker, Dropdown } from "flowbite-react";
 import { type FC, useMemo } from "react";
 
@@ -96,6 +96,21 @@ export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
     return result;
   }, [reportFilterAggregationRequest.data]);
 
+  const minDate = reportFilterAggregationRequest.data?.date?.minDate
+    ? parse(
+        reportFilterAggregationRequest.data?.date?.minDate,
+        DATE_FORMAT.SERVER_DATE,
+        new Date(),
+      )
+    : undefined;
+  const maxDate = reportFilterAggregationRequest.data?.date?.maxDate
+    ? parse(
+        reportFilterAggregationRequest.data?.date?.maxDate,
+        DATE_FORMAT.SERVER_DATE,
+        new Date(),
+      )
+    : new Date();
+
   return (
     <div className="flex flex-wrap justify-between">
       <div>
@@ -114,8 +129,8 @@ export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
 
           {(filterState["dateFilter"] as SelectOption)?.value === "custom" ? (
             <>
-              <Datepicker />
-              <Datepicker />
+              <Datepicker minDate={minDate} maxDate={maxDate} />
+              <Datepicker minDate={minDate} maxDate={maxDate} />
             </>
           ) : null}
         </div>
