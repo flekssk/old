@@ -7,7 +7,7 @@ import ResetPasswordPage from "./pages/authentication/reset-password";
 import SignInPage from "./pages/authentication/sign-in";
 import SignUpPage from "./pages/authentication/sign-up";
 import FlowbiteWrapper from "./components/flowbite-wrapper";
-import UnitTable from "./pages/unittable/UnitTable";
+import UnitTable from "./pages/unittable/unitTable";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";

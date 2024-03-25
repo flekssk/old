@@ -1,7 +1,7 @@
 import { Button, Label, TextInput } from "flowbite-react";
 import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
 import { useState } from "react";
-import { Product } from "./productsTable";
+import type { Product } from "./productsTable";
 
 export type EditFormType = Omit<Product, "x" | "profit" | "margin" | "roi">;
 
@@ -46,7 +46,7 @@ const EditForm = ({
         <div className="p-[20px] font-sans font-bold">{data?.title}</div>
       </div>
       <form onSubmit={onSubmitClick}>
-        <div className="pt-[20px] border-y-2 pb-[15px]">
+        <div className="border-y-2 pb-[15px] pt-[20px]">
           <div className="flex flex-col pl-[15px]">
             <Label htmlFor="purchase" className="m-1">
               ЗАКУПКА, Р

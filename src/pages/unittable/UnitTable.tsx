@@ -1,6 +1,6 @@
-import type { FC } from 'react';
-import NavbarSidebarLayout from '../../layouts/navbar-sidebar';
-import ProductsTable from './productsTable';
+import type { FC } from "react";
+import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
+import ProductsTable from "./productsTable";
 
 const UnitTable: FC = () => {
   return (

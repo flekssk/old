@@ -15,8 +15,8 @@ export const UniverseModalWindow = ({
     <div
       className={
         isActive
-          ? "h-screen w-screen fixed top-0 left-0 flex items-center  bg-transparent justify-center duration-500 opacity-100 pointer-events-auto z-50"
-          : "h-screen w-screen fixed top-0 left-0 flex items-center justify-center opacity-0 duration-500 pointer-events-none"
+          ? "pointer-events-auto fixed left-0 top-0 z-50 flex h-screen  w-screen items-center justify-center bg-transparent opacity-100 duration-500"
+          : "pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center opacity-0 duration-500"
       }
       onClick={() => setActive(false)}
       role="button"
@@ -25,8 +25,8 @@ export const UniverseModalWindow = ({
       <div
         className={
           isActive
-            ? "rounded-xl bg-white scale-100 duration-500 cursor-default border-2 border-gray-200"
-            : "scale-50 rounded-xl bg-white duration-500 cursor-default"
+            ? "scale-100 cursor-default rounded-xl border-2 border-gray-200 bg-white duration-500"
+            : "scale-50 cursor-default rounded-xl bg-white duration-500"
         }
         onClick={(e) => e.stopPropagation()}
         role="button"

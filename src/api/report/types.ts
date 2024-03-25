@@ -137,6 +137,8 @@ export interface ReportResponse {
 export interface ReportRequest {
   dateFrom?: string;
   dateTo?: string;
+  category?: string;
+  brand?: string;
 }
 
 // филтры и сортировки по всем полям кроме img, url

@@ -6,7 +6,11 @@ import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
 import { Datepicker, Dropdown } from "flowbite-react";
 import { type FC, useMemo } from "react";
 
-export type DateFilterValue = { dateFrom: string; dateTo: string };
+export type DateFilterValue = {
+  dateFrom: string;
+  dateTo: string;
+};
+
 export type DateFilter = Partial<DateFilterValue> & {
   text: string;
   value: string;
@@ -52,13 +56,21 @@ export const dateFilters: DateFilter[] = [
   {
     text: "Произвольный период",
     value: "custom",
+    dateFrom: "",
+    dateTo: "",
   },
 ];
 type FiltersProps = {
   filterState: Record<string, string | SelectOption>;
   setFilterState: (state: Record<string, string | SelectOption>) => void;
+  searchParams: URLSearchParams;
 };
-export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
+
+export const Filters: FC<FiltersProps> = ({
+  filterState,
+  setFilterState,
+  searchParams,
+}) => {
   const reportFilterAggregationRequest = useReportFilterAggregation();
 
   const dateFilterOptions = useMemo(() => {
@@ -114,10 +126,10 @@ export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
   return (
     <div className="flex flex-wrap justify-between">
       <div>
-        <h2 className="text-l mb-2">Период отчета</h2>
+        <h2 className="mb-2 text-lg">Период отчета</h2>
         <div className="flex items-center gap-2">
           <Select
-            selectedOption={filterState["dateFilter"] as SelectOption}
+            selectedOption={(filterState["dateFilter"] as SelectOption) || ""}
             options={dateFilterOptions}
             setSelectedOption={(option) => {
               setFilterState({
@@ -125,21 +137,83 @@ export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
                 dateFilter: option,
               });
             }}
+            placeholder="Выберите период"
           ></Select>
 
           {(filterState["dateFilter"] as SelectOption)?.value === "custom" ? (
             <>
-              <Datepicker minDate={minDate} maxDate={maxDate} />
-              <Datepicker minDate={minDate} maxDate={maxDate} />
+              <Datepicker
+                minDate={minDate}
+                maxDate={maxDate}
+                defaultDate={parse(
+                  searchParams.get("dateFrom") as string,
+                  DATE_FORMAT.SERVER_DATE,
+                  new Date(),
+                )}
+                onSelectedDateChanged={(date) => {
+                  const customFilterIndex = dateFilters.findIndex(
+                    (el) => el.value === "custom",
+                  );
+                  if (customFilterIndex !== -1) {
+                    const customFilter = dateFilters[customFilterIndex];
+                    if (customFilter !== undefined) {
+                      customFilter.dateFrom = formatDate(
+                        date,
+                        DATE_FORMAT.SERVER_DATE,
+                      );
+                      setFilterState({
+                        ...filterState,
+                        dateFilter: {
+                          value: "custom",
+                          label: "Произвольный период",
+                        },
+                      });
+                    }
+                  }
+                }}
+              />
+              <Datepicker
+                minDate={minDate}
+                maxDate={maxDate}
+                defaultDate={parse(
+                  searchParams.get("dateTo") as string,
+                  DATE_FORMAT.SERVER_DATE,
+                  new Date(),
+                )}
+                onSelectedDateChanged={(date) => {
+                  const customFilterIndex = dateFilters.findIndex(
+                    (el) => el.value === "custom",
+                  );
+                  if (customFilterIndex !== -1) {
+                    const customFilter = dateFilters[customFilterIndex];
+                    if (customFilter !== undefined) {
+                      customFilter.dateTo = formatDate(
+                        date,
+                        DATE_FORMAT.SERVER_DATE,
+                      );
+                      setFilterState({
+                        ...filterState,
+                        dateFilter: {
+                          value: "custom",
+                          label: "Произвольный период",
+                        },
+                      });
+                    }
+                  }
+                }}
+              />
             </>
           ) : null}
         </div>
       </div>
       <div>
-        <h2 className="text-l mb-2">Фильтры</h2>
+        <h2 className="mb-2 text-lg">Фильтры</h2>
         <div className="flex flex-wrap items-center gap-2 ">
           <Select
-            selectedOption={filterState["brand"] as SelectOption}
+            selectedOption={{
+              value: searchParams.get("brand") || "",
+              label: searchParams.get("brand") || "",
+            }}
             setSelectedOption={(option) => {
               setFilterState({
                 ...filterState,
@@ -151,7 +225,10 @@ export const Filters: FC<FiltersProps> = ({ filterState, setFilterState }) => {
           />
 
           <Select
-            selectedOption={filterState["category"] as SelectOption}
+            selectedOption={{
+              value: searchParams.get("category") || "",
+              label: searchParams.get("category") || "",
+            }}
             setSelectedOption={(option) => {
               setFilterState({
                 ...filterState,
