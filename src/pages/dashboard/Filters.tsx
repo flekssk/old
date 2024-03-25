@@ -5,6 +5,8 @@ import { DATE_FORMAT } from "@/helpers/date";
 import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
 import { Datepicker, Dropdown } from "flowbite-react";
 import { type FC, useMemo } from "react";
+import { ReportRequest } from "@/api/report/types";
+import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
 
 export type DateFilterValue = {
   dateFrom: string;
@@ -56,21 +58,14 @@ export const dateFilters: DateFilter[] = [
   {
     text: "Произвольный период",
     value: "custom",
-    dateFrom: "",
-    dateTo: "",
   },
 ];
 type FiltersProps = {
-  filterState: Record<string, string | SelectOption>;
-  setFilterState: (state: Record<string, string | SelectOption>) => void;
-  searchParams: URLSearchParams;
+  params: ReportRequest;
+  setSearchParams: (searchParams: URLSearchParams) => void;
 };
 
-export const Filters: FC<FiltersProps> = ({
-  filterState,
-  setFilterState,
-  searchParams,
-}) => {
+export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
   const reportFilterAggregationRequest = useReportFilterAggregation();
 
   const dateFilterOptions = useMemo(() => {
@@ -123,83 +118,79 @@ export const Filters: FC<FiltersProps> = ({
       )
     : new Date();
 
+    const handleDateFilterChange = (value: string) => {
+        const newSearchParams = new URLSearchParams(params as URLSearchParams);
+        if (value === "custom") {
+            newSearchParams.delete("dateFrom");
+            newSearchParams.delete("dateTo");
+        } else {
+            newSearchParams.set(
+                "dateFrom",
+                dateFilters.find((item) => item.value === value)?.dateFrom as string
+            );
+            newSearchParams.set(
+                "dateTo",
+                dateFilters.find((item) => item.value === value)?.dateTo as string
+            );
+        }
+        setSearchParams(newSearchParams);
+    };
+
+  const handleCategoryChange = (category: string) => {
+    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    newSearchParams.set("category", category);
+    setSearchParams(newSearchParams);
+  };
+
+  const handleBrandChange = (brand: string) => {
+    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    newSearchParams.set("brand", brand);
+    setSearchParams(newSearchParams);
+  };
+
   return (
     <div className="flex flex-wrap justify-between">
       <div>
         <h2 className="mb-2 text-lg">Период отчета</h2>
         <div className="flex items-center gap-2">
           <Select
-            selectedOption={(filterState["dateFilter"] as SelectOption) || ""}
+            selectedOption={{
+              value: getValueDateFilter(params) || "",
+              label: getLabelDateFilter(params) || "",
+            }}
             options={dateFilterOptions}
             setSelectedOption={(option) => {
-              setFilterState({
-                ...filterState,
-                dateFilter: option,
-              });
+              handleDateFilterChange(option.value as string);
             }}
             placeholder="Выберите период"
-          ></Select>
+          />
 
-          {(filterState["dateFilter"] as SelectOption)?.value === "custom" ? (
+          {getValueDateFilter(params) === "custom" ? (
             <>
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
-                defaultDate={parse(
-                  searchParams.get("dateFrom") as string,
-                  DATE_FORMAT.SERVER_DATE,
-                  new Date(),
-                )}
+                defaultDate={params.dateFrom ? parse(params.dateFrom, DATE_FORMAT.SERVER_DATE, new Date()) : undefined}
                 onSelectedDateChanged={(date) => {
-                  const customFilterIndex = dateFilters.findIndex(
-                    (el) => el.value === "custom",
-                  );
-                  if (customFilterIndex !== -1) {
-                    const customFilter = dateFilters[customFilterIndex];
-                    if (customFilter !== undefined) {
-                      customFilter.dateFrom = formatDate(
-                        date,
-                        DATE_FORMAT.SERVER_DATE,
-                      );
-                      setFilterState({
-                        ...filterState,
-                        dateFilter: {
-                          value: "custom",
-                          label: "Произвольный период",
-                        },
-                      });
-                    }
-                  }
+                    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+                    newSearchParams.set(
+                        "dateFrom",
+                        formatDate(date, DATE_FORMAT.SERVER_DATE),
+                    );
+                    setSearchParams(newSearchParams);
                 }}
               />
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
-                defaultDate={parse(
-                  searchParams.get("dateTo") as string,
-                  DATE_FORMAT.SERVER_DATE,
-                  new Date(),
-                )}
+                defaultDate={params.dateTo ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date()) : undefined}
                 onSelectedDateChanged={(date) => {
-                  const customFilterIndex = dateFilters.findIndex(
-                    (el) => el.value === "custom",
-                  );
-                  if (customFilterIndex !== -1) {
-                    const customFilter = dateFilters[customFilterIndex];
-                    if (customFilter !== undefined) {
-                      customFilter.dateTo = formatDate(
-                        date,
-                        DATE_FORMAT.SERVER_DATE,
-                      );
-                      setFilterState({
-                        ...filterState,
-                        dateFilter: {
-                          value: "custom",
-                          label: "Произвольный период",
-                        },
-                      });
-                    }
-                  }
+                    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+                    newSearchParams.set(
+                        "dateTo",
+                        formatDate(date, DATE_FORMAT.SERVER_DATE),
+                    );
+                    setSearchParams(newSearchParams);
                 }}
               />
             </>
@@ -211,14 +202,11 @@ export const Filters: FC<FiltersProps> = ({
         <div className="flex flex-wrap items-center gap-2 ">
           <Select
             selectedOption={{
-              value: searchParams.get("brand") || "",
-              label: searchParams.get("brand") || "",
+              value: params.brand || "",
+              label: params.brand || "",
             }}
             setSelectedOption={(option) => {
-              setFilterState({
-                ...filterState,
-                brand: option,
-              });
+              handleBrandChange(option.value as string);
             }}
             placeholder="Все бренды"
             options={filterOptions.brands}
@@ -226,14 +214,11 @@ export const Filters: FC<FiltersProps> = ({
 
           <Select
             selectedOption={{
-              value: searchParams.get("category") || "",
-              label: searchParams.get("category") || "",
+              value: params.category || "",
+              label: params.category || "",
             }}
             setSelectedOption={(option) => {
-              setFilterState({
-                ...filterState,
-                category: option,
-              });
+              handleCategoryChange(option.value as string);
             }}
             placeholder="Все категории"
             options={filterOptions.categories}
