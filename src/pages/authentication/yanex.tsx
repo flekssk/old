@@ -3,13 +3,13 @@ import { ServerError } from "@/components/ServerError";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Spinner } from "flowbite-react";
 import { useEffect, type FC } from "react";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 export const AuthYandex: FC = () => {
   const location = useLocation();
   const search = location.search;
 
-  const { setToken } = useAuth();
+  const { setToken, isAuthenticated } = useAuth();
 
   const yandexAuthMutation = useYandexAuthNutation();
 
@@ -27,6 +27,10 @@ export const AuthYandex: FC = () => {
       login(search);
     }
   }, [search]);
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
