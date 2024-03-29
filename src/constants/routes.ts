@@ -12,4 +12,5 @@ export const ROUTES = {
   settings: "/settings/:tab?",
   settingsProfile: "/settings/profile",
   cost: "/cost",
+  product: "/product",
 } as const;

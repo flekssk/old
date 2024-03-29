@@ -10,4 +10,3 @@ export const ENV = {
   // @ts-expect-error for some reason typescript doesn't like the import
   YANDEX_AUTH_REDIRECT_URL: import.meta.env.VITE_YANDEX_AUTH_REDIRECT_URL,
 } as const;
-console.log("🚀 ~ ENV:", ENV);

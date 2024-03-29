@@ -72,9 +72,22 @@ export const TopProductsChart = () => {
     legend: {
       show: true,
       formatter: function (val, opts) {
+        const title = val.length > 20 ? val.slice(0, 20) : val;
         return (
-          val + " - " + opts.w.globals.series[opts.seriesIndex].toFixed(2) + "%"
+          '<span style="font-size: 14px; color: ' +
+          opts.w.globals.colors[opts.seriesIndex] +
+          ';">' +
+          opts.w.globals.series[opts.seriesIndex].toFixed(2) +
+          "%</span>" +
+          "  " +
+          '<span style="font-weight: 400; font-size: 12px;">' +
+          title +
+          "..." +
+          "</span>"
         );
+      },
+      markers: {
+        width: 0,
       },
     },
   };

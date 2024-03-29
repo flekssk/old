@@ -1,18 +1,35 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { type FC, useEffect, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { Filters } from "./Filters";
-import { Stats } from "./Stats";
-import { MainChart } from "./MainChart";
-import { TopProductsChart } from "./TopProductsChart";
-import { StructureOfIncomeChart } from "./StructureOfIncomeChart";
-import { StatTable } from "./StatTable";
+import { Stats } from "../dashboard/Stats";
+import { MainChart } from "../dashboard/MainChart";
+import { TopProductsChart } from "../dashboard/TopProductsChart";
+import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
+import { StatTable } from "../dashboard/StatTable";
 import { useArticleReport, useMainReport } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Filters } from "../dashboard/Filters";
+import ProductInfo from "./ProductInfo";
+import { mockData } from "@/data/table";
+import ProductAvailability from "./ProductAvailability";
+import SizeComparison from "./SizeComparison";
+import ComparisonByOption from "./ComparisonByOption";
 
-const DashboardPage: FC = function () {
+const Product: FC = function () {
+  const { entityId } = useParams<{
+    entityId: string;
+  }>();
+  if (!entityId) {
+    throw new Error();
+  }
+
+  const product = useMemo(() => {
+    return mockData[+entityId];
+  }, [entityId]);
+
   const [searchParams, setSearchParams] = useSearchParams({});
 
   const params = useMemo<ReportRequest>(() => {
@@ -51,6 +68,7 @@ const DashboardPage: FC = function () {
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">
+        <ProductInfo product={product!} />
         <Filters params={params} setSearchParams={setSearchParams} />
         <Stats />
         <MainChart data={mainReportRequest.data?.chart ?? []} />
@@ -58,12 +76,18 @@ const DashboardPage: FC = function () {
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
+        <ProductAvailability />
         {mainReportRequest.data?.byProduct ? (
           <StatTable items={mainReportRequest.data?.byProduct} />
         ) : null}
+        <SizeComparison />
+        {mainReportRequest.data?.byProduct ? (
+          <StatTable items={mainReportRequest.data?.byProduct} />
+        ) : null}
+        <ComparisonByOption />
       </div>
     </NavbarSidebarLayout>
   );
 };
 
-export default DashboardPage;
+export default Product;

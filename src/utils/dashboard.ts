@@ -46,7 +46,7 @@ export const getValueDateFilter = (params: ReportRequest) => {
   } else if (params.dateFrom !== null && params.dateTo !== null) {
     value = "custom";
   } else {
-    value = ""
+    value = "";
   }
 
   return value;

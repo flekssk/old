@@ -22,6 +22,7 @@ import { Settings } from "./pages/settings/Settings";
 import { AuthVk } from "./pages/authentication/vk";
 import { AuthYandex } from "./pages/authentication/yanex";
 import { Cost } from "./pages/cost/Cost";
+import Product from "./pages/product";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -92,6 +93,14 @@ const App: FC = function () {
                 element={
                   <ProtectedRoute>
                     <Cost />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={`${ROUTES.product}/:entityId`}
+                element={
+                  <ProtectedRoute>
+                    <Product />
                   </ProtectedRoute>
                 }
               />

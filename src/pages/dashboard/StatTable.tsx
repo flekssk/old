@@ -10,6 +10,7 @@ import {
 import { Table } from "@/components/table/Table";
 import type { ProductReportItem } from "@/api/report/types";
 import { displayNumber } from "@/helpers/number";
+import { mockData } from "@/data/table";
 
 export type StatTableProps = {
   items: ProductReportItem[];
@@ -39,7 +40,7 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
                 }
               >
                 <img
-                  className="w-5"
+                  className="w-10"
                   src={row.getValue()?.replace("small", "big")}
                   alt="img"
                 />
@@ -151,11 +152,10 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
 
   const table = useReactTable<ProductReportItem>({
     columns,
-    data: items,
+    data: mockData,
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
   });
-
   return (
     <Card>
       <Table resizeColumns table={table} cellRangeSelection={true} />

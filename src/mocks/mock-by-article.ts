@@ -1,6 +1,6 @@
 export const mockByArticle = [
   {
-    article: "apricots_store_croppedjacket_grey",
+    article: "Пиджак укороченный оверсайз кроп",
     avgCost: 860,
     AvgPrice: 2627.276154,
     realezation: 55197.28,
@@ -23,7 +23,7 @@ export const mockByArticle = [
     compensationForReturns: 0,
   },
   {
-    article: "apricots_store_hoodie_graphite",
+    article: "Толстовка без капюшона оверсайз зипка",
     avgCost: 1080,
     AvgPrice: 2750,
     realezation: 57750,
@@ -46,7 +46,7 @@ export const mockByArticle = [
     compensationForReturns: 0,
   },
   {
-    article: "apricots_store_hoodie_grey",
+    article: "Толстовка на молнии без капюшона оверсайз зипка",
     avgCost: 1080,
     AvgPrice: 2557.328754,
     realezation: 148140.79,
@@ -92,7 +92,7 @@ export const mockByArticle = [
     compensationForReturns: 0,
   },
   {
-    article: "apricots_store_pants_grey",
+    article: "Брюки палаццо классические",
     avgCost: 780,
     AvgPrice: 2690.060814,
     realezation: 460415.2,
@@ -138,7 +138,7 @@ export const mockByArticle = [
     compensationForReturns: 0,
   },
   {
-    article: "wbx62rt9r",
+    article: "Пиджак укороченный оверсайз кроп",
     avgCost: 1080,
     AvgPrice: 2252.564103,
     realezation: 72100,
@@ -159,5 +159,35 @@ export const mockByArticle = [
     partOfIncome: 4.709393493,
     PartOfErn: 8.453776491,
     compensationForReturns: 0,
+  },
+];
+export const mockRevenue = [
+  {
+    title: "Себестоимость",
+    partOfIncome: 35.8,
+  },
+  {
+    title: "Комиссия WB",
+    partOfIncome: 30.2,
+  },
+  {
+    title: "Маржа",
+    partOfIncome: 16.7,
+  },
+  {
+    title: "Логистика",
+    partOfIncome: 8.1,
+  },
+  {
+    title: "Налог",
+    partOfIncome: 4.5,
+  },
+  {
+    title: "Удержания",
+    partOfIncome: 4.2,
+  },
+  {
+    title: "Штрафы",
+    partOfIncome: 0.1,
   },
 ];

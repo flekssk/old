@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Row, Table as TanstackTable } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import { Table as TableFlowbite } from "flowbite-react";
+import {
+  Checkbox,
+  Dropdown,
+  Pagination,
+  Table as TableFlowbite,
+} from "flowbite-react";
 import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
 import classNames from "classnames";
+import { mockData } from "@/data/table";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/constants/routes";
 
 type TableProps<T extends Record<string, unknown>> = {
   table: TanstackTable<T>;
@@ -30,6 +38,7 @@ export const Table = <T extends Record<string, any>>({
   className,
 }: TableProps<T>) => {
   const { getRowModel } = table;
+  const navigate = useNavigate();
 
   // getCellsBetweenId returns all cell Ids between two cell Id, and then setState for selectedCellIds
 
@@ -39,8 +48,50 @@ export const Table = <T extends Record<string, any>>({
   const { getBodyProps, getCellProps, calculatedCellValues } =
     useCellRangeSelection(table, cellRangeSelection);
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const onPageChange = (page: number) => setCurrentPage(page);
+
   return (
     <div>
+      <div className="flex justify-between">
+        <p className="mb-2 text-lg">Таблица</p>
+        <div className="flex gap-3">
+          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+            <img alt="groups" src="/images/table/groups.svg" />
+            <Dropdown label="Группы" inline size="sm">
+              <Dropdown.Item>
+                <strong>пункт 1</strong>
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item>пункт 2</Dropdown.Item>
+              <Dropdown.Item>пункт 3</Dropdown.Item>
+            </Dropdown>
+          </div>
+          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+            <img alt="groups" src="/images/table/columns.svg" />
+            <Dropdown label="Стобцы" inline size="sm">
+              <Dropdown.Item>
+                <strong>пункт 1</strong>
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item>пункт 2</Dropdown.Item>
+              <Dropdown.Item>пункт 3</Dropdown.Item>
+            </Dropdown>
+          </div>
+          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+            <img alt="groups" src="/images/table/export.svg" />
+            <Dropdown label="Экспортировать" inline size="sm">
+              <Dropdown.Item>
+                <strong>пункт 1</strong>
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item>пункт 2</Dropdown.Item>
+              <Dropdown.Item>пункт 3</Dropdown.Item>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
       <div className="overflow-auto">
         <TableFlowbite
           className={className}
@@ -52,6 +103,9 @@ export const Table = <T extends Record<string, any>>({
           }}
         >
           <TableFlowbite.Head>
+            <TableFlowbite.HeadCell className="p-4">
+              <Checkbox />
+            </TableFlowbite.HeadCell>
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -62,12 +116,14 @@ export const Table = <T extends Record<string, any>>({
                       width: header.getSize(),
                     }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    <p>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </p>
                     <div
                       {...{
                         onDoubleClick: () => header.column.resetSize(),
@@ -90,7 +146,13 @@ export const Table = <T extends Record<string, any>>({
             {rows.map((row) => (
               <React.Fragment key={row.id}>
                 {renderAdditionalRowBefore?.(row)}
-                <TableFlowbite.Row className=" border-b">
+                <TableFlowbite.Row
+                  className="cursor-pointer border-b"
+                  onClick={() => navigate(`${ROUTES.product}/${row.id}`)}
+                >
+                  <TableFlowbite.Cell className="p-4">
+                    <Checkbox />
+                  </TableFlowbite.Cell>
                   {row.getVisibleCells().map((cell, index) => {
                     return (
                       <TableFlowbite.Cell
@@ -98,7 +160,17 @@ export const Table = <T extends Record<string, any>>({
                         style={{ width: cell.column.getSize() }}
                         key={cell.id}
                       >
-                        <span className="overflow-hidden text-ellipsis">
+                        <span
+                          {...{
+                            className: classNames(
+                              "overflow-hidden text-ellipsis",
+                              {
+                                "text-[#1890FF]":
+                                  cell.column.id === "vendorCode",
+                              },
+                            ),
+                          }}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -114,22 +186,46 @@ export const Table = <T extends Record<string, any>>({
           </TableFlowbite.Body>
         </TableFlowbite>
       </div>
-      {cellRangeSelection ? (
-        <div className="flex justify-end gap-2 p-4">
-          <span>
-            <span className="font-bold">Количество:</span>{" "}
-            {displayNumber(calculatedCellValues.count)}{" "}
-          </span>
-          <span>
-            <span className="font-bold">Средее:</span>{" "}
-            {displayNumber(calculatedCellValues.avg)}{" "}
-          </span>
-          <span>
-            <span className="font-bold">Сумма:</span>{" "}
-            {displayNumber(calculatedCellValues.sum)}{" "}
-          </span>
-        </div>
-      ) : null}
+      <div className="flex justify-between">
+        <button className="mt-4 bg-primary-500 px-4 py-1 text-primary-50">
+          Добавить в группу
+        </button>
+        {cellRangeSelection ? (
+          <div className="flex justify-end gap-2 p-4">
+            <span>
+              <span className="font-bold">Количество:</span>{" "}
+              {displayNumber(calculatedCellValues.count)}{" "}
+            </span>
+            <span>
+              <span className="font-bold">Средее:</span>{" "}
+              {displayNumber(calculatedCellValues.avg)}{" "}
+            </span>
+            <span>
+              <span className="font-bold">Сумма:</span>{" "}
+              {displayNumber(calculatedCellValues.sum)}{" "}
+            </span>
+          </div>
+        ) : null}
+      </div>
+      <div className="mt-5 flex items-center gap-5">
+        <p className="">Всего {mockData.length} товара</p>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={100}
+          onPageChange={onPageChange}
+          previousLabel=""
+          nextLabel=""
+          showIcons
+        />
+        <Dropdown label="10 на странице" inline size="sm">
+          <Dropdown.Item>
+            <strong>пункт 1</strong>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>пункт 2</Dropdown.Item>
+          <Dropdown.Item>пункт 3</Dropdown.Item>
+        </Dropdown>
+      </div>
     </div>
   );
 };
