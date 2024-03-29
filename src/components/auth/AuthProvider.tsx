@@ -1,6 +1,6 @@
 import { setToken as setAuthToken } from "@/api/instance";
 import { getProfile } from "@/api/user/api";
-import type { UserProfileResponse } from "@/api/user/types";
+import type { Settings, UserProfileResponse } from "@/api/user/types";
 import {
   createContext,
   useCallback,
