@@ -1,4 +1,4 @@
-import type { ReportResponse } from "@/api/report/types";
+// import type { ReportResponse } from "@/api/report/types";
 import { CheckboxCharts } from "@/components/chart/checkbox";
 import { Toggle } from "@/components/Toggle";
 import { mockData, strokeColors } from "@/data/charts";
@@ -11,11 +11,12 @@ import { useCallback } from "react";
 import { useState } from "react";
 import Chart from "react-apexcharts";
 
-type MainChartProps = {
-  data: ReportResponse["chart"];
-};
+// type MainChartProps = {
+//   data: ReportResponse["chart"];
+// };
 
-export const MainChart: FC<MainChartProps> = ({ data }) => {
+// export const MainChart: FC<MainChartProps> = ({ data }) => {
+export const MainChart: FC = () => {
   const [params, setParams] = useState(["sale"]);
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";

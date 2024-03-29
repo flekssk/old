@@ -8,7 +8,8 @@ import { MainChart } from "../dashboard/MainChart";
 import { TopProductsChart } from "../dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
 import { StatTable } from "../dashboard/StatTable";
-import { useArticleReport, useMainReport } from "@/api/report";
+// import { useArticleReport, useMainReport } from "@/api/report";
+import { useMainReport } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Filters } from "../dashboard/Filters";
@@ -63,7 +64,7 @@ const Product: FC = function () {
 
   const mainReportRequest = useMainReport(params);
 
-  const articleRequest = useArticleReport(5);
+  // const articleRequest = useArticleReport(5);
 
   return (
     <NavbarSidebarLayout>
@@ -71,18 +72,21 @@ const Product: FC = function () {
         <ProductInfo product={product!} />
         <Filters params={params} setSearchParams={setSearchParams} />
         <Stats />
-        <MainChart data={mainReportRequest.data?.chart ?? []} />
+        {/*<MainChart data={mainReportRequest.data?.chart ?? []} />*/}
+        <MainChart />
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
         <ProductAvailability />
         {mainReportRequest.data?.byProduct ? (
-          <StatTable items={mainReportRequest.data?.byProduct} />
+          /*<StatTable items={mainReportRequest.data?.byProduct} />*/
+          <StatTable />
         ) : null}
         <SizeComparison />
         {mainReportRequest.data?.byProduct ? (
-          <StatTable items={mainReportRequest.data?.byProduct} />
+          /*<StatTable items={mainReportRequest.data?.byProduct} />*/
+          <StatTable />
         ) : null}
         <ComparisonByOption />
       </div>

@@ -20,7 +20,8 @@ const numberCell = (cellContext: CellContext<ProductReportItem, number>) => {
   return <span>{displayNumber(cellContext.getValue())}</span>;
 };
 
-export const StatTable: FC<StatTableProps> = ({ items }) => {
+// export const StatTable: FC<StatTableProps> = ({ items }) => {
+export const StatTable: FC = () => {
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<ProductReportItem>();
     return [

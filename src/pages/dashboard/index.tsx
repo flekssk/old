@@ -8,7 +8,8 @@ import { MainChart } from "./MainChart";
 import { TopProductsChart } from "./TopProductsChart";
 import { StructureOfIncomeChart } from "./StructureOfIncomeChart";
 import { StatTable } from "./StatTable";
-import { useArticleReport, useMainReport } from "@/api/report";
+// import { useArticleReport, useMainReport } from "@/api/report";
+import { useMainReport } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 
@@ -46,20 +47,22 @@ const DashboardPage: FC = function () {
 
   const mainReportRequest = useMainReport(params);
 
-  const articleRequest = useArticleReport(5);
+  // const articleRequest = useArticleReport(5);
 
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">
         <Filters params={params} setSearchParams={setSearchParams} />
         <Stats />
-        <MainChart data={mainReportRequest.data?.chart ?? []} />
+        {/*<MainChart data={mainReportRequest.data?.chart ?? []} />*/}
+        <MainChart />
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
         {mainReportRequest.data?.byProduct ? (
-          <StatTable items={mainReportRequest.data?.byProduct} />
+          /*<StatTable items={mainReportRequest.data?.byProduct} />*/
+          <StatTable />
         ) : null}
       </div>
     </NavbarSidebarLayout>

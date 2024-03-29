@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import type { Table as TanstackTable, Cell, Row } from "@tanstack/react-table";
 import classNames from "classnames";
 
-function getCellsBetweenId<T>(
+function getCellsBetweenId<T extends Record<string, unknown>>(
   table: TanstackTable<T>,
   startSelectedCellId: string,
   endSelectedCellId: string,
@@ -84,7 +84,7 @@ function getCellsBetweenId<T>(
   };
 }
 
-export const useCellRangeSelection = <T>(
+export const useCellRangeSelection = <T extends Record<string, unknown>>(
   table: TanstackTable<T>,
   enabled: boolean = true,
 ) => {
