@@ -5,7 +5,7 @@ import { DATE_FORMAT } from "@/helpers/date";
 import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
 import { Datepicker, Dropdown } from "flowbite-react";
 import { type FC, useMemo } from "react";
-import { ReportRequest } from "@/api/report/types";
+import type { ReportRequest } from "@/api/report/types";
 import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
 
 export type DateFilterValue = {
@@ -118,23 +118,23 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
       )
     : new Date();
 
-    const handleDateFilterChange = (value: string) => {
-        const newSearchParams = new URLSearchParams(params as URLSearchParams);
-        if (value === "custom") {
-            newSearchParams.delete("dateFrom");
-            newSearchParams.delete("dateTo");
-        } else {
-            newSearchParams.set(
-                "dateFrom",
-                dateFilters.find((item) => item.value === value)?.dateFrom as string
-            );
-            newSearchParams.set(
-                "dateTo",
-                dateFilters.find((item) => item.value === value)?.dateTo as string
-            );
-        }
-        setSearchParams(newSearchParams);
-    };
+  const handleDateFilterChange = (value: string) => {
+    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    if (value === "custom") {
+      newSearchParams.delete("dateFrom");
+      newSearchParams.delete("dateTo");
+    } else {
+      newSearchParams.set(
+        "dateFrom",
+        dateFilters.find((item) => item.value === value)?.dateFrom as string,
+      );
+      newSearchParams.set(
+        "dateTo",
+        dateFilters.find((item) => item.value === value)?.dateTo as string,
+      );
+    }
+    setSearchParams(newSearchParams);
+  };
 
   const handleCategoryChange = (category: string) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
@@ -170,27 +170,43 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
-                defaultDate={params.dateFrom ? parse(params.dateFrom, DATE_FORMAT.SERVER_DATE, new Date()) : undefined}
+                defaultDate={
+                  params.dateFrom
+                    ? parse(
+                        params.dateFrom,
+                        DATE_FORMAT.SERVER_DATE,
+                        new Date(),
+                      )
+                    : undefined
+                }
                 onSelectedDateChanged={(date) => {
-                    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-                    newSearchParams.set(
-                        "dateFrom",
-                        formatDate(date, DATE_FORMAT.SERVER_DATE),
-                    );
-                    setSearchParams(newSearchParams);
+                  const newSearchParams = new URLSearchParams(
+                    params as URLSearchParams,
+                  );
+                  newSearchParams.set(
+                    "dateFrom",
+                    formatDate(date, DATE_FORMAT.SERVER_DATE),
+                  );
+                  setSearchParams(newSearchParams);
                 }}
               />
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
-                defaultDate={params.dateTo ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date()) : undefined}
+                defaultDate={
+                  params.dateTo
+                    ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date())
+                    : undefined
+                }
                 onSelectedDateChanged={(date) => {
-                    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-                    newSearchParams.set(
-                        "dateTo",
-                        formatDate(date, DATE_FORMAT.SERVER_DATE),
-                    );
-                    setSearchParams(newSearchParams);
+                  const newSearchParams = new URLSearchParams(
+                    params as URLSearchParams,
+                  );
+                  newSearchParams.set(
+                    "dateTo",
+                    formatDate(date, DATE_FORMAT.SERVER_DATE),
+                  );
+                  setSearchParams(newSearchParams);
                 }}
               />
             </>

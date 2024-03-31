@@ -3,11 +3,11 @@ import { ServerError } from "@/components/ServerError";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Spinner } from "flowbite-react";
 import { useEffect, type FC } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export const AuthVk: FC = () => {
   const location = useLocation();
-  const { setToken, isAuthenticated } = useAuth();
+  const { setToken } = useAuth();
 
   const vkAuthMutation = useVkAuthMutation();
 
@@ -26,10 +26,6 @@ export const AuthVk: FC = () => {
     }
   }, [location.search]);
   console.log("🚀 ~ location.search:", location.search);
-
-  if (isAuthenticated) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

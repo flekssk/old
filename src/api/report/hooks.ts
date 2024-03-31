@@ -4,10 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "./constants";
 import type {
   ReportFilterAggregationResponse,
+  ReportItemResponse,
   ReportRequest,
   ReportResponse,
 } from "./types";
-import { getMainReport, getReportFilterAggregation } from "./api";
+import { getArticle, getMainReport, getReportFilterAggregation } from "./api";
 
 export const useMainReport = (
   payload: ReportRequest = {},
@@ -28,4 +29,14 @@ export const useReportFilterAggregation = (
     ...options,
     queryKey: [QUERY_KEYS.filterAggregation],
     queryFn: getReportFilterAggregation,
+  });
+
+export const useArticleReport = (
+  id: number,
+  options: Partial<UseQueryOptions<ReportItemResponse, Error>> = {},
+) =>
+  useQuery({
+    ...options,
+    queryKey: [QUERY_KEYS.article, id],
+    queryFn: () => getArticle(id),
   });

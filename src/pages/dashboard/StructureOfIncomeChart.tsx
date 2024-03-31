@@ -1,4 +1,4 @@
-import { mockByArticle } from "@/mocks/mock-by-article";
+import { mockRevenue } from "@/mocks/mock-by-article";
 import { Card, useThemeMode } from "flowbite-react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
@@ -8,13 +8,13 @@ export const StructureOfIncomeChart = () => {
   const isDarkTheme = mode === "dark";
 
   const sortedProducts = useMemo(() => {
-    return mockByArticle
+    return mockRevenue
       .sort((a, b) => b.partOfIncome - a.partOfIncome)
       .slice(0, 5);
-  }, [mockByArticle]);
+  }, [mockRevenue]);
 
   const options: ApexCharts.ApexOptions = {
-    labels: sortedProducts.map((item) => item.article),
+    labels: sortedProducts.map((item) => item.title),
     colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
     chart: {
       fontFamily: "Inter, sans-serif",
@@ -73,8 +73,19 @@ export const StructureOfIncomeChart = () => {
       show: true,
       formatter: function (val, opts) {
         return (
-          val + " - " + opts.w.globals.series[opts.seriesIndex].toFixed(2) + "%"
+          '<span style="font-size: 14px; color: ' +
+          opts.w.globals.colors[opts.seriesIndex] +
+          ';">' +
+          opts.w.globals.series[opts.seriesIndex].toFixed(2) +
+          "%</span>" +
+          "  " +
+          '<span style="font-weight: 400; font-size: 12px;">' +
+          val +
+          "</span>"
         );
+      },
+      markers: {
+        width: 0,
       },
     },
   };
@@ -82,7 +93,7 @@ export const StructureOfIncomeChart = () => {
 
   return (
     <Card>
-      <h2 className="text-xl">Топ 5 мажинальных товаров</h2>
+      <h2 className="text-xl">Стуктура выручки</h2>
       <Chart height={305} options={options} series={series} type="donut" />
     </Card>
   );

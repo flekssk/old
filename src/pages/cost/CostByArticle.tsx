@@ -131,11 +131,11 @@ export const CostByArticle: FC = () => {
           >;
           article.subRows = Object.values(incomes);
           const costs = article.subRows.map((subRow) => subRow.cost);
-          console.log(
-            "🚀 ~ result.forEach ~ costs:",
-            costs,
-            costs.reduce((acc, cost) => acc + cost, 0) / costs.length,
-          );
+          // console.log(
+          //   "🚀 ~ result.forEach ~ costs:",
+          //   costs,
+          //   costs.reduce((acc, cost) => acc + cost, 0) / costs.length,
+          // );
           article.cost =
             costs.reduce((acc, cost) => acc + cost, 0) / costs.length;
         }
