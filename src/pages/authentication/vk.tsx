@@ -25,6 +25,7 @@ export const AuthVk: FC = () => {
       login(location.search);
     }
   }, [location.search]);
+  console.log("🚀 ~ location.search:", location.search);
 
   if (isAuthenticated) {
     return <Navigate to="/" />;
