@@ -6,10 +6,16 @@ import {
   getProfile,
   getSettings,
   getSettingsByName,
+  getTaxation,
   saveSettings,
 } from "./api";
 import { QUERY_KEYS } from "./constants";
-import type { Settings, SettingsResponse, UserProfileResponse } from "./types";
+import type {
+  ReportTaxationDataResponse,
+  Settings,
+  SettingsResponse,
+  UserProfileResponse,
+} from "./types";
 import { createCustomMutation } from "../helper";
 
 export const useUserProfile = (
@@ -17,7 +23,7 @@ export const useUserProfile = (
 ) =>
   useQuery({
     ...options,
-    queryKey: [QUERY_KEYS.profile],
+    queryKey: [QUERY_KEYS.user],
     queryFn: getProfile,
   });
 
@@ -53,6 +59,15 @@ export function useSettingsItemByName<TData extends Record<string, unknown>>(
     queryFn: () => getSettingsByName<TData>(settingsName),
   });
 }
+
+export const useReportTaxation = (
+  options: Partial<UseQueryOptions<ReportTaxationDataResponse[], Error>> = {},
+) =>
+  useQuery({
+    ...options,
+    queryKey: [QUERY_KEYS.profile],
+    queryFn: getTaxation,
+  });
 
 export const useSaveSettingsMutation = createCustomMutation(saveSettings);
 export const useDeleteSettingsMutation = createCustomMutation(deleteSettings);
