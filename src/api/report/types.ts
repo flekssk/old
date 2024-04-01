@@ -20,6 +20,7 @@ export interface ProductReportItem {
   article: string;
   // себестоимость
   cost: number;
+  realisation: number;
   // Средняя цена до СПП
   averagePriceBeforeSPP: number;
   //Реализация (сумма продаж до СПП)

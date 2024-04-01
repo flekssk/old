@@ -62,7 +62,7 @@ const DashboardPage: FC = function () {
         </div>
         {mainReportRequest.data?.byProduct ? (
           /*<StatTable items={mainReportRequest.data?.byProduct} />*/
-          <StatTable />
+          <StatTable items={mainReportRequest.data?.byProduct} />
         ) : null}
       </div>
     </NavbarSidebarLayout>
