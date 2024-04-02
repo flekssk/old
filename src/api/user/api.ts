@@ -1,9 +1,21 @@
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
-import type { Settings, SettingsResponse, UserProfileResponse } from "./types";
+import type {
+  ReportTaxationDataResponse,
+  Settings,
+  SettingsResponse,
+  UserProfileResponse,
+} from "./types";
 
 export const getProfile = (): Promise<UserProfileResponse> =>
   api.get<UserProfileResponse>(ENDPOINTS.profile).then((res) => res.data);
+
+export const saveTaxation = (taxationTypeId: {
+  taxationTypeId: number;
+}): Promise<UserProfileResponse> =>
+  api
+    .put<UserProfileResponse>(ENDPOINTS.profile, taxationTypeId)
+    .then((res) => res.data);
 
 export const getAllSettings = (): Promise<
   SettingsResponse<Record<string, unknown>>
@@ -45,3 +57,8 @@ export function getSettingsByName<TData extends Record<string, unknown>>(
     >(ENDPOINTS.settingsItemByName.replace(":name", settingsName))
     .then((res) => res.data);
 }
+
+export const getTaxation = () =>
+  api
+    .get<ReportTaxationDataResponse[]>(ENDPOINTS.taxation)
+    .then((res) => res.data);

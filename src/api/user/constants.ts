@@ -5,6 +5,7 @@ export const ENDPOINTS = {
   settingsDelete: "/user/settings/:id",
   settingsItem: "/user/settings/:id",
   settingsItemByName: "/user/settings/by-name/:name",
+  taxation: "taxation",
 } as const;
 
 export const QUERY_KEYS = {
@@ -12,4 +13,5 @@ export const QUERY_KEYS = {
   settingsAll: "settingsAll",
   settingsItem: "settingsItem",
   settingsItemByName: "settingsItemByName",
+  user: "user",
 } as const;

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { Sidebar } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { HiViewGrid, HiCalculator } from "react-icons/hi";
+import { HiViewGrid, HiCalculator, HiUser } from "react-icons/hi";
 
 import { useSidebarContext } from "../context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
@@ -68,6 +68,16 @@ const ExampleSidebar: FC = function () {
                   }
                 >
                   Себистоимость
+                </Sidebar.Item>
+                <Sidebar.Item
+                  as={Link}
+                  to="/settings/profile"
+                  icon={HiUser}
+                  className={
+                    "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
+                  }
+                >
+                  Настройки
                 </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
