@@ -6,6 +6,8 @@ import { createColumnHelper } from "@tanstack/react-table";
 import type { ProductReportItem } from "@/api/report/types";
 import { displayNumber } from "@/helpers/number";
 import { DataTable } from "@/components/table/DataTable";
+import { Link } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export type StatTableProps = {
   items: ProductReportItem[];
@@ -51,6 +53,14 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
       columnHelper.accessor("vendorCode", {
         id: "vendorCode",
         header: "Артикул",
+        cell: ({ cell }) => (
+          <Link
+            to={`${ROUTES.product}/${cell.row.original.article}`}
+            className="underline"
+          >
+            {cell.getValue()}
+          </Link>
+        ),
       }),
       columnHelper.accessor("brand", { id: "brand", header: "Бренд" }),
       columnHelper.accessor("category", {

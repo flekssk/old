@@ -33,10 +33,11 @@ export const useReportFilterAggregation = (
 
 export const useArticleReport = (
   id: number,
+  payload: ReportRequest = {},
   options: Partial<UseQueryOptions<ReportItemResponse, Error>> = {},
 ) =>
   useQuery({
     ...options,
-    queryKey: [QUERY_KEYS.article, id],
-    queryFn: () => getArticle(id),
+    queryKey: [QUERY_KEYS.article, id, payload],
+    queryFn: () => getArticle(id, payload),
   });

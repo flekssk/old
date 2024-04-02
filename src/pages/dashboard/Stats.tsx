@@ -84,7 +84,7 @@ export const Stats = () => {
         }}
       />
       <StatCard
-        title="ДДР"
+        title="ДРР"
         value="15%"
         diff={{
           value: "10%",

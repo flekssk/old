@@ -18,5 +18,10 @@ export const getReportFilterAggregation =
       .get<ReportFilterAggregationResponse>(ENDPOINTS.filterAggregation)
       .then((res) => res.data);
 
-export const getArticle = (id: number): Promise<ReportItemResponse> =>
-  api.post<ReportItemResponse>(ENDPOINTS.article(id)).then((res) => res.data);
+export const getArticle = (
+  id: number,
+  payload: ReportRequest = {},
+): Promise<ReportItemResponse> =>
+  api
+    .post<ReportItemResponse>(ENDPOINTS.article(id), payload)
+    .then((res) => res.data);

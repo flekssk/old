@@ -105,6 +105,7 @@ export interface ReportStats {
   averageRedemption: number;
   // Маржинальность
   marginality: number;
+  profitability: number;
   // Продажи
   sale: number;
   // Заказы
@@ -115,6 +116,7 @@ export interface ReportStats {
   ddr: number;
   advertisingExpenses: number;
   returns: number;
+  roi: number;
 }
 
 export interface RevenueStructure {
@@ -186,6 +188,7 @@ export interface BarcodeReportItem {
   rejectionsAndReturns: number;
   //Общее количество продаж, с учетом возвратов
   totalSales: number;
+  realisation: number;
   // Средний процент выкупа
   averageRedemption: number;
   // Средняя прибыль на 1 шт
@@ -211,7 +214,8 @@ export interface BarcodeReportItem {
 }
 
 export interface Stocks {
-  warehouse: string;
+  warehouseId: number;
+  warehouseName: string;
   barcode: string;
   size: string;
   quantity: number;
@@ -230,7 +234,7 @@ export interface ReportItemResponse {
     image?: string;
   };
   chart: ReportChartItem[];
-  byBarcode: BarcodeReportItem[];
+  byBarcode: Record<string, BarcodeReportItem>;
   stocks: Stocks[];
   // собирается так же как чарт только для каждого размера отдельные данные
   chartBySize: ReportChartItem[];

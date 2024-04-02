@@ -1,8 +1,71 @@
+import type { Stocks } from "@/api/report/types";
 import { Toggle } from "@/components/Toggle";
 import { Card, Dropdown, useThemeMode } from "flowbite-react";
+import { useState, type FC, useMemo } from "react";
 import Chart from "react-apexcharts";
 
-const ProductAvailability = function () {
+type ProductAvailabilityProps = {
+  stocks: Stocks[];
+};
+
+const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
+  const [showSizes, setShowSizes] = useState<boolean>(false);
+  const warehouses = stocks.reduce(
+    (acc, item) => {
+      acc[item.warehouseId] = item.warehouseName;
+      return acc;
+    },
+    {} as Record<number, string>,
+  );
+
+  const displayWarehouseNames = useMemo(() => {
+    const warehouseCounts = stocks.reduce(
+      (acc, stock) => {
+        if (!acc[stock.warehouseName]) {
+          acc[stock.warehouseName] = 0;
+        }
+        acc[stock.warehouseName] += stock.quantity;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const allStocks = Object.values(warehouseCounts).reduce(
+      (acc, item) => acc + item,
+      0,
+    );
+
+    return Object.keys(warehouseCounts).reduce((acc, warehouseName) => {
+      if (((warehouseCounts[warehouseName] as number) / allStocks) * 100 > 3) {
+        acc.push(warehouseName);
+      }
+      return acc;
+    }, [] as string[]);
+  }, [warehouses, stocks]);
+
+  const otherWarehouses = "Остальные склады";
+  const stockBySize = stocks.reduce(
+    (acc, item) => {
+      if (!acc[item.size]) {
+        acc[item.size] = {};
+      }
+
+      const bySize = acc[item.size] as Record<string, number>;
+      const warehouseId = displayWarehouseNames.includes(item.warehouseName)
+        ? item.warehouseName
+        : otherWarehouses;
+      if (!bySize[warehouseId]) {
+        bySize[warehouseId] = 0;
+      }
+      bySize[warehouseId] += item.quantity;
+
+      return acc;
+    },
+    {} as Record<string, Record<string, number>>,
+  );
+
+  const categories = [otherWarehouses, ...Object.values(displayWarehouseNames)];
+
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
   const labelColor = isDarkTheme ? "#93ACAF" : "#6B7280";
@@ -34,13 +97,7 @@ const ProductAvailability = function () {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Новосибирск",
-        "Хабаровск",
-        "Подольск",
-        "Казань",
-        "Электросталь",
-      ],
+      categories: categories,
       labels: {
         style: {
           colors: [labelColor],
@@ -66,28 +123,40 @@ const ProductAvailability = function () {
       },
     },
   };
-  const series: ApexAxisChartSeries = [
-    {
-      name: "M",
-      data: [44, 55, 57, 56, 61],
-    },
-    {
-      name: "L",
-      data: [76, 85, 101, 98, 87],
-    },
-    {
-      name: "S",
-      data: [35, 41, 36, 26, 45],
-    },
-    {
-      name: "XXL",
-      data: [35, 41, 36, 26, 45],
-    },
-    {
-      name: "XXXL",
-      data: [35, 41, 36, 26, 45],
-    },
+  const seriesBySize = Object.keys(stockBySize).map((size) => ({
+    name: size,
+    data: categories.map(
+      (category) =>
+        (stockBySize[size] as Record<string, number>)[category] ?? 0,
+    ),
+  })) as ApexAxisChartSeries;
+
+  const seriesAllSize = [
+    Object.keys(stockBySize).reduce(
+      (acc, item) => {
+        if (!acc.name) {
+          acc.name = "Все размеры";
+          acc.data = categories.map(
+            (category) =>
+              (stockBySize[item] as Record<string, number>)[category] ?? 0,
+          );
+        } else {
+          categories.forEach((category, index) => {
+            const val =
+              ((stockBySize[item] as Record<string, number>)[
+                category
+              ] as number) ?? 0;
+            (acc.data as number[])[index] += val;
+          });
+        }
+
+        return acc;
+      },
+      {} as { name?: string; data?: number[] },
+    ),
   ];
+  console.log("🚀 ~ seriesAllSize:", seriesAllSize, seriesBySize, categories);
+
   return (
     <Card>
       <div className="flex flex-col gap-3">
@@ -104,15 +173,23 @@ const ProductAvailability = function () {
             </Dropdown>
             <Toggle
               position="right"
+              checked={showSizes}
               label="Показывать по размерам"
               onChange={(e) => {
-                () => console.log(e);
+                setShowSizes(e.target.checked);
               }}
             />
           </div>
         </div>
         <div className="">
-          <Chart height={420} options={options} series={series} type="bar" />
+          <Chart
+            height={420}
+            options={options}
+            series={
+              showSizes ? seriesBySize : (seriesAllSize as ApexAxisChartSeries)
+            }
+            type="bar"
+          />
         </div>
       </div>
     </Card>

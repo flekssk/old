@@ -3,21 +3,24 @@
 import { type FC, useEffect, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { Stats } from "../dashboard/Stats";
-import { MainChart } from "../dashboard/MainChart";
+import { Stats } from "./Stats";
+
 import { TopProductsChart } from "../dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
-import { StatTable } from "../dashboard/StatTable";
 // import { useArticleReport, useMainReport } from "@/api/report";
-import { useMainReport } from "@/api/report";
+import { useArticleReport } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Filters } from "../dashboard/Filters";
+
 import ProductInfo from "./ProductInfo";
-import { mockData } from "@/data/table";
 import ProductAvailability from "./ProductAvailability";
 import SizeComparison from "./SizeComparison";
 import ComparisonByOption from "./ComparisonByOption";
+import { StatTable } from "./StatTable";
+import { getPrevInterval } from "@/helpers/date";
+import { useProductStatsData } from "./useProductStatsData";
+import { Filters } from "./Filters";
+import { MainChart } from "./MainChart";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -27,13 +30,9 @@ const Product: FC = function () {
     throw new Error();
   }
 
-  const product = useMemo(() => {
-    return mockData[+entityId];
-  }, [entityId]);
-
   const [searchParams, setSearchParams] = useSearchParams({});
 
-  const params = useMemo<ReportRequest>(() => {
+  const { params, prevParams } = useMemo(() => {
     const result: ReportRequest = {};
     const dateFrom = searchParams.get("dateFrom");
     if (dateFrom) {
@@ -55,39 +54,69 @@ const Product: FC = function () {
       result.brand = brand;
     }
 
-    return result;
+    // todo update default dateFrom
+    const prevInterval =
+      result.dateFrom && result.dateTo
+        ? getPrevInterval(result.dateFrom!, result.dateTo!)
+        : null;
+    const prevParams = prevInterval
+      ? {
+          ...result,
+          dateFrom: prevInterval.start,
+          dateTo: prevInterval.end,
+        }
+      : { ...result };
+
+    return { params: result, prevParams };
   }, [searchParams]);
 
   useEffect(() => {
     setSearchParams(params as string);
   }, [params]);
 
-  const mainReportRequest = useMainReport(params);
+  //const mainReportRequest = useMainReport(params);
 
-  // const articleRequest = useArticleReport(5);
+  const articleRequest = useArticleReport(+entityId, params);
+  const prevArticleRequest = useArticleReport(+entityId, prevParams);
+
+  const statsData = useProductStatsData(
+    articleRequest.data,
+    prevArticleRequest.data,
+  );
 
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">
-        <ProductInfo product={product!} />
+        {articleRequest.data ? (
+          <ProductInfo product={articleRequest.data.productData} />
+        ) : null}
         <Filters params={params} setSearchParams={setSearchParams} />
-        <Stats />
-        {/*<MainChart data={mainReportRequest.data?.chart ?? []} />*/}
-        <MainChart />
+        {statsData ? <Stats data={statsData} /> : null}
+        <MainChart
+          data={articleRequest.data?.chart ?? []}
+          prevData={prevArticleRequest.data?.chart}
+        />
+
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
-        <ProductAvailability />
-        {mainReportRequest.data?.byProduct ? (
+        {articleRequest.data?.stocks ? (
+          <ProductAvailability stocks={articleRequest.data?.stocks} />
+        ) : null}
+        {articleRequest.data?.byBarcode ? (
           /*<StatTable items={mainReportRequest.data?.byProduct} />*/
-          <StatTable />
+          <StatTable
+            items={Object.values(articleRequest.data.byBarcode)}
+            prevItems={
+              prevArticleRequest.data?.byBarcode
+                ? Object.values(prevArticleRequest.data.byBarcode)
+                : undefined
+            }
+          />
         ) : null}
         <SizeComparison />
-        {mainReportRequest.data?.byProduct ? (
-          /*<StatTable items={mainReportRequest.data?.byProduct} />*/
-          <StatTable />
-        ) : null}
+
         <ComparisonByOption />
       </div>
     </NavbarSidebarLayout>
