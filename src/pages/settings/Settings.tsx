@@ -1,20 +1,29 @@
-import {
-  useState,
-  type FC,
-  useRef,
-  useMemo,
-  useCallback,
-  useEffect,
-} from "react";
-import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
+import { useState, type FC, useRef, useEffect } from "react";
 import { Breadcrumb, Button, Tabs, type TabsRef } from "flowbite-react";
-import { HiHome } from "react-icons/hi";
+
+import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { ApiKeys } from "./apiKeys/ApiKeys";
-import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
-import { useReportTaxation, useUserProfile } from "@/api/user";
+import {
+  useReportTaxation,
+  useSaveUserTaxationMutation,
+  useUserProfile,
+} from "@/api/user";
 import type { UserProfileResponse } from "@/api/user/types";
-import { updateUserProfile } from "@/api/user/api";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { HiHome } from "react-icons/hi";
+import { Controller, useForm } from "react-hook-form";
+import { ServerSuccess } from "@/components/ServerSuccess";
+import { ServerError } from "@/components/ServerError";
+
+const formSchema = z.object({
+  taxationTypeId: z.object({
+    id: z.number(),
+    title: z.string(),
+  }),
+});
 
 const TABS = {
   profile: 0,
@@ -23,6 +32,7 @@ const TABS = {
 
 type TabsType = typeof TABS;
 type TabsState = TabsType[keyof TabsType];
+type FormSchema = z.infer<typeof formSchema>;
 
 export const TABS_TITLES = {
   [TABS.profile]: "Профиль",
@@ -32,39 +42,40 @@ export const TABS_TITLES = {
 export const Settings: FC = () => {
   const tabsRef = useRef<TabsRef>(null);
 
+  const resetTaxationMutation = useSaveUserTaxationMutation();
+
   const [activeTab, setActiveTab] = useState<TabsState>(TABS.profile);
   const [profile, setProfile] = useState<UserProfileResponse | undefined>();
-  const [userTaxation, setUserTaxation] = useState<SelectOption>();
 
   const reportTaxationRequest = useReportTaxation();
-  const { data } = useUserProfile();
+  const userProfile = useUserProfile();
 
-  const dateFilterOptions = useMemo(() => {
-    return reportTaxationRequest?.data?.map((el) => ({
-      value: el.id,
-      label: el.title,
-    }));
-  }, [reportTaxationRequest?.data]);
+  const taxation = reportTaxationRequest?.data?.find(
+    (item) => item.id === profile?.taxationTypeId,
+  );
 
-  const checkIsProfile = useCallback(() => {
-    setProfile(data);
-  }, [data]);
+  const isLoading = resetTaxationMutation.status === "pending";
 
-  const saveUserTaxation = useCallback(async () => {
-    const taxationTypeId = userTaxation?.value;
-    await updateUserProfile({ taxationTypeId: taxationTypeId as number });
-  }, [userTaxation?.value]);
+  const { control, handleSubmit, setValue } = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+  });
 
-  useEffect(() => {
-    const taxation = dateFilterOptions?.find(
-      (item) => item.value === profile?.taxationTypeId,
-    );
-    setUserTaxation(taxation);
-  }, [dateFilterOptions, profile?.taxationTypeId]);
+  const onSubmit = async (data: FormSchema) => {
+    const taxationTypeId = data.taxationTypeId.id;
+    await resetTaxationMutation.mutateAsync({ taxationTypeId: taxationTypeId });
+    userProfile.refetch();
+  };
 
   useEffect(() => {
-    checkIsProfile();
-  }, [checkIsProfile]);
+    setProfile(userProfile.data);
+  }, [userProfile.data]);
+
+  useEffect(() => {
+    setValue("taxationTypeId", {
+      id: taxation?.id || 0,
+      title: taxation?.title || "",
+    });
+  }, [taxation, setValue]);
 
   return (
     <NavbarSidebarLayout>
@@ -88,28 +99,53 @@ export const Settings: FC = () => {
             onActiveTabChange={(tab: number) => setActiveTab(tab as TabsState)}
           >
             <Tabs.Item title={TABS_TITLES[TABS.profile]}>
-              <div className="flex flex-col gap-3">
+              <form
+                className="flex flex-col gap-3"
+                onSubmit={handleSubmit(onSubmit)}
+              >
                 <p>Profile</p>
                 <div className="flex flex-col gap-5">
                   <p>Выбор нологовой ставки</p>
-                  <Select
-                    selectedOption={{
-                      value: userTaxation?.value || "",
-                      label: userTaxation?.label || "",
-                    }}
-                    options={dateFilterOptions || []}
-                    setSelectedOption={(option) => {
-                      setUserTaxation(option);
-                    }}
-                    placeholder="Выбор нологовой ставки"
+                  <Controller
+                    name="taxationTypeId"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <Select
+                        selectedOption={{
+                          value: value?.id || taxation?.id || "",
+                          label: value?.title || taxation?.title || "",
+                        }}
+                        options={
+                          reportTaxationRequest?.data?.map((el) => ({
+                            value: el.id,
+                            label: el.title,
+                          })) || []
+                        }
+                        setSelectedOption={(option) => {
+                          const { value, label } = option;
+                          setValue("taxationTypeId", {
+                            id: +value,
+                            title: label,
+                          });
+                        }}
+                        placeholder="Выбор нологовой ставки"
+                      />
+                    )}
                   />
                   <div>
-                    <Button onClick={saveUserTaxation} color="primary">
+                    <Button
+                      type="submit"
+                      color="primary"
+                      isProcessing={isLoading}
+                      disabled={isLoading}
+                    >
                       Сохранить
                     </Button>
                   </div>
                 </div>
-              </div>
+              </form>
+              <ServerSuccess message={resetTaxationMutation.data?.message} />
+              <ServerError mutation={resetTaxationMutation} className="mt-3" />
             </Tabs.Item>
             <Tabs.Item title={TABS_TITLES[TABS.apiKeys]}>
               {activeTab === TABS.apiKeys ? <ApiKeys /> : null}

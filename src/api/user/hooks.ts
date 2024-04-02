@@ -8,6 +8,7 @@ import {
   getSettingsByName,
   getTaxation,
   saveSettings,
+  saveTaxation,
 } from "./api";
 import { QUERY_KEYS } from "./constants";
 import type {
@@ -71,3 +72,4 @@ export const useReportTaxation = (
 
 export const useSaveSettingsMutation = createCustomMutation(saveSettings);
 export const useDeleteSettingsMutation = createCustomMutation(deleteSettings);
+export const useSaveUserTaxationMutation = createCustomMutation(saveTaxation);

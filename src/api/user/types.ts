@@ -5,6 +5,7 @@ export type UserProfileResponse = {
   };
   email: string;
   name: string;
+  message?: string;
 };
 
 export interface Settings<TData extends Record<string, unknown>> {

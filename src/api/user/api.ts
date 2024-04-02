@@ -10,7 +10,7 @@ import type {
 export const getProfile = (): Promise<UserProfileResponse> =>
   api.get<UserProfileResponse>(ENDPOINTS.profile).then((res) => res.data);
 
-export const updateUserProfile = (taxationTypeId: {
+export const saveTaxation = (taxationTypeId: {
   taxationTypeId: number;
 }): Promise<UserProfileResponse> =>
   api
