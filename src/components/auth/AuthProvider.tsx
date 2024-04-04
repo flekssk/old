@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(true);
   const [profile, setProfile] = useState<UserProfileResponse | undefined>();
-
   const checkIsAuthenticated = useCallback(async () => {
     try {
       const res = await getProfile();
@@ -47,7 +46,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsPending(false);
     }
   }, []);
-
   useEffect(() => {
     setAuthToken(token);
 
@@ -56,12 +54,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       sessionStorage.setItem(TOKEN_KEY, token);
     } else {
       sessionStorage.removeItem(TOKEN_KEY);
-      setIsAuthenticated(false);
-      setIsPending(false);
       setProfile(undefined);
+      setIsPending(false);
+      setIsAuthenticated(false);
     }
   }, [token]);
-
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, isPending, setToken, profile }}
