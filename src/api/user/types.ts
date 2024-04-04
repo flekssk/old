@@ -5,6 +5,7 @@ export type UserProfileResponse = {
   };
   email: string;
   name: string;
+  message?: string;
 };
 
 export interface Settings<TData extends Record<string, unknown>> {
@@ -15,3 +16,8 @@ export interface Settings<TData extends Record<string, unknown>> {
 
 export type SettingsResponse<TData extends Record<string, unknown>> =
   Settings<TData>[];
+
+export type ReportTaxationDataResponse = {
+  id: number;
+  title: string;
+};
