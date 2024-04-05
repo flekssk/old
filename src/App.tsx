@@ -14,6 +14,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROUTES } from "./constants/routes";
 import i18next from "i18next";
 import { z } from "zod";
+import "react-toastify/dist/ReactToastify.css";
 import { zodI18nMap } from "zod-i18n-map";
 // Import your language translation files
 import translation from "zod-i18n-map/locales/ru/zod.json";
@@ -23,6 +24,7 @@ import { AuthVk } from "./pages/authentication/vk";
 import { AuthYandex } from "./pages/authentication/yanex";
 import { Cost } from "./pages/cost/Cost";
 import Product from "./pages/product";
+import { ToastContainer } from "react-toastify";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -38,6 +40,11 @@ const queryClient = new QueryClient();
 const App: FC = function () {
   return (
     <QueryClientProvider client={queryClient}>
+      <ToastContainer
+        hideProgressBar
+        autoClose={3000}
+        position={"top-center"}
+      />
       <AuthProvider>
         <BrowserRouter>
           <Routes>

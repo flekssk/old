@@ -1,11 +1,22 @@
 export type UserProfileResponse = {
+  accountsCount: number;
   taxationTypeId?: number;
+  orders: Orders[];
   settings?: {
     reportTableSettings?: null;
   };
   email: string;
   name: string;
   message?: string;
+};
+
+export type Orders = {
+  id: number;
+  uid: string;
+  subscriptionTitle: string;
+  createdAt: Date;
+  updateAt: Date;
+  expiredAt: Date;
 };
 
 export interface Settings<TData extends Record<string, unknown>> {

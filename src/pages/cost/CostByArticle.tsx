@@ -234,7 +234,12 @@ export const CostByArticle: FC = () => {
           Обновить поставки
         </Button>
       </div>
-      <Table className="w-full" table={table} />
+      <Table
+        className="w-full"
+        table={table}
+        showControllers={false}
+        showTableTitle={false}
+      />
       {Object.keys(iccomeCost).length ? (
         <div className="flex justify-end px-2">
           <Button

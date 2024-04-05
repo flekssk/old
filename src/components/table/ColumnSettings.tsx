@@ -8,7 +8,7 @@ import {
   Modal,
   TextInput,
 } from "flowbite-react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRef } from "react";
 import { HiTrash } from "react-icons/hi";
 
@@ -151,7 +151,7 @@ export function ColumnSettings<TData>({
                     }
                     key={item.name}
                   >
-                    <div className="w-full flex items-center justify-between">
+                    <div className="flex w-full items-center justify-between">
                       {item.name}
                       <HiTrash
                         size={10}

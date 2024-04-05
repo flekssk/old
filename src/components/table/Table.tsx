@@ -13,6 +13,7 @@ import classNames from "classnames";
 import { mockData } from "@/data/table";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@/constants/routes";
+import { useLocation } from "react-router-dom";
 
 type TableProps<T extends Record<string, unknown>> = {
   table: TanstackTable<T>;
@@ -20,6 +21,8 @@ type TableProps<T extends Record<string, unknown>> = {
   loading?: boolean;
   showFooter?: boolean;
   loadingRows?: number;
+  showTableTitle?: boolean;
+  showControllers?: boolean;
   resizeColumns?: boolean;
   renderAdditionalRowBefore?: (row: Row<T>) => React.ReactNode;
   renderAdditionalRowAfter?: (row: Row<T>) => React.ReactNode;
@@ -33,64 +36,69 @@ export const Table = <T extends Record<string, any>>({
   table,
   renderAdditionalRowBefore,
   renderAdditionalRowAfter,
+  showTableTitle = true,
+  showControllers = true,
   cellRangeSelection = false,
   resizeColumns = false,
   className,
 }: TableProps<T>) => {
   const { getRowModel } = table;
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // checks if route is /cost to hide unessesary elements
+  const isCostPage = location.pathname === ROUTES.cost;
 
   // getCellsBetweenId returns all cell Ids between two cell Id, and then setState for selectedCellIds
 
   const model = getRowModel();
   const rows = model.rows;
-
   const { getBodyProps, getCellProps, calculatedCellValues } =
     useCellRangeSelection(table, cellRangeSelection);
 
   const [currentPage, setCurrentPage] = useState(1);
-
   const onPageChange = (page: number) => setCurrentPage(page);
-
   return (
     <div>
       <div className="flex justify-between">
-        <p className="mb-2 text-lg">Таблица</p>
-        <div className="flex gap-3">
-          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
-            <img alt="groups" src="/images/table/groups.svg" />
-            <Dropdown label="Группы" inline size="sm">
-              <Dropdown.Item>
-                <strong>пункт 1</strong>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>пункт 2</Dropdown.Item>
-              <Dropdown.Item>пункт 3</Dropdown.Item>
-            </Dropdown>
+        {showTableTitle && <p className="mb-2 text-lg">Таблица</p>}
+        {showControllers && (
+          <div className="flex gap-3">
+            <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+              <img alt="groups" src="/images/table/groups.svg" />
+              <Dropdown label="Группы" inline size="sm">
+                <Dropdown.Item>
+                  <strong>пункт 1</strong>
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item>пункт 2</Dropdown.Item>
+                <Dropdown.Item>пункт 3</Dropdown.Item>
+              </Dropdown>
+            </div>
+            <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+              <img alt="groups" src="/images/table/columns.svg" />
+              <Dropdown label="Стобцы" inline size="sm">
+                <Dropdown.Item>
+                  <strong>пункт 1</strong>
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item>пункт 2</Dropdown.Item>
+                <Dropdown.Item>пункт 3</Dropdown.Item>
+              </Dropdown>
+            </div>
+            <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
+              <img alt="groups" src="/images/table/export.svg" />
+              <Dropdown label="Экспортировать" inline size="sm">
+                <Dropdown.Item>
+                  <strong>пункт 1</strong>
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item>пункт 2</Dropdown.Item>
+                <Dropdown.Item>пункт 3</Dropdown.Item>
+              </Dropdown>
+            </div>
           </div>
-          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
-            <img alt="groups" src="/images/table/columns.svg" />
-            <Dropdown label="Стобцы" inline size="sm">
-              <Dropdown.Item>
-                <strong>пункт 1</strong>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>пункт 2</Dropdown.Item>
-              <Dropdown.Item>пункт 3</Dropdown.Item>
-            </Dropdown>
-          </div>
-          <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
-            <img alt="groups" src="/images/table/export.svg" />
-            <Dropdown label="Экспортировать" inline size="sm">
-              <Dropdown.Item>
-                <strong>пункт 1</strong>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>пункт 2</Dropdown.Item>
-              <Dropdown.Item>пункт 3</Dropdown.Item>
-            </Dropdown>
-          </div>
-        </div>
+        )}
       </div>
       <div className="overflow-auto">
         <TableFlowbite
@@ -103,9 +111,11 @@ export const Table = <T extends Record<string, any>>({
           }}
         >
           <TableFlowbite.Head>
-            <TableFlowbite.HeadCell className="p-4">
-              <Checkbox />
-            </TableFlowbite.HeadCell>
+            {!isCostPage && (
+              <TableFlowbite.HeadCell className="p-4">
+                <Checkbox />
+              </TableFlowbite.HeadCell>
+            )}
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -150,9 +160,11 @@ export const Table = <T extends Record<string, any>>({
                   className="cursor-pointer border-b"
                   onClick={() => navigate(`${ROUTES.product}/${row.id}`)}
                 >
-                  <TableFlowbite.Cell className="p-4">
-                    <Checkbox />
-                  </TableFlowbite.Cell>
+                  {!isCostPage && (
+                    <TableFlowbite.Cell className="p-4">
+                      <Checkbox />
+                    </TableFlowbite.Cell>
+                  )}
                   {row.getVisibleCells().map((cell, index) => {
                     return (
                       <TableFlowbite.Cell
