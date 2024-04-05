@@ -129,7 +129,6 @@ export function ColumnSettings<TData>({
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                console.log("🚀 ~ table.setColumnVisibility ~ table:", table);
                 table.setColumnVisibility((current) => {
                   return Object.keys(current).reduce((acc, key) => {
                     acc[key] = true;

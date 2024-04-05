@@ -115,14 +115,25 @@ export const mockDataSize = [
   },
 ];
 export const strokeColors = [
-  "#1777FC",
-  "#66DA26",
-  "#546E7A",
-  "#E91E63",
-  "#FF9800",
-  "#93ACAF",
-  "#374151",
-  "#86D309",
+  "#06C",
+  "#4CB140",
+  "#009596",
+  "#5752D1",
+  "#F4C145",
+  "#EC7A08",
+  "#7D1007",
+  "#B8BBBE",
+];
+
+export const areaColors = [
+  "#8BC1F7",
+  "#BDE2B9",
+  "#A2D9D9",
+  "#B2B0EA",
+  "#F9E0A2",
+  "#F4B678",
+  "#C9190B",
+  "#F0F0F0",
 ];
 export const strokeColors2 = [
   "#1777FC",

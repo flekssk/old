@@ -1,6 +1,5 @@
 import type { FC } from "react";
 import { Checkbox, Label } from "flowbite-react";
-import "./index.css";
 
 type CheckboxChartsProps = {
   title: string;
@@ -9,6 +8,7 @@ type CheckboxChartsProps = {
   defaultChecked?: boolean;
   deleteParams: (id: string) => void;
   getParams: (id: string) => void;
+  color?: string;
 };
 
 export const CheckboxCharts: FC<CheckboxChartsProps> = ({
@@ -18,6 +18,7 @@ export const CheckboxCharts: FC<CheckboxChartsProps> = ({
   params,
   getParams,
   deleteParams,
+  color,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
@@ -31,6 +32,7 @@ export const CheckboxCharts: FC<CheckboxChartsProps> = ({
   return (
     <>
       <Checkbox
+        style={{ color: color }}
         id={id}
         defaultChecked={defaultChecked}
         onChange={(e) => handleChange(e)}
