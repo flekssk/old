@@ -14,7 +14,7 @@ type StatProps = {
   data: ProductStatsData;
 };
 
-export const Stats: FC<StatProps> = ({ data }) => {
+export const StatsProduct: FC<StatProps> = ({ data }) => {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4 2xl:grid-cols-5">
       <StatCard title="Чистая прибыль" {...data.profit} />

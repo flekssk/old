@@ -213,7 +213,6 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
           ) : null}
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

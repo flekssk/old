@@ -1,20 +1,30 @@
 import { mockByArticle } from "@/mocks/mock-by-article";
 import { Card, useThemeMode } from "flowbite-react";
+import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
+import type { TopProduct } from "@/api/report/types";
 
-export const TopProductsChart = () => {
+type TopProductsChartProps = {
+  data?: TopProduct[];
+};
+
+export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 
   const sortedProducts = useMemo(() => {
-    return mockByArticle
-      .sort((a, b) => b.partOfIncome - a.partOfIncome)
-      .slice(0, 5);
-  }, [mockByArticle]);
+    if (data) {
+      return data.sort((a, b) => b.profitShare - a.profitShare);
+    } else {
+      return mockByArticle
+        .sort((a, b) => b.profitShare - a.profitShare)
+        .slice(0, 5);
+    }
+  }, [data]);
 
   const options: ApexCharts.ApexOptions = {
-    labels: sortedProducts.map((item) => item.article),
+    labels: sortedProducts.map((item) => item.name),
     colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
     chart: {
       fontFamily: "Inter, sans-serif",
@@ -91,7 +101,7 @@ export const TopProductsChart = () => {
       },
     },
   };
-  const series = sortedProducts.map((item) => item.partOfIncome);
+  const series = sortedProducts.map((item) => item.profitShare);
 
   return (
     <Card>
