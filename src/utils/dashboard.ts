@@ -1,6 +1,6 @@
 import { endOfWeek, formatDate, startOfWeek, subWeeks } from "date-fns";
 import { DATE_FORMAT } from "@/helpers/date";
-import { ReportRequest } from "@/api/report/types";
+import type { ReportRequest } from "@/api/report/types";
 
 export const getValueDateFilter = (params: ReportRequest) => {
   let value;

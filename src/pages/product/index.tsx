@@ -3,7 +3,7 @@
 import { type FC, useEffect, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { Stats } from "./Stats";
+import { StatsProduct } from "./StatsProduct";
 
 import { TopProductsChart } from "../dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
@@ -20,7 +20,7 @@ import { StatTable } from "./StatTable";
 import { getPrevInterval } from "@/helpers/date";
 import { useProductStatsData } from "./useProductStatsData";
 import { Filters } from "./Filters";
-import { MainChart } from "./MainChart";
+import { MainChart } from "../dashboard/MainChart";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -73,7 +73,6 @@ const Product: FC = function () {
   useEffect(() => {
     setSearchParams(params as string);
   }, [params]);
-
   //const mainReportRequest = useMainReport(params);
 
   const articleRequest = useArticleReport(+entityId, params);
@@ -83,7 +82,6 @@ const Product: FC = function () {
     articleRequest.data,
     prevArticleRequest.data,
   );
-
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">
@@ -91,7 +89,7 @@ const Product: FC = function () {
           <ProductInfo product={articleRequest.data.productData} />
         ) : null}
         <Filters params={params} setSearchParams={setSearchParams} />
-        {statsData ? <Stats data={statsData} /> : null}
+        {statsData ? <StatsProduct data={statsData} /> : null}
         <MainChart
           data={articleRequest.data?.chart ?? []}
           prevData={prevArticleRequest.data?.chart}

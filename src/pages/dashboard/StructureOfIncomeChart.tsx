@@ -1,9 +1,10 @@
 import { mockRevenue } from "@/mocks/mock-by-article";
 import { Card, useThemeMode } from "flowbite-react";
+import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
-export const StructureOfIncomeChart = () => {
+export const StructureOfIncomeChart: FC = () => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 

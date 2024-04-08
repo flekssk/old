@@ -8,16 +8,18 @@ import type { ReportRequest } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/dashboard/StatTable";
 import { Filters } from "@/pages/dashboard/Filters";
-import { Stats } from "@/pages/dashboard/Stats";
-import { MainChart } from "@/pages/dashboard/MainChart";
+import { StatsDashBoard } from "@/pages/dashboard/StatsDashBoard";
 import { TopProductsChart } from "@/pages/dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "@/pages/dashboard/StructureOfIncomeChart";
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
+import { getPrevInterval } from "@/helpers/date";
+import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
+import { MainChart } from "@/pages/dashboard/MainChart";
 
 const DashboardPage: FC = function () {
   const [searchParams, setSearchParams] = useSearchParams({});
 
-  const params = useMemo<ReportRequest>(() => {
+  const { params, prevParams } = useMemo(() => {
     const result: ReportRequest = {};
     const dateFrom = searchParams.get("dateFrom");
     if (dateFrom) {
@@ -39,7 +41,20 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
-    return result;
+    // todo update default dateFrom
+    const prevInterval =
+      result.dateFrom && result.dateTo
+        ? getPrevInterval(result.dateFrom, result.dateTo)
+        : null;
+    const prevParams = prevInterval
+      ? {
+          ...result,
+          dateFrom: prevInterval.start,
+          dateTo: prevInterval.end,
+        }
+      : { ...result };
+
+    return { params: result, prevParams };
   }, [searchParams]);
 
   useEffect(() => {
@@ -47,26 +62,36 @@ const DashboardPage: FC = function () {
   }, [params]);
 
   const mainReportRequest = useMainReport(params);
-
-  // const articleRequest = useArticleReport(5);
+  const prevMainReportRequest = useMainReport(prevParams);
+  const statsData = useDashBoardStatsData(
+    mainReportRequest.data,
+    prevMainReportRequest.data,
+  );
 
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
-        <div className="flex flex-col gap-4 px-4 pt-6">
-          <Filters params={params} setSearchParams={setSearchParams} />
-          <Stats />
-          {/*<MainChart data={mainReportRequest.data?.chart ?? []} />*/}
-          <MainChart />
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-            <TopProductsChart />
-            <StructureOfIncomeChart />
+        {!mainReportRequest.data?.stats ? (
+          <div>NO DATA</div>
+        ) : (
+          <div className="flex flex-col gap-4 px-4 pt-6">
+            <Filters params={params} setSearchParams={setSearchParams} />
+            {statsData && <StatsDashBoard data={statsData} />}
+            <MainChart
+              data={mainReportRequest.data?.chart ?? []}
+              prevData={prevMainReportRequest.data?.chart}
+            />
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+              <TopProductsChart
+                data={mainReportRequest.data?.topFiveProducts}
+              />
+              <StructureOfIncomeChart />
+            </div>
+            {mainReportRequest.data?.byProduct ? (
+              <StatTable items={mainReportRequest.data?.byProduct} />
+            ) : null}
           </div>
-          {mainReportRequest.data?.byProduct ? (
-            // <StatTable items={mainReportRequest.data?.byProduct} />
-            <StatTable items={mainReportRequest.data?.byProduct} />
-          ) : null}
-        </div>
+        )}
       </ProfileSubscriptionInfo>
     </NavbarSidebarLayout>
   );
