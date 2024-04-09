@@ -13,4 +13,5 @@ export const ROUTES = {
   settingsProfile: "/settings/profile",
   cost: "/cost",
   product: "/product",
+  adminPanel: "/admin_panel",
 } as const;

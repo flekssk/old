@@ -14,4 +14,5 @@ export const QUERY_KEYS = {
   settingsItem: "settingsItem",
   settingsItemByName: "settingsItemByName",
   user: "user",
+  admin: "admin",
 } as const;

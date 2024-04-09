@@ -29,7 +29,7 @@ const ApiKeys: FC = () => {
 const CardDetailsCard: FC = function () {
   return (
     <Card>
-      <h3 className="mb-4 text-xl font-bold dark:text-white">API ключи</h3>
+      <h3 className="mb-4 text-xl font-bold dark:text-white"> API ключи</h3>
       <form>
         <div className="mb-6 max-w-2xl">
           <div className="mb-6 flex items-center justify-between">

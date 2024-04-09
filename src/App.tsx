@@ -27,6 +27,7 @@ import Product from "./pages/product";
 import { ToastContainer } from "react-toastify";
 import { Flowbite } from "flowbite-react";
 import { theme } from "./theme";
+import SubscribePackages from "@/pages/subPackages/SubscribePackages";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -111,6 +112,14 @@ const App: FC = function () {
                   element={
                     <ProtectedRoute>
                       <Product />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.adminPanel}
+                  element={
+                    <ProtectedRoute>
+                      <SubscribePackages />
                     </ProtectedRoute>
                   }
                 />

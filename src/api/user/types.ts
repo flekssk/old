@@ -2,6 +2,7 @@ export type UserProfileResponse = {
   accountsCount: number;
   taxationTypeId?: number;
   orders: Orders[];
+  roles: UserRoles[];
   settings?: {
     reportTableSettings?: null;
   };
@@ -9,6 +10,8 @@ export type UserProfileResponse = {
   name: string;
   message?: string;
 };
+
+export type UserRoles = "ROLE_USER" | "ROLE_ADMIN" | "ROLE_SUPER_PACAN";
 
 export type Orders = {
   id: number;
