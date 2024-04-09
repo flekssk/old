@@ -3,12 +3,11 @@ import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
 import { DATE_FORMAT } from "@/helpers/date";
 import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
-import { Datepicker, Dropdown } from "flowbite-react";
+import { Datepicker } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
 import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
 import { theme } from "@/theme";
-
 export type DateFilterValue = {
   dateFrom: string;
   dateTo: string;

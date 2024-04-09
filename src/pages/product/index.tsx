@@ -103,7 +103,6 @@ const Product: FC = function () {
           <ProductAvailability stocks={articleRequest.data?.stocks} />
         ) : null}
         {articleRequest.data?.byBarcode ? (
-          /*<StatTable items={mainReportRequest.data?.byProduct} />*/
           <StatTable
             items={Object.values(articleRequest.data.byBarcode)}
             prevItems={
@@ -113,9 +112,9 @@ const Product: FC = function () {
             }
           />
         ) : null}
-        {/* <SizeComparison />
+        {/*<SizeComparison />*/}
 
-        <ComparisonByOption /> */}
+        {/*<ComparisonByOption />*/}
       </div>
     </NavbarSidebarLayout>
   );

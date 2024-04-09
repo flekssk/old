@@ -15,3 +15,9 @@ export const QUERY_KEYS = {
   resetPassword: "resetPassword",
   resetPasswordByToken: "resetPasswordByToken",
 } as const;
+
+export const UserRolesVariant = {
+  ROLE_USER: "ROLE_USER",
+  ROLE_ADMIN: "ROLE_ADMIN",
+  ROLE_SUPER_PACAN: "ROLE_SUPER_PACAN",
+} as const;
