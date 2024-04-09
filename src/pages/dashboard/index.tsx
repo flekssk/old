@@ -3,8 +3,11 @@ import { type FC, useEffect, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 // import { useArticleReport, useMainReport } from "@/api/report";
-import { useMainReport } from "@/api/report";
-import type { ReportRequest } from "@/api/report/types";
+import { useMainReport, useReportFilterAggregation } from "@/api/report";
+import type {
+  ReportFilterAggregationResponse,
+  ReportRequest,
+} from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/dashboard/StatTable";
 import { Filters } from "@/pages/dashboard/Filters";
@@ -12,21 +15,46 @@ import { StatsDashBoard } from "@/pages/dashboard/StatsDashBoard";
 import { TopProductsChart } from "@/pages/dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "@/pages/dashboard/StructureOfIncomeChart";
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
-import { getPrevInterval } from "@/helpers/date";
+import { DATE_FORMAT, getPrevInterval } from "@/helpers/date";
 import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
 import { MainChart } from "@/pages/dashboard/MainChart";
+import { format, parse, sub } from "date-fns";
+
+function getDefaultDates(
+  data?: ReportFilterAggregationResponse,
+): { dateFrom: string; dateTo: string } | null {
+  if (!data) {
+    return null;
+  }
+
+  return {
+    dateFrom: format(
+      sub(
+        parse(data.date?.maxDate ?? "", DATE_FORMAT.SERVER_DATE, new Date()),
+        {
+          days: 6,
+        },
+      ),
+      DATE_FORMAT.SERVER_DATE,
+    ),
+    dateTo: data.date?.maxDate ?? "",
+  };
+}
 
 const DashboardPage: FC = function () {
+  const reportFilterAggregatedRequest = useReportFilterAggregation();
+
   const [searchParams, setSearchParams] = useSearchParams({});
 
   const { params, prevParams } = useMemo(() => {
+    const defaultDates = getDefaultDates(reportFilterAggregatedRequest.data);
     const result: ReportRequest = {};
-    const dateFrom = searchParams.get("dateFrom");
+    const dateFrom = searchParams.get("dateFrom") ?? defaultDates?.dateFrom;
     if (dateFrom) {
       result.dateFrom = dateFrom;
     }
 
-    const dateTo = searchParams.get("dateTo");
+    const dateTo = searchParams.get("dateTo") ?? defaultDates?.dateTo;
     if (dateTo) {
       result.dateTo = dateTo;
     }
@@ -41,7 +69,6 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
-    // todo update default dateFrom
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
@@ -55,18 +82,34 @@ const DashboardPage: FC = function () {
       : { ...result };
 
     return { params: result, prevParams };
-  }, [searchParams]);
+  }, [searchParams, reportFilterAggregatedRequest.data]);
 
   useEffect(() => {
     setSearchParams(params as string);
   }, [params]);
 
-  const mainReportRequest = useMainReport(params);
-  const prevMainReportRequest = useMainReport(prevParams);
+  const mainReportRequest = useMainReport(params, {
+    enabled: !!reportFilterAggregatedRequest.data,
+  });
+  const prevMainReportRequest = useMainReport(prevParams, {
+    enabled: !!reportFilterAggregatedRequest.data,
+  });
   const statsData = useDashBoardStatsData(
     mainReportRequest.data,
     prevMainReportRequest.data,
   );
+
+  const filtersForRedirect = useMemo(() => {
+    const urlSearchParams = new URLSearchParams();
+    if (params.dateFrom) {
+      urlSearchParams.set("dateFrom", params.dateFrom);
+    }
+    if (params.dateTo) {
+      urlSearchParams.set("dateTo", params.dateTo);
+    }
+
+    return urlSearchParams.toString();
+  }, [params]);
 
   return (
     <NavbarSidebarLayout>
@@ -88,7 +131,11 @@ const DashboardPage: FC = function () {
               <StructureOfIncomeChart />
             </div>
             {mainReportRequest.data?.byProduct ? (
-              <StatTable items={mainReportRequest.data?.byProduct} />
+              <StatTable
+                redirectFilters={filtersForRedirect}
+                items={mainReportRequest.data?.byProduct}
+                prevItems={prevMainReportRequest.data?.byProduct}
+              />
             ) : null}
           </div>
         )}

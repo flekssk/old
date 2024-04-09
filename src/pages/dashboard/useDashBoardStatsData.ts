@@ -38,40 +38,63 @@ export const useDashBoardStatsData = (
     sale: {
       value: displayNumber(currentData.stats.sale),
     },
+    profitability: {
+      value: displayNumber(currentData.stats.profitability),
+    },
+    roi: {
+      value: displayNumber(currentData.stats.roi),
+    },
   };
   if (prevData) {
+    if (prevData.stats.profitability) {
+      result.profitability.diff = calculateDiff(
+        currentData.stats.profitability,
+        prevData.stats.profitability,
+        { isPercentage: true, positiveIfGrow: true },
+      );
+    }
+
+    if (prevData.stats.roi) {
+      result.roi.diff = calculateDiff(
+        currentData.stats.roi,
+        prevData.stats.roi,
+        { isPercentage: true, positiveIfGrow: true },
+      );
+    }
     if (prevData.stats.advertisingExpenses) {
-      result.profit.diff = calculateDiff(
+      result.advertisingExpenses.diff = calculateDiff(
         currentData.stats.advertisingExpenses,
         prevData.stats.advertisingExpenses,
       );
     }
     if (prevData.stats.averageRedemption) {
-      result.profit.diff = calculateDiff(
+      result.averageRedemption.diff = calculateDiff(
         currentData.stats.averageRedemption,
         prevData.stats.averageRedemption,
+        { isPercentage: true, positiveIfGrow: true },
       );
     }
     if (prevData.stats.ddr) {
-      result.profit.diff = calculateDiff(
+      result.ddr.diff = calculateDiff(
         currentData.stats.ddr,
         prevData.stats.ddr,
+        { isPercentage: true, positiveIfGrow: false },
       );
     }
     if (prevData.stats.marginality) {
-      result.profit.diff = calculateDiff(
+      result.marginality.diff = calculateDiff(
         currentData.stats.marginality,
         prevData.stats.marginality,
       );
     }
     if (prevData.stats.orders) {
-      result.profit.diff = calculateDiff(
+      result.orders.diff = calculateDiff(
         currentData.stats.orders,
         prevData.stats.orders,
       );
     }
     if (prevData.stats.ordersCount) {
-      result.profit.diff = calculateDiff(
+      result.ordersCount.diff = calculateDiff(
         currentData.stats.ordersCount,
         prevData.stats.ordersCount,
       );
@@ -83,18 +106,18 @@ export const useDashBoardStatsData = (
       );
     }
     if (prevData.stats.returns) {
-      result.profit.diff = calculateDiff(
+      result.returns.diff = calculateDiff(
         currentData.stats.returns,
         prevData.stats.returns,
       );
     }
     if (prevData.stats.sale) {
-      result.profit.diff = calculateDiff(
+      result.sale.diff = calculateDiff(
         currentData.stats.sale,
         prevData.stats.sale,
       );
     }
   }
-
+  console.log("🚀 ~ result:", currentData, prevData, result);
   return result;
 };

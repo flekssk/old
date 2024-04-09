@@ -113,9 +113,9 @@ const Product: FC = function () {
             }
           />
         ) : null}
-        <SizeComparison />
+        {/* <SizeComparison />
 
-        <ComparisonByOption />
+        <ComparisonByOption /> */}
       </div>
     </NavbarSidebarLayout>
   );

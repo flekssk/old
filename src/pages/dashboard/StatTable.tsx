@@ -1,23 +1,36 @@
 import { Card, Tooltip } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
-import type { CellContext, ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { ProductReportItem } from "@/api/report/types";
-import { displayNumber } from "@/helpers/number";
 import { DataTable } from "@/components/table/DataTable";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import { DiffNumberCell } from "@/components/table/DiffNumberCell";
 
 export type StatTableProps = {
   items: ProductReportItem[];
+  prevItems?: ProductReportItem[];
+  redirectFilters?: string;
 };
 
-const numberCell = (cellContext: CellContext<ProductReportItem, number>) => {
-  return <span>{displayNumber(cellContext.getValue())}</span>;
-};
+export const StatTable: FC<StatTableProps> = ({
+  items,
+  prevItems,
+  redirectFilters,
+}) => {
+  const data = useMemo<ProductReportItem[]>(() => {
+    return items.map((item) => {
+      return {
+        ...item,
+        prev: (prevItems || []).find(
+          (prevItem) => item.vendorCode === prevItem.vendorCode,
+        ),
+      };
+    });
+  }, [items, prevItems]);
 
-export const StatTable: FC<StatTableProps> = ({ items }) => {
   const columns = useMemo<Array<ColumnDef<ProductReportItem>>>(() => {
     const columnHelper = createColumnHelper<ProductReportItem>();
     return [
@@ -47,15 +60,13 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
           );
         },
       }),
-      // columnHelper.accessor("orders", { header: "Заказы р." }),
-      // columnHelper.accessor("ordersCount", { header: "Заказы шт" }),
-      // columnHelper.accessor("name", { header: "Название" }),
+
       columnHelper.accessor("vendorCode", {
         id: "vendorCode",
         header: "Артикул",
         cell: ({ cell }) => (
           <Link
-            to={`${ROUTES.product}/${cell.row.original.article}`}
+            to={`${ROUTES.product}/${cell.row.original.article}?${redirectFilters}`}
             className="underline"
           >
             {cell.getValue()}
@@ -71,139 +82,218 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
       columnHelper.accessor("cost", {
         id: "cost",
         header: "Себистоимость",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averagePriceBeforeSPP", {
         id: "averagePriceBeforeSPP",
         header: "Средняя цена до СПП",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("realisation", {
         id: "realisation",
         header: "Реализация (сумма продаж до СПП)",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("sale", {
         id: "sale",
         header: "Продажи",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("toTransfer", {
         id: "toTransfer",
         header: "К перечеслению",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("returns", {
         id: "returns",
         header: "Возвраты",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("costOfSales", {
         id: "costOfSales",
         header: "Стоимость продаж",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("fines", {
         id: "fines",
         header: "Штрафы",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("compensationForSubstitutedGoods", {
         id: "compensationForSubstitutedGoods",
         header: "Компенсация подмененного товара",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("reimbursementOfTransportationCosts", {
         id: "reimbursementOfTransportationCosts",
         header: "Компенсация поставщика",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("paymentForMarriageAndLostGoods", {
         id: "paymentForMarriageAndLostGoods",
         header: "Оплата брака + потерянного товара",
-        cell: numberCell,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageLogisticsCost", {
         id: "averageLogisticsCost",
         header: "Ср. стоимость логистики",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("logistics", {
         id: "logistics",
         header: "Стоимость логистики",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("storage", {
         id: "storage",
         header: "Хранение",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("rejectionsAndReturns", {
         header: "Количество отказов+ возвраты",
-        cell: numberCell,
+        meta: {
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("totalSales", {
         id: "totalSales",
         header: "Всего продаж",
-        cell: numberCell,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageRedemption", {
         id: "averageRedemption",
         header: "Средний процент выкупа",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageProfitPerPiece", {
         id: "averageProfitPerPiece",
         header: "Средняя прибыль на 1 шт",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("tax", {
         id: "tax",
         header: "Налоги",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("profit", {
         id: "profit",
         header: "Прибыль",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("roi", {
         id: "roi",
         header: "ROI",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+        },
+        cell: DiffNumberCell,
       }),
-      columnHelper.accessor("profitability", {
-        id: "profitability",
-        header: "Приюыльность",
-        cell: numberCell,
-      }),
+
       columnHelper.accessor("shareInTotalRevenuePart", {
         id: "shareInTotalRevenuePart",
         header: "Доля в общей выручке",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("shareInTotalProfit", {
         id: "shareInTotalProfit",
         header: "Доля в общей прибыли",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+        },
+        cell: DiffNumberCell,
       }),
-      columnHelper.accessor("marginality", {
-        id: "marginality",
+      columnHelper.accessor("profitability", {
+        id: "profitability",
         header: "Маржинальность",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("advertisingExpenses", {
         id: "advertisingExpenses",
         header: "Расходы на рекламу",
-        cell: numberCell,
+        meta: {
+          suffix: "₽",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("ddr", {
         id: "ddr",
         header: "ДДР",
-        cell: numberCell,
+        meta: {
+          suffix: "%",
+          positiveIfGrow: false,
+        },
+        cell: DiffNumberCell,
       }),
     ];
-  }, []);
+  }, [redirectFilters]);
 
   return (
     <Card>
@@ -212,7 +302,7 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
         columnSettings
         storedSettingsName="main-report-table"
         columns={columns}
-        data={items}
+        data={data}
         cellRangeSelection={true}
       />
     </Card>

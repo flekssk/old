@@ -1,4 +1,4 @@
-import { Card, Tooltip } from "flowbite-react";
+import { Card } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import type { CellContext, ColumnDef } from "@tanstack/react-table";
@@ -7,6 +7,7 @@ import type { BarcodeReportItem } from "@/api/report/types";
 import { displayNumber } from "@/helpers/number";
 import { DataTable } from "@/components/table/DataTable";
 import { HiArrowDown, HiArrowUp } from "react-icons/hi";
+import { DiffNumberCell } from "@/components/table/DiffNumberCell";
 
 export type StatTableProps = {
   items: BarcodeReportItem[];
@@ -15,55 +16,6 @@ export type StatTableProps = {
 
 type BarcodeReportItemWithPrev = BarcodeReportItem & {
   prev?: BarcodeReportItem;
-};
-
-const numberCellWithDiff = (
-  cellContext: CellContext<BarcodeReportItemWithPrev, number>,
-) => {
-  const prev = cellContext.row.original.prev;
-
-  const meta = (cellContext.column.columnDef.meta || {}) as {
-    suffix?: string;
-    positiveIfGrow?: boolean;
-  };
-  const positiveIfGrow = meta.positiveIfGrow ?? true;
-  const suffix = meta.suffix ?? null;
-  const prevValue = prev
-    ? prev[cellContext.column.id as keyof BarcodeReportItem]
-    : null;
-
-  let direction: "up" | "down" | null = null;
-  let isPositive = true;
-  if (
-    prevValue !== null &&
-    typeof prevValue === "number" &&
-    cellContext.getValue() !== prevValue
-  ) {
-    direction = cellContext.getValue() > prevValue ? "up" : "down";
-    isPositive =
-      cellContext.getValue() > prevValue ? positiveIfGrow : !positiveIfGrow;
-  }
-
-  const positiveClass =
-    direction === null ? "" : isPositive ? "text-green-500" : "text-red-500";
-
-  return (
-    <>
-      <div>
-        {displayNumber(cellContext.getValue())}
-        {suffix ? <>&nbsp;{suffix}</> : null}
-      </div>
-      {prevValue ? (
-        <div className={`flex items-center gap-1 text-xs ${positiveClass}`}>
-          {displayNumber(prevValue as number)}
-          {suffix ? <>&nbsp;{suffix}</> : null}
-          {direction === null ? null : (
-            <>{direction === "up" ? <HiArrowUp /> : <HiArrowDown />}</>
-          )}
-        </div>
-      ) : null}
-    </>
-  );
 };
 
 export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
@@ -94,7 +46,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averagePriceBeforeSPP", {
         id: "averagePriceBeforeSPP",
@@ -102,7 +54,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("realisation", {
         id: "realisation",
@@ -110,7 +62,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("sale", {
         id: "sale",
@@ -118,7 +70,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("toTransfer", {
         id: "toTransfer",
@@ -126,7 +78,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("returns", {
         id: "returns",
@@ -135,7 +87,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("costOfSales", {
         id: "costOfSales",
@@ -144,7 +96,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("fines", {
         id: "fines",
@@ -153,7 +105,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("compensationForSubstitutedGoods", {
         id: "compensationForSubstitutedGoods",
@@ -161,7 +113,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("reimbursementOfTransportationCosts", {
         id: "reimbursementOfTransportationCosts",
@@ -170,7 +122,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("paymentForMarriageAndLostGoods", {
         id: "paymentForMarriageAndLostGoods",
@@ -178,7 +130,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageLogisticsCost", {
         id: "averageLogisticsCost",
@@ -187,7 +139,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("logistics", {
         id: "logistics",
@@ -196,7 +148,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("storage", {
         id: "storage",
@@ -205,20 +157,20 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("rejectionsAndReturns", {
         header: "Количество отказов+ возвраты",
         meta: {
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("totalSales", {
         id: "totalSales",
         header: "Всего продаж",
 
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageRedemption", {
         id: "averageRedemption",
@@ -226,7 +178,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "%",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("averageProfitPerPiece", {
         id: "averageProfitPerPiece",
@@ -234,7 +186,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("tax", {
         id: "tax",
@@ -243,7 +195,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("profit", {
         id: "profit",
@@ -251,7 +203,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "₽",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("roi", {
         id: "roi",
@@ -259,15 +211,15 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "%",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("profitability", {
         id: "profitability",
-        header: "Приюыльность",
+        header: "Прибыльность",
         meta: {
           suffix: "%",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
 
       columnHelper.accessor("shareInTotalProfit", {
@@ -276,7 +228,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
         meta: {
           suffix: "%",
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
 
       columnHelper.accessor("advertisingExpenses", {
@@ -286,7 +238,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "₽",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
       columnHelper.accessor("ddr", {
         id: "ddr",
@@ -295,7 +247,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
           suffix: "%",
           positiveIfGrow: false,
         },
-        cell: numberCellWithDiff,
+        cell: DiffNumberCell,
       }),
     ];
   }, []);

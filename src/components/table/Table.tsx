@@ -156,10 +156,7 @@ export const Table = <T extends Record<string, any>>({
             {rows.map((row) => (
               <React.Fragment key={row.id}>
                 {renderAdditionalRowBefore?.(row)}
-                <TableFlowbite.Row
-                  className="cursor-pointer border-b"
-                  onClick={() => navigate(`${ROUTES.product}/${row.id}`)}
-                >
+                <TableFlowbite.Row className="cursor-pointer border-b">
                   {!isCostPage && (
                     <TableFlowbite.Cell className="p-4">
                       <Checkbox />

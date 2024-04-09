@@ -10,6 +10,8 @@ export type DashBoardStatsData = {
   profit: Omit<StatCardProps, "title">;
   returns: Omit<StatCardProps, "title">;
   sale: Omit<StatCardProps, "title">;
+  roi: Omit<StatCardProps, "title">;
+  profitability: Omit<StatCardProps, "title">;
 };
 type StatProps = {
   data: DashBoardStatsData;
@@ -20,7 +22,8 @@ export const StatsDashBoard = ({ data }: StatProps) => {
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4 2xl:grid-cols-5">
       <StatCard title="Чистая прибыль" {...data.profit} />
       <StatCard title="Процент выкупа" {...data.averageRedemption} />
-      <StatCard title="Маржинальность" {...data.marginality} />
+      <StatCard title="Маржинальность" {...data.profitability} />
+      <StatCard title="ROI" {...data.roi} />
       <StatCard title="ДДР" {...data.ddr} />
     </div>
   );
