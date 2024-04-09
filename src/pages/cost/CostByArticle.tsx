@@ -18,7 +18,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Button, TextInput } from "flowbite-react";
-import { useMemo, type FC, useEffect, useState } from "react";
+import { useMemo, type FC, useEffect, useState, useCallback } from "react";
 
 type SubRow = Partial<Article> & { cost: number };
 type ArticleExtended = Article & {
@@ -146,26 +146,29 @@ export const CostByArticle: FC = () => {
     return result;
   }, [articlesQuery.data, incomeData]);
 
-  const updateByArticle = (vendorCode: string, cost: number) => {
-    const incomes = incomeData.filter(
-      (income) => income.supplierArticle === vendorCode,
-    );
-    const article = data.find((article) => article.vendorCode === vendorCode);
-    if (article) {
-      setIncomeCost((current) => {
-        const result = { ...current };
-        incomes.forEach((income) => {
-          result[income.incomeId + "_" + income.barcode] = {
-            incomeId: income.incomeId,
-            nmId: article.nmId,
-            barcode: income.barcode,
-            cost,
-          };
+  const updateByArticle = useCallback(
+    (vendorCode: string, cost: number) => {
+      const incomes = incomeData.filter(
+        (income) => income.supplierArticle === vendorCode,
+      );
+      const article = data.find((article) => article.vendorCode === vendorCode);
+      if (article) {
+        setIncomeCost((current) => {
+          const result = { ...current };
+          incomes.forEach((income) => {
+            result[income.incomeId + "_" + income.barcode] = {
+              incomeId: income.incomeId,
+              nmId: article.nmId,
+              barcode: income.barcode,
+              cost,
+            };
+          });
+          return result;
         });
-        return result;
-      });
-    }
-  };
+      }
+    },
+    [data, incomeData],
+  );
 
   const incomeSyncMutation = useIncomeSyncMutation();
   const incomeCostSetBatchMutation = useIncomeCostSetBatchMutation();
@@ -209,7 +212,7 @@ export const CostByArticle: FC = () => {
         },
       }),
     ];
-  }, []);
+  }, [updateByArticle]);
 
   const table = useReactTable({
     columns,
