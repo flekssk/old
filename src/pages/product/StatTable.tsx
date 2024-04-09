@@ -1,12 +1,10 @@
 import { Card } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
-import type { CellContext, ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { BarcodeReportItem } from "@/api/report/types";
-import { displayNumber } from "@/helpers/number";
 import { DataTable } from "@/components/table/DataTable";
-import { HiArrowDown, HiArrowUp } from "react-icons/hi";
 import { DiffNumberCell } from "@/components/table/DiffNumberCell";
 
 export type StatTableProps = {

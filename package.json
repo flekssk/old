@@ -44,7 +44,6 @@
     "react-toastify": "^10.0.5",
     "sortablejs": "^1.15.0",
     "svgmap": "^2.10.1",
-    "uuid": "^9.0.1",
     "zod": "^3.22.4",
     "zod-i18n-map": "^2.27.0"
   },

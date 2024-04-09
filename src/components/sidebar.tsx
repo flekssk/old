@@ -3,14 +3,22 @@ import classNames from "classnames";
 import { Sidebar } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { HiViewGrid, HiCalculator, HiUser } from "react-icons/hi";
+import { HiCalculator, HiUser, HiViewGrid } from "react-icons/hi";
 
-import { useSidebarContext } from "../context/SidebarContext";
+import { useSidebarContext } from "@/context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
 import { ROUTES } from "@/constants/routes";
 import { Link } from "react-router-dom";
+import { useUserProfile } from "@/api/user";
+import { UserRolesVariant } from "@/api/auth/constants";
+import { SiAdminer } from "react-icons/si";
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const ExampleSidebar: FC = function () {
+  const userProfile = useUserProfile();
+  const isUserAdmin = userProfile.data?.roles.includes(
+    UserRolesVariant.ROLE_ADMIN,
+  );
   const { isOpenOnSmallScreens } = useSidebarContext();
 
   const [currentPage, setCurrentPage] = useState("");
@@ -79,6 +87,26 @@ const ExampleSidebar: FC = function () {
                 >
                   Настройки
                 </Sidebar.Item>
+                {isUserAdmin && (
+                  <Sidebar.Collapse
+                    icon={MdAdminPanelSettings}
+                    label="Панель Администратора"
+                    className="text-xs"
+                  >
+                    <Sidebar.Item
+                      as={Link}
+                      icon={SiAdminer}
+                      to={"/admin_panel"}
+                      className={
+                        ROUTES.adminPanel === currentPage
+                          ? "bg-gray-100 dark:bg-gray-700"
+                          : ""
+                      }
+                    >
+                      Пакеты подписок
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
+                )}
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>
