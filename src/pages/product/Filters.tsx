@@ -7,6 +7,7 @@ import { Datepicker, Dropdown } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
 import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
+import { theme } from "@/theme";
 
 export type DateFilterValue = {
   dateFrom: string;

@@ -55,10 +55,11 @@ export function ColumnSettings<TData>({
     return visibilityState[key] === initialVisibilityState.current[key];
   });
 
-  const storedSettingsQuery =
-    useSettingsItemByName<Record<string, StoredColumnSettings>>(
-      storedSettingsName,
-    );
+  const storedSettingsQuery = useSettingsItemByName<
+    Record<string, StoredColumnSettings>
+  >(storedSettingsName, {
+    retry: false,
+  });
 
   const applySettings = useCallback(
     (current: VisibilityState, nextState: VisibilityState) => {

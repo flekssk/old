@@ -25,6 +25,8 @@ import { AuthYandex } from "./pages/authentication/yanex";
 import { Cost } from "./pages/cost/Cost";
 import Product from "./pages/product";
 import { ToastContainer } from "react-toastify";
+import { Flowbite } from "flowbite-react";
+import { theme } from "./theme";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -45,76 +47,78 @@ const App: FC = function () {
         autoClose={3000}
         position={"top-center"}
       />
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<FlowbiteWrapper />}>
-              <Route
-                path={ROUTES.home}
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-                index
-              />
-              <Route path={ROUTES.authVk} element={<AuthVk />} />
-              <Route path={ROUTES.authYandex} element={<AuthYandex />} />
-              <Route
-                path={ROUTES.unitTable}
-                element={
-                  <ProtectedRoute>
-                    <UnitTable />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path={ROUTES.login} element={<SignInPage />} />
-              <Route path={ROUTES.registration} element={<SignUpPage />} />
-              <Route
-                path={ROUTES.resetPassword}
-                element={<ForgotPasswordPage />}
-              />
-              <Route
-                path={ROUTES.resetPasswordByToken}
-                element={<ResetPasswordPage />}
-              />
+      <Flowbite theme={{ theme }}>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<FlowbiteWrapper />}>
+                <Route
+                  path={ROUTES.home}
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                  index
+                />
+                <Route path={ROUTES.authVk} element={<AuthVk />} />
+                <Route path={ROUTES.authYandex} element={<AuthYandex />} />
+                <Route
+                  path={ROUTES.unitTable}
+                  element={
+                    <ProtectedRoute>
+                      <UnitTable />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path={ROUTES.login} element={<SignInPage />} />
+                <Route path={ROUTES.registration} element={<SignUpPage />} />
+                <Route
+                  path={ROUTES.resetPassword}
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path={ROUTES.resetPasswordByToken}
+                  element={<ResetPasswordPage />}
+                />
 
-              <Route
-                path={ROUTES.logout}
-                element={
-                  <ProtectedRoute>
-                    <Logout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.settings}
-                element={
-                  <ProtectedRoute>
-                    <Settings />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.cost}
-                element={
-                  <ProtectedRoute>
-                    <Cost />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={`${ROUTES.product}/:entityId`}
-                element={
-                  <ProtectedRoute>
-                    <Product />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+                <Route
+                  path={ROUTES.logout}
+                  element={
+                    <ProtectedRoute>
+                      <Logout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.settings}
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.cost}
+                  element={
+                    <ProtectedRoute>
+                      <Cost />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={`${ROUTES.product}/:entityId`}
+                  element={
+                    <ProtectedRoute>
+                      <Product />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </Flowbite>
     </QueryClientProvider>
   );
 };

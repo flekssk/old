@@ -29,6 +29,7 @@ type ArticleExtended = Article & {
 export const CostByArticle: FC = () => {
   const { page, limit } = usePagination({ defaultLimit: 100 });
   const [iccomeCost, setIncomeCost] = useState<Record<string, BatchIncome>>({});
+  console.log("🚀 ~ iccomeCost:", iccomeCost);
 
   const articlesQuery = useArticleList({
     limit,
