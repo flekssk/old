@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useCreateSubscription, useGetSubscription } from "@/api/admin/hooks";
+import { toast } from "react-toastify";
 
 type CreateSubscribe = Pick<SubscriptionBody, "title" | "description" | "cost">;
 
@@ -30,6 +31,8 @@ const CreateForm = ({
 
     await createSubscription.mutateAsync(subscriptionBody);
     await subscriptionList.refetch();
+    toast.success("Подписка добавлена");
+
     setActive(false);
   };
 

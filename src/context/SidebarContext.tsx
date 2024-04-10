@@ -6,19 +6,35 @@ import isSmallScreen from "../helpers/is-small-screen";
 interface SidebarContextProps {
   isOpenOnSmallScreens: boolean;
   isPageWithSidebar: boolean;
+  isAdminPanelCollapsed: boolean;
+  toggleCollapseAdminPanel: () => void;
   // eslint-disable-next-line no-unused-vars
   setOpenOnSmallScreens: (isOpen: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextProps>(undefined!);
-
 export function SidebarProvider({ children }: PropsWithChildren) {
   const location = isBrowser() ? window.location.pathname : "/";
+  const [isAdminPanelCollapsed, setIsAdminPanelCollapsed] = useState(
+    isBrowser()
+      ? window.localStorage.getItem("isAdminPanelCollapsed") === "true"
+      : false,
+  );
   const [isOpen, setOpen] = useState(
     isBrowser()
       ? window.localStorage.getItem("isSidebarOpen") === "true"
       : false,
   );
+  const toggleCollapseAdminPanel = () => {
+    setIsAdminPanelCollapsed((prev) => !prev);
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "isAdminPanelCollapsed",
+      isAdminPanelCollapsed.toString(),
+    );
+  }, [isAdminPanelCollapsed]);
 
   // Save latest state to localStorage
   useEffect(() => {
@@ -31,7 +47,6 @@ export function SidebarProvider({ children }: PropsWithChildren) {
       setOpen(false);
     }
   }, [location]);
-
   // Close Sidebar on mobile tap inside main content
   useEffect(() => {
     function handleMobileTapInsideMain(event: MouseEvent) {
@@ -52,7 +67,9 @@ export function SidebarProvider({ children }: PropsWithChildren) {
   return (
     <SidebarContext.Provider
       value={{
+        toggleCollapseAdminPanel: toggleCollapseAdminPanel,
         isOpenOnSmallScreens: isOpen,
+        isAdminPanelCollapsed: isAdminPanelCollapsed,
         isPageWithSidebar: true,
         setOpenOnSmallScreens: setOpen,
       }}
