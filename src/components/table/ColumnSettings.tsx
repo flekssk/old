@@ -46,7 +46,7 @@ export function ColumnSettings<TData>({
 }: ColumnSettingsProps<TData>) {
   const columns = table.getAllColumns();
   const [settingsName, setSettingsName] = useState<string>("");
-  const [selectedSettings, setSelectedSettings] = useState<string>(() => {
+  const [selectedSettings] = useState<string>(() => {
     return localStorage.getItem(storedSettingsName) || "";
   });
   const initialVisibilityState = useRef<VisibilityState>(visibilityState);

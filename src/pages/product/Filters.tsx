@@ -1,5 +1,4 @@
 import { useReportFilterAggregation } from "@/api/report";
-import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
 import { DATE_FORMAT } from "@/helpers/date";
 import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
@@ -7,7 +6,7 @@ import { Datepicker } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
 import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
-import { theme } from "@/theme";
+
 export type DateFilterValue = {
   dateFrom: string;
   dateTo: string;
@@ -75,34 +74,6 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
     }));
   }, []);
 
-  const filterOptions = useMemo(() => {
-    const result = {
-      brands: [],
-      categories: [],
-    } as {
-      brands: SelectOption[];
-      categories: SelectOption[];
-    };
-
-    if (reportFilterAggregationRequest.data) {
-      result.brands = reportFilterAggregationRequest.data.brands.map(
-        (brand) => ({
-          value: brand,
-          label: brand,
-        }),
-      );
-
-      result.categories = reportFilterAggregationRequest.data.categories.map(
-        (category) => ({
-          value: category,
-          label: category,
-        }),
-      );
-    }
-
-    return result;
-  }, [reportFilterAggregationRequest.data]);
-
   const minDate = reportFilterAggregationRequest.data?.date?.minDate
     ? parse(
         reportFilterAggregationRequest.data?.date?.minDate,
@@ -133,18 +104,6 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
         dateFilters.find((item) => item.value === value)?.dateTo as string,
       );
     }
-    setSearchParams(newSearchParams);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("category", category);
-    setSearchParams(newSearchParams);
-  };
-
-  const handleBrandChange = (brand: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("brand", brand);
     setSearchParams(newSearchParams);
   };
 

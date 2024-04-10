@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useUserProfile } from "@/api/user";
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@/constants/routes";
-import { toast } from "react-toastify";
 
 type ProfileSubscriptionInfoProps = {
   children: React.ReactNode;

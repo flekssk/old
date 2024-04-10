@@ -14,8 +14,6 @@ import { useParams, useSearchParams } from "react-router-dom";
 
 import ProductInfo from "./ProductInfo";
 import ProductAvailability from "./ProductAvailability";
-import SizeComparison from "./SizeComparison";
-import ComparisonByOption from "./ComparisonByOption";
 import { StatTable } from "./StatTable";
 import { getPrevInterval } from "@/helpers/date";
 import { useProductStatsData } from "./useProductStatsData";
