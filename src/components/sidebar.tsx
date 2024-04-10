@@ -19,10 +19,13 @@ const ExampleSidebar: FC = function () {
   const isUserAdmin = userProfile.data?.roles.includes(
     UserRolesVariant.ROLE_ADMIN,
   );
-  const { isOpenOnSmallScreens } = useSidebarContext();
+  const {
+    isOpenOnSmallScreens,
+    isAdminPanelCollapsed,
+    toggleCollapseAdminPanel,
+  } = useSidebarContext();
 
   const [currentPage, setCurrentPage] = useState("");
-
   useEffect(() => {
     const newPage = window.location.pathname;
 
@@ -89,6 +92,8 @@ const ExampleSidebar: FC = function () {
                 </Sidebar.Item>
                 {isUserAdmin && (
                   <Sidebar.Collapse
+                    onClick={toggleCollapseAdminPanel}
+                    open={isAdminPanelCollapsed}
                     icon={MdAdminPanelSettings}
                     label="Панель Администратора"
                     className="text-xs"

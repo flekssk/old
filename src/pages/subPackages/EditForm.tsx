@@ -1,8 +1,14 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
-import { useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useState,
+} from "react";
 import type { SubscriptionBody } from "@/api/admin/types";
 import { useUpdateSubscription } from "@/api/admin/hooks";
+import { toast } from "react-toastify";
 
 type EditFormData = Pick<
   SubscriptionBody,
@@ -32,6 +38,7 @@ const EditForm = ({
         id: data.id,
         data: { ...data, ...form },
       });
+      toast.success("Подписка изменена");
     }
     setActive(false);
   };
@@ -119,7 +126,7 @@ const EditForm = ({
               Отмена
             </Button>
             <Button color="primary" type="submit">
-              Добавить
+              Изменить
             </Button>
           </div>
         </form>
