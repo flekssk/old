@@ -11,7 +11,6 @@ import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
 import classNames from "classnames";
 import { mockData } from "@/data/table";
-import { useNavigate } from "react-router";
 import { ROUTES } from "@/constants/routes";
 import { useLocation } from "react-router-dom";
 
@@ -43,7 +42,6 @@ export const Table = <T extends Record<string, any>>({
   className,
 }: TableProps<T>) => {
   const { getRowModel } = table;
-  const navigate = useNavigate();
   const location = useLocation();
 
   // checks if route is /cost to hide unessesary elements

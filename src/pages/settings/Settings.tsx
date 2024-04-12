@@ -17,6 +17,8 @@ import { HiHome } from "react-icons/hi";
 import { Controller, useForm } from "react-hook-form";
 import { ServerSuccess } from "@/components/ServerSuccess";
 import { ServerError } from "@/components/ServerError";
+import { useSearchParams } from "react-router-dom";
+import { Subscriptions } from "./Subscriptions";
 
 const formSchema = z.object({
   taxationTypeId: z.object({
@@ -28,6 +30,7 @@ const formSchema = z.object({
 const TABS = {
   profile: 0,
   apiKeys: 1,
+  subscriptions: 2,
 } as const;
 
 type TabsType = typeof TABS;
@@ -37,6 +40,7 @@ type FormSchema = z.infer<typeof formSchema>;
 export const TABS_TITLES = {
   [TABS.profile]: "Профиль",
   [TABS.apiKeys]: "API ключи",
+  [TABS.subscriptions]: "Подписки",
 } as const;
 
 export const Settings: FC = () => {
@@ -44,7 +48,17 @@ export const Settings: FC = () => {
 
   const resetTaxationMutation = useSaveUserTaxationMutation();
 
-  const [activeTab, setActiveTab] = useState<TabsState>(TABS.profile);
+  const [searchParams, setSearchParams] = useSearchParams({
+    tab: TABS.profile.toString(),
+  });
+  const activeTab = searchParams.get("tab")
+    ? parseInt(searchParams.get("tab") ?? "0")
+    : TABS.profile;
+
+  useEffect(() => {
+    tabsRef.current?.setActiveTab(activeTab);
+  }, [activeTab]);
+
   const [profile, setProfile] = useState<UserProfileResponse | undefined>();
 
   const reportTaxationRequest = useReportTaxation();
@@ -89,21 +103,22 @@ export const Settings: FC = () => {
               </div>
             </Breadcrumb.Item>
             <Breadcrumb.Item href="/e-commerce/products">
-              {TABS_TITLES[activeTab]}
+              {TABS_TITLES[activeTab as TabsState]}
             </Breadcrumb.Item>
           </Breadcrumb>
           <Tabs
             aria-label="Tabs with underline"
             style="underline"
             ref={tabsRef}
-            onActiveTabChange={(tab: number) => setActiveTab(tab as TabsState)}
+            onActiveTabChange={(tab: number) =>
+              setSearchParams({ tab: tab.toString() })
+            }
           >
             <Tabs.Item title={TABS_TITLES[TABS.profile]}>
               <form
                 className="flex flex-col gap-3"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <p>Profile</p>
                 <div className="flex flex-col gap-5">
                   <p>Выбор нологовой ставки</p>
                   <Controller
@@ -149,6 +164,9 @@ export const Settings: FC = () => {
             </Tabs.Item>
             <Tabs.Item title={TABS_TITLES[TABS.apiKeys]}>
               {activeTab === TABS.apiKeys ? <ApiKeys /> : null}
+            </Tabs.Item>
+            <Tabs.Item title={TABS_TITLES[TABS.subscriptions]}>
+              <Subscriptions />
             </Tabs.Item>
           </Tabs>
         </div>
