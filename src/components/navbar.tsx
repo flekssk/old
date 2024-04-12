@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import type { FC } from "react";
-import { Avatar, Dropdown, Navbar } from "flowbite-react";
+import { Dropdown, Navbar } from "flowbite-react";
 import { HiMenuAlt1, HiX } from "react-icons/hi";
 import { useSidebarContext } from "../context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
@@ -37,7 +37,7 @@ const ExampleNavbar: FC = function () {
                 className="mr-3 h-6 sm:h-8"
               />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                Truestat
+                TrueStat
               </span>
             </Navbar.Brand>
           </div>
@@ -56,6 +56,14 @@ const UserDropdown: FC = function () {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const { email, name } = profile || {};
+  const nameInitials = name
+    ? name
+        .split(" ")
+        .map((part, index) =>
+          index === 1 ? part[0]?.toUpperCase() + "." : part,
+        )
+        .join(" ")
+    : "";
   return (
     <Dropdown
       arrowIcon={false}
@@ -63,12 +71,7 @@ const UserDropdown: FC = function () {
       label={
         <span>
           <span className="sr-only">Пользовательское меню</span>
-          <Avatar
-            alt=""
-            img="../images/users/neil-sims.png"
-            rounded
-            size="sm"
-          />
+          {nameInitials}
         </span>
       }
     >
