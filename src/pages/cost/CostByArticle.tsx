@@ -19,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { Button, TextInput } from "flowbite-react";
 import { useMemo, type FC, useEffect, useState, useCallback } from "react";
+import TableList from "@/components/table/TableList";
 
 type SubRow = Partial<Article> & { cost: number };
 type ArticleExtended = Article & {
@@ -222,7 +223,9 @@ export const CostByArticle: FC = () => {
   if (articlesQuery.isLoading) {
     return <div>Loading...</div>;
   }
-
+  const { getRowModel } = table;
+  const model = getRowModel();
+  const rows = model.rows;
   return (
     <div>
       <div className="flex justify-end px-2">
@@ -237,12 +240,7 @@ export const CostByArticle: FC = () => {
           Обновить поставки
         </Button>
       </div>
-      <Table
-        className="w-full"
-        table={table}
-        showControllers={false}
-        showTableTitle={false}
-      />
+      <TableList table={table} rows={rows} />
       {Object.keys(iccomeCost).length ? (
         <div className="flex justify-end px-2">
           <Button

@@ -18,7 +18,7 @@ const ProfileSubscriptionInfo = ({
     (el) => el.settings.status === OnBoardingStatus.inProcess,
   );
   const notificationAction = () => {
-    navigate(ROUTES.unitTable);
+    navigate(`${ROUTES.settingsProfile}/?tab=2`);
   };
   const typeOfContent = useMemo<
     | "noSubscription"
@@ -92,7 +92,7 @@ const ProfileSubscriptionInfo = ({
           вашему аккаунту.
         </div>
         <Button
-          onClick={() => navigate(ROUTES.settingsProfile)}
+          onClick={() => navigate(`${ROUTES.settingsProfile}/?tab=1`)}
           className="mt-4"
         >
           Настройка API ключей
