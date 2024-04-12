@@ -3,7 +3,13 @@ import classNames from "classnames";
 import { Sidebar } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { HiCalculator, HiUser, HiViewGrid } from "react-icons/hi";
+import {
+  HiCalculator,
+  HiCode,
+  HiUser,
+  HiUsers,
+  HiViewGrid,
+} from "react-icons/hi";
 
 import { useSidebarContext } from "@/context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
@@ -54,7 +60,7 @@ const ExampleSidebar: FC = function () {
                     "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
                   }
                 >
-                  Оцировка
+                  Оцифровка
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={Link}
@@ -78,14 +84,16 @@ const ExampleSidebar: FC = function () {
                       : ""
                   }
                 >
-                  Себистоимость
+                  Себестоимость
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={Link}
                   to="/settings/profile"
                   icon={HiUser}
                   className={
-                    "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
+                    ROUTES.settingsProfile === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
                   }
                 >
                   Настройки
@@ -101,7 +109,7 @@ const ExampleSidebar: FC = function () {
                     <Sidebar.Item
                       as={Link}
                       icon={SiAdminer}
-                      to={"/admin_panel"}
+                      to={ROUTES.adminPanel}
                       className={
                         ROUTES.adminPanel === currentPage
                           ? "bg-gray-100 dark:bg-gray-700"
@@ -109,6 +117,30 @@ const ExampleSidebar: FC = function () {
                       }
                     >
                       Пакеты подписок
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      as={Link}
+                      icon={HiUsers}
+                      to={ROUTES.usersList}
+                      className={
+                        ROUTES.usersList === currentPage
+                          ? "bg-gray-100 dark:bg-gray-700"
+                          : ""
+                      }
+                    >
+                      Пользователи
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      as={Link}
+                      icon={HiCode}
+                      to={ROUTES.tasksQueue}
+                      className={
+                        ROUTES.tasksQueue === currentPage
+                          ? "bg-gray-100 dark:bg-gray-700"
+                          : ""
+                      }
+                    >
+                      Очередь команд
                     </Sidebar.Item>
                   </Sidebar.Collapse>
                 )}

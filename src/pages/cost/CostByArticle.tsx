@@ -183,7 +183,7 @@ export const CostByArticle: FC = () => {
       columnHelper.accessor("vendorCode", { header: "Артикул" }),
       columnHelper.accessor("brand", { header: "Бренд" }),
       columnHelper.accessor("id", {
-        header: "Себистоимость",
+        header: "Себестоимость",
         cell: (cell) => {
           return (
             <TextInput

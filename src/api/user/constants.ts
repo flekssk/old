@@ -16,3 +16,9 @@ export const QUERY_KEYS = {
   user: "user",
   admin: "admin",
 } as const;
+
+export const OnBoardingStatus = {
+  inProcess: "in-process",
+  finished: "finished",
+  failed: "failed",
+} as const;

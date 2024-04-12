@@ -28,6 +28,9 @@ import { ToastContainer } from "react-toastify";
 import { Flowbite } from "flowbite-react";
 import { theme } from "./theme";
 import SubscribePackages from "@/pages/subPackages/SubscribePackages";
+import UserList from "@/pages/userList/UserList";
+import UserInfo from "@/pages/userInfo/UserInfo";
+import TaskQueue from "@/pages/taskQueue/TaskQueue";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -120,6 +123,30 @@ const App: FC = function () {
                   element={
                     <ProtectedRoute>
                       <SubscribePackages />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.usersList}
+                  element={
+                    <ProtectedRoute>
+                      <UserList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={`${ROUTES.userInfo}/:id`}
+                  element={
+                    <ProtectedRoute>
+                      <UserInfo />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.tasksQueue}
+                  element={
+                    <ProtectedRoute>
+                      <TaskQueue />
                     </ProtectedRoute>
                   }
                 />
