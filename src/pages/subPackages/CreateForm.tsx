@@ -64,7 +64,7 @@ const CreateForm = ({
           </div>
           <div className="flex flex-col pl-[15px]">
             <Label htmlFor="cost" className="m-1">
-              Себистоимость
+              Себестоимость
             </Label>
             <TextInput
               className="max-w-[364px]"

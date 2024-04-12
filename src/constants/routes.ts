@@ -14,4 +14,7 @@ export const ROUTES = {
   cost: "/cost",
   product: "/product",
   adminPanel: "/admin_panel",
+  usersList: "/users_list",
+  userInfo: "/user-info",
+  tasksQueue: "/task-queue",
 } as const;

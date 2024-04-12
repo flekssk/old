@@ -26,7 +26,7 @@ export const Cost: FC = () => {
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
-        <div className="mb-6 grid grid-cols-1 gap-y-6 px-4 pt-6 dark:border-gray-700 dark:bg-gray-900 xl:grid-cols-2 xl:gap-4">
+        <div className="mb-6 grid grid-cols-1 gap-y-6 dark:border-gray-700 dark:bg-gray-900 xl:grid-cols-2 xl:gap-4">
           <div className="col-span-full">
             <Breadcrumb className="mb-4">
               <Breadcrumb.Item href="/">
@@ -34,7 +34,7 @@ export const Cost: FC = () => {
                   <HiHome className="text-xl" />
                 </div>
               </Breadcrumb.Item>
-              <Breadcrumb.Item>Себистоимость</Breadcrumb.Item>
+              <Breadcrumb.Item>Себестоимость</Breadcrumb.Item>
             </Breadcrumb>
             <Tabs
               aria-label="Tabs with underline"

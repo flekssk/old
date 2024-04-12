@@ -1,13 +1,7 @@
 import type { FC, ReactNode } from "react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { Table as TableFlowbite } from "flowbite-react/lib/esm/components/Table/Table";
-import classNames from "classnames";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { UniverseModalWindow } from "@/components/universalModal";
 import EditForm from "@/pages/subPackages/EditForm";
@@ -15,6 +9,7 @@ import type { SubscriptionBody } from "@/api/admin/types";
 import { Button } from "flowbite-react";
 import CreateForm from "@/pages/subPackages/CreateForm";
 import { HiBan, HiCheck } from "react-icons/hi";
+import TableList from "@/components/table/TableList";
 
 type SubscribeTable = {
   items?: SubscriptionBody[];
@@ -43,7 +38,7 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
     },
     {
       accessorKey: "cost",
-      header: "Себистоимость",
+      header: "Себестоимость",
       cell: (info) => <span>{`${info.getValue()} Р`}</span>,
     },
     {
@@ -69,7 +64,7 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
       accessorKey: "edit",
       header: "",
       cell: (info) => (
-        <div className={"w-[80px] p-2 text-sm font-medium text-blue-400"}>
+        <div className={" w-[80px] p-2 text-sm font-medium text-blue-400"}>
           <button
             className={"flex items-center gap-0.5"}
             onClick={() => {
@@ -102,77 +97,12 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
   const rows = model.rows;
   return (
     <div>
-      <TableFlowbite striped>
-        <TableFlowbite.Head>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <React.Fragment key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableFlowbite.HeadCell
-                  key={header.id}
-                  className="relative"
-                  style={{
-                    width: header.getSize(),
-                  }}
-                >
-                  <p>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </p>
-                  <div
-                    {...{
-                      onDoubleClick: () => header.column.resetSize(),
-                      onMouseDown: header.getResizeHandler(),
-                      onTouchStart: header.getResizeHandler(),
-                      className: classNames(
-                        "absolute inset-y-0 right-0 w-1 cursor-col-resize hover:bg-gray-400 active:bg-primary-400",
-                        {
-                          "bg-primary-400": header.column.getIsResizing(),
-                        },
-                      ),
-                    }}
-                  ></div>
-                </TableFlowbite.HeadCell>
-              ))}
-            </React.Fragment>
-          ))}
-        </TableFlowbite.Head>
-        <TableFlowbite.Body>
-          {rows.map((row) => (
-            <React.Fragment key={row.id}>
-              <TableFlowbite.Row className="cursor-pointer border-b">
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <TableFlowbite.Cell
-                      style={{ width: cell.column.getSize() }}
-                      key={cell.id}
-                    >
-                      <span
-                        {...{
-                          className: classNames(
-                            "overflow-hidden text-ellipsis",
-                            {
-                              "text-[#1890FF]": cell.column.id === "vendorCode",
-                            },
-                          ),
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </span>
-                    </TableFlowbite.Cell>
-                  );
-                })}
-              </TableFlowbite.Row>
-            </React.Fragment>
-          ))}
-        </TableFlowbite.Body>
-      </TableFlowbite>
+      <div className="flex justify-end">
+        <Button onClick={onCreateNewSubscribe} className="m-2">
+          Добавить
+        </Button>
+      </div>
+      <TableList table={table} rows={rows} />
       <UniverseModalWindow isActive={isEditActive} setActive={setIsEditActive}>
         <EditForm
           key={editableData?.third_party_id}
@@ -190,9 +120,6 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
           setActive={setIsCreateActive}
         />
       </UniverseModalWindow>
-      <Button onClick={onCreateNewSubscribe} className="m-2">
-        Добавить
-      </Button>
     </div>
   );
 };

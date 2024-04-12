@@ -33,7 +33,7 @@ const MainContent: FC<PropsWithChildren<NavbarSidebarLayoutProps>> = function ({
         isSidebarOpen ? "lg:ml-16" : "lg:ml-64",
       )}
     >
-      {children}
+      <div className="p-4">{children}</div>
     </main>
   );
 };

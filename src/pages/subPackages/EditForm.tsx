@@ -73,7 +73,7 @@ const EditForm = ({
             </div>
             <div className="flex flex-col pl-[15px]">
               <Label htmlFor="cost" className="m-1">
-                Себистоимость
+                Себестоимость
               </Label>
               <TextInput
                 className="max-w-[364px]"
@@ -106,19 +106,19 @@ const EditForm = ({
                 }}
               />
             </div>
-            <div className="flex flex-col pl-[15px]">
-              <Label htmlFor="delivery" className="m-1">
-                Доступность
+            <div className="mt-1 flex items-center pl-[15px]">
+              <Label htmlFor="is_enabled" className="m-1 cursor-pointer">
+                Доступность: &nbsp;
+                <Checkbox
+                  className="size-5"
+                  id="is_enabled"
+                  name="is_enabled"
+                  checked={form.is_enabled}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setForm({ ...form, is_enabled: e.currentTarget.checked });
+                  }}
+                />
               </Label>
-              <Checkbox
-                className="max-w-[364px]"
-                id="is_enabled"
-                name="is_enabled"
-                checked={form.is_enabled}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setForm({ ...form, is_enabled: e.currentTarget.checked });
-                }}
-              />
             </div>
           </div>
           <div className="flex  min-h-[77px] items-center justify-between p-[15px]">

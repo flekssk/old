@@ -6,10 +6,27 @@ export type UserProfileResponse = {
   settings?: {
     reportTableSettings?: null;
   };
+  onboardings: OnBoardings[];
   email: string;
   name: string;
   message?: string;
 };
+
+export type OnBoardings = {
+  id: number;
+  name: string;
+  settings: OnBoardingsSettings;
+};
+
+type OnBoardingsSettings = {
+  allSteps: number;
+  commandIds: number[];
+  completeSteps: number;
+  failSteps: 0;
+  status: OnBoardingStatusType;
+};
+
+type OnBoardingStatusType = "in-process" | "finished" | "failed";
 
 export type UserRoles = "ROLE_USER" | "ROLE_ADMIN" | "ROLE_SUPER_PACAN";
 

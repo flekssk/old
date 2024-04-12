@@ -8,9 +8,9 @@ import { InputControl } from "@/components/forms/InputControl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "flowbite-react";
 import type { FC } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { HiOutlineTrash, HiPencil, HiCheck, HiBan } from "react-icons/hi";
+import { HiBan, HiCheck, HiOutlineTrash, HiPencil } from "react-icons/hi";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -23,6 +23,7 @@ type FormSchema = z.infer<typeof formSchema>;
 type ApiKeysRowProps = {
   account?: WbAccount;
   id: string;
+  onDisableCreate: (value: boolean) => void;
   onSuccess: (id: string) => void;
   onRemove: (id: string) => void;
 };
@@ -30,11 +31,21 @@ type ApiKeysRowProps = {
 export const ApiKeysRow: FC<ApiKeysRowProps> = ({
   account,
   id,
+  onDisableCreate,
   onSuccess,
   onRemove,
 }) => {
   const [isEdit, setIsEdit] = useState(() => !account);
 
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: account,
+  });
+  useEffect(() => {
+    if (account) {
+      form.reset(account);
+    }
+  }, [account, form]);
   const createMutation = useCreateAccountMutation();
   const updateMutation = useUpdateAccountMutation();
   const deleteMutation = useDeleteAccountMutation();
@@ -57,15 +68,14 @@ export const ApiKeysRow: FC<ApiKeysRowProps> = ({
     } else {
       await createMutation.mutateAsync(data);
     }
+    onDisableCreate(false);
     setIsEdit(false);
     onSuccess(id);
   };
+  const { getValues, watch, reset } = form;
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: account,
-  });
-
+  const isAccountNumberDirty =
+    getValues("accountNumber") === account?.accountNumber;
   return (
     <form
       className="mb-6 flex items-center gap-2"
@@ -73,12 +83,15 @@ export const ApiKeysRow: FC<ApiKeysRowProps> = ({
     >
       <FormProvider {...form}>
         <InputControl
+          required
           name="name"
           className="grow"
           label="Название"
           disabled={!isEdit}
         />
         <InputControl
+          required
+          value={watch("accountNumber")}
           name="accountNumber"
           className="grow"
           label="Токен"
@@ -86,7 +99,13 @@ export const ApiKeysRow: FC<ApiKeysRowProps> = ({
         />
         <div className="mt-5 flex gap-2">
           {!isEdit && account ? (
-            <Button type="button" onClick={() => setIsEdit(true)}>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsEdit(true);
+                onDisableCreate(true);
+              }}
+            >
               <HiPencil className=" mr-2" />
               Редактировать
             </Button>
@@ -97,9 +116,11 @@ export const ApiKeysRow: FC<ApiKeysRowProps> = ({
                 type="button"
                 onClick={() => {
                   setIsEdit(false);
+                  onDisableCreate(false);
                   if (!account) {
                     onRemove(id);
                   }
+                  reset();
                 }}
                 color="gray"
                 disabled={loading}
@@ -107,7 +128,11 @@ export const ApiKeysRow: FC<ApiKeysRowProps> = ({
                 <HiBan className=" cursor-pointer" />
                 Отменить
               </Button>
-              <Button type="submit" disabled={loading} isProcessing={loading}>
+              <Button
+                type="submit"
+                disabled={isAccountNumberDirty || loading}
+                isProcessing={loading}
+              >
                 <HiCheck className=" cursor-pointer" />
                 Сохранить
               </Button>

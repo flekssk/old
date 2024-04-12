@@ -39,7 +39,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
       columnHelper.accessor("size", { id: "size", header: "Размер" }),
       columnHelper.accessor("cost", {
         id: "cost",
-        header: "Себистоимость",
+        header: "Себестоимость",
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
