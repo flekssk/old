@@ -1,5 +1,6 @@
 // филтры и сортировки по всем полям кроме img, url
 export interface ProductReportItem {
+  select: boolean;
   // ссылка на изображение
   image?: string;
   // ссылка на товар

@@ -300,6 +300,8 @@ export const StatTable: FC<StatTableProps> = ({
       <DataTable
         resizeColumns
         columnSettings
+        groupSettings
+        groupSettingsName="main-report-user-groups"
         storedSettingsName="main-report-table"
         columns={columns}
         data={data}

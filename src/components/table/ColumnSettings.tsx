@@ -204,7 +204,9 @@ export function ColumnSettings<TData>({
                   }}
                 />
                 <Label htmlFor={column.id}>
-                  {column.columnDef.header as string}
+                  {column.id === "select"
+                    ? "Выбор"
+                    : (column.columnDef.header as string)}
                 </Label>
               </div>
             </Dropdown.Item>
