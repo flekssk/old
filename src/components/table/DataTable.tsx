@@ -43,7 +43,7 @@ export function DataTable<TData, TValue>({
   resizeColumns,
   columnSettings,
   groupSettings,
-  groupSettingsName = "default-data-table-settings",
+  groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
 }: DataTableProps<TData, TValue>) {
   const [columns, setColumns] = React.useState<ColumnDef<TData, TValue>[]>([]);

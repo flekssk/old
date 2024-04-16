@@ -1,13 +1,11 @@
 import { useSettingsItemByName } from "@/api/user";
-
 import React from "react";
 import { Select, type SelectOption } from "../Select";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 type StoredGroupSettings = {
   name: string;
   rowsSelected: number[];
-  searchParams: { dateTo: string; dateFrom: string };
 };
 
 type GroupSettingsProps = {
@@ -21,6 +19,7 @@ export const GroupSettings = ({
   groupSettingsName,
   setDisplayedData,
 }: GroupSettingsProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [groups, setGroups] = React.useState<SelectOption[]>([]);
   const [selectedGroup, setSelectedGroup] = React.useState<SelectOption>();
   const storedSettingsQuery = useSettingsItemByName<
@@ -29,12 +28,15 @@ export const GroupSettings = ({
     retry: false,
   });
 
-  const navigate = useNavigate();
-
-  const updateSearchParams = (dateFrom: string, dateTo: string) => {
-    navigate({
-      search: `?dateFrom=${dateFrom}&dateTo=${dateTo}`,
-    });
+  const handleResetFilters = () => {
+    const newSearchParams = new URLSearchParams();
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
+    if (dateFrom && dateTo) {
+      newSearchParams.set("dateFrom", dateFrom);
+      newSearchParams.set("dateTo", dateTo);
+      setSearchParams(newSearchParams);
+    }
   };
 
   const handleGroupChange = (selectedGroup: SelectOption) => {
@@ -45,12 +47,8 @@ export const GroupSettings = ({
       const selectedGroupName = selectedGroup.value;
       const selectedGroupData =
         storedSettingsQuery.data?.settings[selectedGroupName]?.rowsSelected;
-      const { dateFrom = "", dateTo = "" } =
-        storedSettingsQuery.data?.settings[selectedGroupName]?.searchParams ||
-        {};
-
+      handleResetFilters();
       setSelectedGroup(selectedGroup);
-      updateSearchParams(dateFrom, dateTo);
       setDisplayedData(selectedGroupData || []);
     }
   };

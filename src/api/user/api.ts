@@ -36,7 +36,7 @@ export function getSettings<TData extends Record<string, unknown>>(
 
 export function saveSettings<TData extends Record<string, unknown>>(
   payload: Partial<Settings<TData>>,
-): Promise<{ meessage: string }> {
+): Promise<{ message: string }> {
   return api.post(ENDPOINTS.settingsSave, payload).then((res) => res.data);
 }
 

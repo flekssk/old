@@ -5,7 +5,6 @@ import { useSaveSettingsMutation, useSettingsItemByName } from "@/api/user";
 import type { SelectOption } from "@/components/Select";
 import { ServerSuccess } from "../ServerSuccess";
 import { ServerError } from "../ServerError";
-import { useSearchParams } from "react-router-dom";
 
 type SaveGroupModalProps = {
   groupSettingsName: string;
@@ -17,7 +16,6 @@ type SaveGroupModalProps = {
 type StoredGroupSettings = {
   name: string;
   rowsSelected: number[];
-  searchParams: { dateTo: string | null; dateFrom: string | null };
 };
 
 export const SaveGroupModal = ({
@@ -26,8 +24,6 @@ export const SaveGroupModal = ({
   rowsSelected,
   onClose,
 }: SaveGroupModalProps) => {
-  const [searchParams] = useSearchParams({});
-  const [groups, setGroups] = React.useState<SelectOption[]>([]);
   const [selectedGroup, setSelectedGroup] = React.useState<
     SelectOption | undefined
   >();
@@ -49,13 +45,6 @@ export const SaveGroupModal = ({
     onClose();
   };
 
-  const getSearchParams = () => {
-    const dateTo = searchParams.get("dateTo");
-    const dateFrom = searchParams.get("dateFrom");
-
-    return { dateTo, dateFrom };
-  };
-
   const handleUpdateGroup = async () => {
     const groupName = selectedGroup?.value as string;
     const currentSettings = storedSettingsQuery.data?.settings || {};
@@ -70,7 +59,6 @@ export const SaveGroupModal = ({
             ...(currentSettings[groupName]?.rowsSelected ?? []),
             ...rowsSelected,
           ],
-          searchParams: getSearchParams(),
         },
       },
     });
@@ -88,7 +76,6 @@ export const SaveGroupModal = ({
         [groupName]: {
           name: groupName || (selectedGroup?.value as string),
           rowsSelected,
-          searchParams: getSearchParams(),
         },
       },
     });
@@ -97,7 +84,7 @@ export const SaveGroupModal = ({
     storedSettingsQuery.refetch();
   };
 
-  React.useEffect(() => {
+  const groupOptions = React.useMemo(() => {
     const storedSettingsList = storedSettingsQuery.data
       ? Object.values(storedSettingsQuery.data.settings)
       : [];
@@ -107,8 +94,11 @@ export const SaveGroupModal = ({
         label: name,
         value: name,
       }));
-      setGroups(groupsList);
+
+      return groupsList;
     }
+
+    return [];
   }, [storedSettingsQuery.data]);
 
   return (
@@ -116,13 +106,23 @@ export const SaveGroupModal = ({
       <Modal.Header>Настройка групп</Modal.Header>
       <Modal.Body>
         {isAddNewGroupFormVisible ? (
-          <div>
-            <p className="mb-2 text-base">Введите название группы</p>
-            <TextInput
-              value={groupName}
-              onChange={({ target: { value } }) => setGroupName(value)}
-            />
-          </div>
+          <>
+            <div>
+              <p className="mb-2 text-base">Введите название группы</p>
+              <TextInput
+                value={groupName}
+                onChange={({ target: { value } }) => setGroupName(value)}
+              />
+            </div>
+            <div className="mt-5">
+              <Button
+                color="blue"
+                onClick={() => setIsAddNewGroupFormVisible(false)}
+              >
+                Обновить существующую
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             <div className="mb-4">
@@ -131,7 +131,7 @@ export const SaveGroupModal = ({
                 <Select
                   placeholder="Группы"
                   selectedOption={selectedGroup}
-                  options={groups || []}
+                  options={groupOptions}
                   setSelectedOption={(option) => setSelectedGroup(option)}
                 />
               </div>
@@ -170,7 +170,7 @@ export const SaveGroupModal = ({
           </Button>
         </div>
         <div className="mt-5 w-full">
-          <ServerSuccess message={saveSettingsMutation.data?.meessage} />
+          <ServerSuccess message={saveSettingsMutation.data?.message} />
           <ServerError mutation={saveSettingsMutation} className="mt-3" />
         </div>
       </Modal.Footer>
