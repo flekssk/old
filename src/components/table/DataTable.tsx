@@ -93,14 +93,14 @@ export function DataTable<TData, TValue>({
     Object.keys(rowSelection)
       .map(
         (row) =>
-          // TODO-mchuev: Types
+          //@ts-expect-error TODO-mchuev: Types
           rows.find((selectedRow) => row === selectedRow.id)?.original.article,
       )
       .filter((article): article is number => !!article) || [];
 
   const renderRows = displayedData.length
     ? displayedData
-        // TODO-mchuev: Types
+        //@ts-expect-error TODO-mchuev: Types
         ?.map((data) => rows.find((row) => data === row.original.article))
         .filter((row): row is Row<TData> => !!row)
     : rows;

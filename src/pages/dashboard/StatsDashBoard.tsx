@@ -24,7 +24,7 @@ export const StatsDashBoard = ({ data }: StatProps) => {
       <StatCard title="Процент выкупа" {...data.averageRedemption} />
       <StatCard title="Маржинальность" {...data.profitability} />
       <StatCard title="ROI" {...data.roi} />
-      <StatCard title="ДДР" {...data.ddr} />
+      <StatCard title="ДРР" {...data.ddr} />
     </div>
   );
 };

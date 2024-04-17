@@ -23,7 +23,7 @@ import { format, parse, sub } from "date-fns";
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
 ): { dateFrom: string; dateTo: string } | null {
-  if (!data) {
+  if (!data || !data.date?.maxDate || !data.date?.minDate) {
     return null;
   }
 

@@ -10,7 +10,6 @@ import type {
 } from "@/api/income/types";
 import { useArticleList } from "@/api/wb";
 import type { Article } from "@/api/wb/types";
-import { Table } from "@/components/table/Table";
 import usePagination from "@/hooks/pagination";
 import {
   createColumnHelper,

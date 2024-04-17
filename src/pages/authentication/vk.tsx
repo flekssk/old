@@ -25,7 +25,6 @@ export const AuthVk: FC = () => {
       login(location.search);
     }
   }, [location.search]);
-  console.log("🚀 ~ location.search:", location.search);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
