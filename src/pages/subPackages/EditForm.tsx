@@ -1,11 +1,6 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useState,
-} from "react";
+import { Button, Checkbox, Label, TextInput, Textarea } from "flowbite-react";
+import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
+import { useState } from "react";
 import type { SubscriptionBody } from "@/api/admin/types";
 import { useUpdateSubscription } from "@/api/admin/hooks";
 import { toast } from "react-toastify";
@@ -91,14 +86,13 @@ const EditForm = ({
               <Label htmlFor="description" className="m-1">
                 Описание
               </Label>
-              <TextInput
+              <Textarea
                 required
                 className="max-w-[364px]"
                 id="description"
-                type="text"
                 name="description"
                 value={form.description}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                onChange={(e) => {
                   setForm({
                     ...form,
                     description: e.currentTarget.value,
