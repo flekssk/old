@@ -5,7 +5,11 @@ import type {
   CommandsBodyResponse,
   SearchCommand,
 } from "@/api/taskQueue/types";
-import { createCommand, getCommandList } from "@/api/taskQueue/api";
+import {
+  createCommand,
+  deleteCommand,
+  getCommandList,
+} from "@/api/taskQueue/api";
 import { createCustomMutation } from "@/api/helper";
 
 export const useGetCommands = (
@@ -14,9 +18,10 @@ export const useGetCommands = (
 ) => {
   return useQuery({
     ...options,
-    queryKey: [QUERY_KEYS.userList],
+    queryKey: [QUERY_KEYS.userList, params],
     queryFn: () => getCommandList(params),
   });
 };
 
 export const useCreateCommand = createCustomMutation(createCommand);
+export const useDeleteCommand = createCustomMutation(deleteCommand);

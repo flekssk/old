@@ -4,6 +4,7 @@ import {
   useSubscriptionOrders,
 } from "@/api/subscription";
 import { BlockSpinner } from "@/components/BlockSpinner";
+import { displayNumber } from "@/helpers/number";
 import { Button, Card } from "flowbite-react";
 import type { FC } from "react";
 
@@ -70,7 +71,9 @@ export const Subscriptions: FC = () => {
                         }}
                       />
                       <div className="text-xl font-bold">
-                        {subscription.cost}
+                        {subscription.cost
+                          ? displayNumber(subscription.cost) + " Р"
+                          : "Бесплатно"}
                       </div>
                       <Button
                         processingSpinner={paymentMutation.isPending}

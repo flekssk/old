@@ -170,6 +170,8 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
+                language="ru"
+                weekStart={1}
                 defaultDate={
                   params.dateFrom
                     ? parse(
@@ -193,6 +195,8 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
               <Datepicker
                 minDate={minDate}
                 maxDate={maxDate}
+                language="ru"
+                weekStart={1}
                 defaultDate={
                   params.dateTo
                     ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date())

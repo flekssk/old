@@ -20,5 +20,7 @@ export type CommandsBodyResponse = {
 export type SearchCommand = {
   page?: string;
   limit?: string;
-  search?: string;
+  status?: string;
+  id?: string;
+  command?: string;
 };
