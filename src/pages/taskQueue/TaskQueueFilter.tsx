@@ -68,17 +68,17 @@ const TaskQueueFilter: FC<TaskQueueFilterProps> = ({
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("10");
+                onChangeSelect("50");
               }}
             >
-              10
+              50
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("15");
+                onChangeSelect("100");
               }}
             >
-              15
+              100
             </Dropdown.Item>
           </Dropdown>
         </div>

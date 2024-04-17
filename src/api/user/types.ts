@@ -28,7 +28,11 @@ type OnBoardingsSettings = {
 
 type OnBoardingStatusType = "in-process" | "finished" | "failed";
 
-export type UserRoles = "ROLE_USER" | "ROLE_ADMIN" | "ROLE_SUPER_PACAN";
+export type UserRoles =
+  | "ROLE_USER"
+  | "ROLE_ADMIN"
+  | "ROLE_SUPER_PACAN"
+  | "ROLE_BASIC_SUBSCRIBER";
 
 export type Orders = {
   id: number;

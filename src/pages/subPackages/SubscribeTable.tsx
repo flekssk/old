@@ -42,6 +42,11 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
       cell: (info) => <span>{`${info.getValue()} Р`}</span>,
     },
     {
+      accessorKey: "user_role",
+      header: "Роль",
+      cell: (info) => <span>{`${info.getValue()}`}</span>,
+    },
+    {
       accessorKey: "description",
       header: "Описание",
       cell: (info) => <span>{`${info.getValue()}`}</span>,
