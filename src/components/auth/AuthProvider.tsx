@@ -51,9 +51,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (token) {
       checkIsAuthenticated();
-      sessionStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(TOKEN_KEY, token);
     } else {
-      sessionStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
       setProfile(undefined);
       setIsPending(false);
       setIsAuthenticated(false);

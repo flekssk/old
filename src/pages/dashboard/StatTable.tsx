@@ -250,8 +250,8 @@ export const StatTable: FC<StatTableProps> = ({
         cell: DiffNumberCell,
       }),
 
-      columnHelper.accessor("shareInTotalRevenuePart", {
-        id: "shareInTotalRevenuePart",
+      columnHelper.accessor("shareInTotalRevenue", {
+        id: "shareInTotalRevenue",
         header: "Доля в общей выручке",
         meta: {
           suffix: "%",
