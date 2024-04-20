@@ -2,7 +2,6 @@
 import { type FC, useEffect, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-// import { useArticleReport, useMainReport } from "@/api/report";
 import { useMainReport, useReportFilterAggregation } from "@/api/report";
 import type {
   ReportFilterAggregationResponse,
@@ -19,6 +18,27 @@ import { DATE_FORMAT, getPrevInterval } from "@/helpers/date";
 import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
 import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
+import { Spinner } from "flowbite-react";
+
+const mapQueryParamsToString = (
+  reportRequest: ReportRequest,
+): URLSearchParams => {
+  const urlSearchParams = new URLSearchParams();
+
+  for (const key in reportRequest) {
+    if (Object.prototype.hasOwnProperty.call(reportRequest, key)) {
+      const value = reportRequest[key as keyof ReportRequest];
+
+      if (typeof value !== "string" && value !== null) {
+        urlSearchParams.set(key, JSON.stringify(value));
+      } else {
+        urlSearchParams.set(key, value);
+      }
+    }
+  }
+
+  return urlSearchParams;
+};
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -69,6 +89,11 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
+    const articles = searchParams.get("articles");
+    if (articles) {
+      result.articles = JSON.parse(articles);
+    }
+
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
@@ -85,7 +110,8 @@ const DashboardPage: FC = function () {
   }, [searchParams, reportFilterAggregatedRequest.data]);
 
   useEffect(() => {
-    setSearchParams(params as string);
+    const paramsToString = mapQueryParamsToString(params);
+    setSearchParams(paramsToString);
   }, [params]);
 
   const mainReportRequest = useMainReport(params, {
@@ -115,7 +141,9 @@ const DashboardPage: FC = function () {
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
         {!mainReportRequest.data?.stats ? (
-          <div>NO DATA</div>
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
         ) : (
           <div className="flex flex-col gap-4 px-4 pt-6">
             <Filters params={params} setSearchParams={setSearchParams} />
@@ -130,13 +158,13 @@ const DashboardPage: FC = function () {
               />
               <StructureOfIncomeChart />
             </div>
-            {mainReportRequest.data?.byProduct ? (
+            {mainReportRequest.data?.byProduct && (
               <StatTable
                 redirectFilters={filtersForRedirect}
                 items={mainReportRequest.data?.byProduct}
                 prevItems={prevMainReportRequest.data?.byProduct}
               />
-            ) : null}
+            )}
           </div>
         )}
       </ProfileSubscriptionInfo>

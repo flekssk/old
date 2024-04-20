@@ -143,6 +143,7 @@ export interface ReportRequest {
   dateTo?: string;
   category?: string;
   brand?: string;
+  articles?: number[];
 }
 
 // филтры и сортировки по всем полям кроме img, url
