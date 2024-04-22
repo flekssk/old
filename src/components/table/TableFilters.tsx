@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { MdFilterAlt } from "react-icons/md";
 import { MdArrowUpward } from "react-icons/md";
 import { MdArrowDownward } from "react-icons/md";
+import { parse, stringify } from "qs";
 
 type ColumnSort = {
   field?: string;
@@ -62,7 +63,7 @@ export const TableFilters = ({
       setSearchParams(searchParams);
       setSort({});
     } else {
-      searchParams.set("orderBy", JSON.stringify({ field, direction }));
+      searchParams.set("orderBy", stringify({ field, direction }));
       setSearchParams(searchParams);
       setSort({ field, direction });
     }
@@ -105,7 +106,7 @@ export const TableFilters = ({
 
   const updateSearchParams = () => {
     const searchParams = new URLSearchParams();
-    searchParams.set("filters", JSON.stringify(filterValues));
+    searchParams.set("filters", stringify(filterValues));
     setSearchParams(searchParams);
   };
 
@@ -114,12 +115,12 @@ export const TableFilters = ({
     const searchParamsOrder = searchParams.get("orderBy");
 
     if (searchParamsFilters) {
-      const parseFiltersValues = JSON.parse(searchParamsFilters);
-      setFilterValues(parseFiltersValues);
+      const parseFiltersValues = parse(searchParamsFilters);
+      setFilterValues(parseFiltersValues as ColumnFilters);
     }
 
     if (searchParamsOrder) {
-      const parseOrderValues = JSON.parse(searchParamsOrder);
+      const parseOrderValues = parse(searchParamsOrder);
       setSort(parseOrderValues);
     }
   }, [searchParams]);
