@@ -4,6 +4,7 @@ import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { useMainReport, useReportFilterAggregation } from "@/api/report";
 import type {
+  ArticleFilter,
   ReportFilterAggregationResponse,
   ReportRequest,
 } from "@/api/report/types";
@@ -68,7 +69,9 @@ const DashboardPage: FC = function () {
 
   const { params, prevParams } = useMemo(() => {
     const defaultDates = getDefaultDates(reportFilterAggregatedRequest.data);
-    const result: ReportRequest = {};
+    const result: ReportRequest = {
+      filters: {},
+    };
     const dateFrom = searchParams.get("dateFrom") ?? defaultDates?.dateFrom;
     if (dateFrom) {
       result.dateFrom = dateFrom;
@@ -89,9 +92,9 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
-    const articles = searchParams.get("articles");
-    if (articles) {
-      result.articles = JSON.parse(articles);
+    const article = searchParams.get("article");
+    if (article && result.filters) {
+      result.filters["article"] = JSON.parse(article) as ArticleFilter;
     }
 
     const prevInterval =
@@ -108,11 +111,6 @@ const DashboardPage: FC = function () {
 
     return { params: result, prevParams };
   }, [searchParams, reportFilterAggregatedRequest.data]);
-
-  useEffect(() => {
-    const paramsToString = mapQueryParamsToString(params);
-    setSearchParams(paramsToString);
-  }, [params]);
 
   const mainReportRequest = useMainReport(params, {
     enabled: !!reportFilterAggregatedRequest.data,

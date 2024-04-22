@@ -138,12 +138,14 @@ export interface ReportResponse {
   revenueStructure: RevenueStructure;
 }
 
+export type NumberFilter = { min: number; max: number };
+export type ArticleFilter = number[];
 export interface ReportRequest {
   dateFrom?: string;
   dateTo?: string;
   category?: string;
   brand?: string;
-  articles?: number[];
+  filters?: Record<string, NumberFilter | ArticleFilter>;
 }
 
 // филтры и сортировки по всем полям кроме img, url

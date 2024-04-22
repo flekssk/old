@@ -24,7 +24,7 @@ export const GroupSettings = ({ groupSettingsName }: GroupSettingsProps) => {
     const newSearchParams = new URLSearchParams();
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
-    newSearchParams.set("articles", JSON.stringify(selectedGroupData));
+    newSearchParams.set("article", JSON.stringify(selectedGroupData));
     if (dateFrom && dateTo) {
       newSearchParams.set("dateFrom", dateFrom);
       newSearchParams.set("dateTo", dateTo);
