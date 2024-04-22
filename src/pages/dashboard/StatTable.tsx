@@ -72,13 +72,25 @@ export const StatTable: FC<StatTableProps> = ({
             {cell.getValue()}
           </Link>
         ),
+        enableSorting: true,
       }),
-      columnHelper.accessor("brand", { id: "brand", header: "Бренд" }),
+      columnHelper.accessor("brand", {
+        id: "brand",
+        header: "Бренд",
+        enableSorting: true,
+      }),
       columnHelper.accessor("category", {
         id: "category",
         header: "Категория",
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
-      columnHelper.accessor("article", { id: "article", header: "Артикул" }),
+      columnHelper.accessor("article", {
+        id: "article",
+        header: "Артикул",
+        enableSorting: true,
+        enableColumnFilter: true,
+      }),
       columnHelper.accessor("cost", {
         id: "cost",
         header: "Себестоимость",
@@ -87,6 +99,8 @@ export const StatTable: FC<StatTableProps> = ({
           positiveIfGrow: false,
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("averagePriceBeforeSPP", {
         id: "averagePriceBeforeSPP",
@@ -95,6 +109,8 @@ export const StatTable: FC<StatTableProps> = ({
           suffix: "₽",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("realisation", {
         id: "realisation",
@@ -103,6 +119,7 @@ export const StatTable: FC<StatTableProps> = ({
           suffix: "₽",
         },
         cell: DiffNumberCell,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("sale", {
         id: "sale",
@@ -111,6 +128,7 @@ export const StatTable: FC<StatTableProps> = ({
           suffix: "₽",
         },
         cell: DiffNumberCell,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("toTransfer", {
         id: "toTransfer",

@@ -97,6 +97,16 @@ const DashboardPage: FC = function () {
       result.filters["article"] = JSON.parse(article) as ArticleFilter;
     }
 
+    const orderBy = searchParams.get("orderBy");
+    if (orderBy) {
+      result.orderBy = JSON.parse(orderBy);
+    }
+
+    const filters = searchParams.get("filters");
+    if (filters) {
+      result.filters = JSON.parse(filters);
+    }
+
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
@@ -111,6 +121,11 @@ const DashboardPage: FC = function () {
 
     return { params: result, prevParams };
   }, [searchParams, reportFilterAggregatedRequest.data]);
+
+  useEffect(() => {
+    const paramsToString = mapQueryParamsToString(params);
+    setSearchParams(paramsToString);
+  }, [params]);
 
   const mainReportRequest = useMainReport(params, {
     enabled: !!reportFilterAggregatedRequest.data,

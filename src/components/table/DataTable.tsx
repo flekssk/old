@@ -25,6 +25,7 @@ import { useSaveSettingsMutation } from "@/api/user";
 import { ServerSuccess } from "../ServerSuccess";
 import { ServerError } from "../ServerError";
 import type { StoredGroupSettings } from "@/types/types";
+import { TableFilters } from "./TableFilters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,6 +50,8 @@ export function DataTable<TData, TValue>({
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
 }: DataTableProps<TData, TValue>) {
+  const [visibleFilterColumn, setVisibleFilterColumn] =
+    React.useState<string>();
   const [columns, setColumns] = React.useState<ColumnDef<TData, TValue>[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -71,6 +74,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    enableMultiSort: false,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -170,12 +174,20 @@ export function DataTable<TData, TValue>({
                       width: header.getSize(),
                     }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    <div className="relative flex items-center justify-between">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                      <TableFilters
+                        table={table}
+                        column={header.column}
+                        visibleFilterColumn={visibleFilterColumn}
+                        setVisibleFilterColumn={setVisibleFilterColumn}
+                      />
+                    </div>
                     <div
                       {...{
                         onDoubleClick: () => header.column.resetSize(),

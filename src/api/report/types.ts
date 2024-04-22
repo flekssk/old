@@ -140,12 +140,14 @@ export interface ReportResponse {
 
 export type NumberFilter = { min: number; max: number };
 export type ArticleFilter = number[];
+export type TextFilter = { value: string };
 export interface ReportRequest {
   dateFrom?: string;
   dateTo?: string;
   category?: string;
   brand?: string;
-  filters?: Record<string, NumberFilter | ArticleFilter>;
+  filters?: Record<string, NumberFilter | ArticleFilter | TextFilter>;
+  orderBy?: { field: string; direction: string };
 }
 
 // филтры и сортировки по всем полям кроме img, url
