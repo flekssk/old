@@ -26,7 +26,7 @@ const TOKEN_KEY = "authToken";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(() => {
-    return sessionStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY);
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
