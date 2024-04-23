@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
-import type { Column, Table } from "@tanstack/react-table";
+import { useState, useEffect, useRef } from "react";
+import type { Column } from "@tanstack/react-table";
 import { Popover, TextInput } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
-import { MdFilterAlt } from "react-icons/md";
-import { MdArrowUpward } from "react-icons/md";
-import { MdArrowDownward } from "react-icons/md";
+import { HiSortDescending, HiSortAscending, HiFilter } from "react-icons/hi";
+
 import { parse, stringify } from "qs";
 
 type ColumnSort = {
@@ -23,14 +22,12 @@ type ColumnFilters = {
 
 type TableFiltersProps = {
   column: Column<any, unknown>;
-  table: Table<any>;
   setVisibleFilterColumn: (value: string) => void;
   visibleFilterColumn?: string;
 };
 
 export const TableFilters = ({
   column,
-  table,
   setVisibleFilterColumn,
   visibleFilterColumn,
 }: TableFiltersProps) => {
@@ -38,24 +35,17 @@ export const TableFilters = ({
   const [sort, setSort] = useState<ColumnSort>({});
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const classNameActiveSortUp =
-    column.id === sort.field && sort.direction === "ASC" ? "text-blue-800" : "";
+  const popoverRef = useRef<HTMLDivElement>(null);
 
-  const classNameActiveSortDown =
-    column.id === sort.field && sort.direction === "DESC"
-      ? "text-blue-800"
-      : "";
+  const filterType = column.columnDef.meta?.filterType;
 
-  const classNameActiveFilter = Object.prototype.hasOwnProperty.call(
+  const sortDescActive = column.id === sort.field && sort.direction === "DESC";
+  const sortAscActive = column.id === sort.field && sort.direction === "ASC";
+
+  const isColumnFilterActive = Object.prototype.hasOwnProperty.call(
     filterValues,
     column.id,
-  )
-    ? "text-blue-800"
-    : "";
-
-  const firstValue = table
-    .getPreFilteredRowModel()
-    .flatRows[0]?.getValue(column.id);
+  );
 
   const handleChangeColumnSort = (field: string, direction: string) => {
     if (field === sort.field && direction === sort.direction) {
@@ -128,7 +118,7 @@ export const TableFilters = ({
   const renderTableFilters = () => {
     const columnFilters = filterValues[column.id];
 
-    if (typeof firstValue === "number") {
+    if (filterType === "number") {
       const numberFilters = columnFilters as NumberFilter;
 
       return (
@@ -159,7 +149,7 @@ export const TableFilters = ({
       );
     }
 
-    if (typeof firstValue === "string") {
+    if (filterType === "string") {
       const textFilter = columnFilters as TextFilter;
 
       return (
@@ -182,22 +172,38 @@ export const TableFilters = ({
     return null;
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      popoverRef.current &&
+      !popoverRef.current.contains(event.target as Node)
+    ) {
+      setVisibleFilterColumn("");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex items-center gap-1 pl-2">
-      {column.columnDef.enableColumnFilter && (
-        <div>
+      {column.columnDef.enableColumnFilter && filterType && (
+        <div ref={popoverRef}>
           <Popover
             aria-labelledby="area-popover"
             open={visibleFilterColumn === column.id}
             placement="bottom"
-            className="!top-10 z-10 rounded-lg bg-white"
+            className="!top-10 z-10 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
             arrow={false}
             content={renderTableFilters()}
           >
-            <MdFilterAlt
+            <HiFilter
               size="16"
               cursor="pointer"
-              className={classNameActiveFilter}
+              style={{ color: `${isColumnFilterActive ? "black" : "gray"}` }}
               onClick={() => {
                 if (visibleFilterColumn === column.id) {
                   setVisibleFilterColumn("");
@@ -211,16 +217,28 @@ export const TableFilters = ({
       )}
       {column.columnDef.enableSorting && (
         <div>
-          <MdArrowUpward
-            className={classNameActiveSortUp}
-            cursor="pointer"
-            onClick={() => handleChangeColumnSort(column.id, "ASC")}
-          />
-          <MdArrowDownward
-            className={classNameActiveSortDown}
-            cursor="pointer"
-            onClick={() => handleChangeColumnSort(column.id, "DESC")}
-          />
+          {!sortDescActive && (
+            <HiSortAscending
+              cursor="pointer"
+              size="16"
+              style={{
+                color: `${sortAscActive ? "black" : "gray"}`,
+              }}
+              onClick={() =>
+                sortAscActive
+                  ? handleChangeColumnSort(column.id, "DESC")
+                  : handleChangeColumnSort(column.id, "ASC")
+              }
+            />
+          )}
+          {sortDescActive && (
+            <HiSortDescending
+              cursor="pointer"
+              size="16"
+              style={{ color: "black" }}
+              onClick={() => handleChangeColumnSort(column.id, "DESC")}
+            />
+          )}
         </div>
       )}
     </div>

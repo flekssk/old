@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useEffect, useMemo } from "react";
+import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { useMainReport, useReportFilterAggregation } from "@/api/report";

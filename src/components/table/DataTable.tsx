@@ -182,7 +182,6 @@ export function DataTable<TData, TValue>({
                             header.getContext(),
                           )}
                       <TableFilters
-                        table={table}
                         column={header.column}
                         visibleFilterColumn={visibleFilterColumn}
                         setVisibleFilterColumn={setVisibleFilterColumn}

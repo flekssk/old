@@ -64,6 +64,9 @@ export const StatTable: FC<StatTableProps> = ({
       columnHelper.accessor("vendorCode", {
         id: "vendorCode",
         header: "Артикул",
+        meta: {
+          filterType: "string",
+        },
         cell: ({ cell }) => (
           <Link
             to={`${ROUTES.product}/${cell.row.original.article}?${redirectFilters}`}
@@ -77,17 +80,26 @@ export const StatTable: FC<StatTableProps> = ({
       columnHelper.accessor("brand", {
         id: "brand",
         header: "Бренд",
+        meta: {
+          filterType: "string",
+        },
         enableSorting: true,
       }),
       columnHelper.accessor("category", {
         id: "category",
         header: "Категория",
+        meta: {
+          filterType: "string",
+        },
         enableSorting: true,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("article", {
         id: "article",
         header: "Артикул",
+        meta: {
+          filterType: "string",
+        },
         enableSorting: true,
         enableColumnFilter: true,
       }),
@@ -97,6 +109,7 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
         enableSorting: true,
@@ -107,6 +120,7 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Средняя цена до СПП",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
         enableSorting: true,
@@ -127,6 +141,7 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Продажи",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
         enableColumnFilter: true,
