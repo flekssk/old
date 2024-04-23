@@ -117,6 +117,7 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Реализация (сумма продаж до СПП)",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
         enableColumnFilter: true,

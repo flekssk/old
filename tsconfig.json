@@ -31,5 +31,5 @@
     "types": ["vite/client"]
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.cjs", "**/*.mjs", "./src/**/*.ts", "./src/**/*.tsx"]
+  "include": ["**/*.cjs", "**/*.mjs", "./src/**/*.ts", "./src/**/*.tsx", "types/*.d.ts"]
 }

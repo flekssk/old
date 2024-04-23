@@ -389,14 +389,18 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
         <div className="mt-3 flex items-center">
           <div className="flex flex-wrap gap-2">
             {selectedFilters.map(({ keyForDelete, label, value }) => (
-              <div className="flex items-center gap-0.5" key={label}>
+              <div className="flex items-center gap-1" key={label}>
                 <Badge color="info" size="xs">
-                  {label}: {value}
+                  <span className="flex items-center gap-0.5">
+                    <span>
+                      {label}: {value}
+                    </span>
+                    <MdClose
+                      cursor="pointer"
+                      onClick={() => handleClearSelectFilter(keyForDelete)}
+                    />
+                  </span>
                 </Badge>
-                <MdClose
-                  cursor="pointer"
-                  onClick={() => handleClearSelectFilter(keyForDelete)}
-                />
               </div>
             ))}
           </div>
