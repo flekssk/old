@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect, useRef } from "react";
+import type { SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import type { Column } from "@tanstack/react-table";
-import { Popover, TextInput } from "flowbite-react";
+import { Popover, TextInput, Button } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
 import { HiSortDescending, HiSortAscending, HiFilter } from "react-icons/hi";
 
@@ -34,8 +35,6 @@ export const TableFilters = ({
   const [filterValues, setFilterValues] = useState<ColumnFilters>({});
   const [sort, setSort] = useState<ColumnSort>({});
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const popoverRef = useRef<HTMLDivElement>(null);
 
   const filterType = column.columnDef.meta?.filterType;
 
@@ -100,6 +99,14 @@ export const TableFilters = ({
     setSearchParams(searchParams);
   };
 
+  const handleOpenPopover = (isOpen: SetStateAction<boolean>) => {
+    if (isOpen) {
+      setVisibleFilterColumn(column.id);
+    } else {
+      setVisibleFilterColumn("");
+    }
+  };
+
   useEffect(() => {
     const searchParamsFilters = searchParams.get("filters");
     const searchParamsOrder = searchParams.get("orderBy");
@@ -131,7 +138,6 @@ export const TableFilters = ({
               onChange={(e) => {
                 handleChangeNumberFilter(e.target.value, column.id, "min");
               }}
-              onBlur={updateSearchParams}
             />
           </div>
           <div>
@@ -142,8 +148,12 @@ export const TableFilters = ({
               onChange={(e) =>
                 handleChangeNumberFilter(e.target.value, column.id, "max")
               }
-              onBlur={updateSearchParams}
             />
+          </div>
+          <div>
+            <Button size="xs" className="w-full" onClick={updateSearchParams}>
+              Применить
+            </Button>
           </div>
         </div>
       );
@@ -162,8 +172,12 @@ export const TableFilters = ({
               onChange={(e) =>
                 handleChangeTextFilter(e.target.value, column.id)
               }
-              onBlur={updateSearchParams}
             />
+          </div>
+          <div>
+            <Button size="xs" className="w-full" onClick={updateSearchParams}>
+              Применить
+            </Button>
           </div>
         </div>
       );
@@ -172,26 +186,10 @@ export const TableFilters = ({
     return null;
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      popoverRef.current &&
-      !popoverRef.current.contains(event.target as Node)
-    ) {
-      setVisibleFilterColumn("");
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
     <div className="flex items-center gap-1 pl-2">
       {column.columnDef.enableColumnFilter && filterType && (
-        <div ref={popoverRef}>
+        <div>
           <Popover
             aria-labelledby="area-popover"
             open={visibleFilterColumn === column.id}
@@ -199,18 +197,12 @@ export const TableFilters = ({
             className="!top-10 z-10 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
             arrow={false}
             content={renderTableFilters()}
+            onOpenChange={(isOpen) => handleOpenPopover(isOpen)}
           >
             <HiFilter
               size="16"
               cursor="pointer"
               style={{ color: `${isColumnFilterActive ? "black" : "gray"}` }}
-              onClick={() => {
-                if (visibleFilterColumn === column.id) {
-                  setVisibleFilterColumn("");
-                } else {
-                  setVisibleFilterColumn(column.id);
-                }
-              }}
             />
           </Popover>
         </div>
