@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useEffect, useMemo } from "react";
+import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { useMainReport, useReportFilterAggregation } from "@/api/report";
 import type {
   ArticleFilter,
+  NumberFilter,
   ReportFilterAggregationResponse,
   ReportRequest,
+  TextFilter,
 } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/dashboard/StatTable";
@@ -20,26 +22,7 @@ import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
 import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
 import { Spinner } from "flowbite-react";
-
-const mapQueryParamsToString = (
-  reportRequest: ReportRequest,
-): URLSearchParams => {
-  const urlSearchParams = new URLSearchParams();
-
-  for (const key in reportRequest) {
-    if (Object.prototype.hasOwnProperty.call(reportRequest, key)) {
-      const value = reportRequest[key as keyof ReportRequest];
-
-      if (typeof value !== "string" && value !== null) {
-        urlSearchParams.set(key, JSON.stringify(value));
-      } else {
-        urlSearchParams.set(key, value);
-      }
-    }
-  }
-
-  return urlSearchParams;
-};
+import { parse as qsParse } from "qs";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -92,15 +75,24 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
-    const article = searchParams.get("article");
-    if (article && result.filters) {
-      result.filters["article"] = JSON.parse(article) as ArticleFilter;
+    const orderBy = searchParams.get("orderBy");
+    if (orderBy) {
+      result.orderBy = qsParse(orderBy) as { field: string; direction: string };
+    }
+
+    const filters = searchParams.get("filters");
+    if (filters) {
+      result.filters = qsParse(filters) as Record<
+        string,
+        NumberFilter | ArticleFilter | TextFilter
+      >;
     }
 
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
         : null;
+
     const prevParams = prevInterval
       ? {
           ...result,

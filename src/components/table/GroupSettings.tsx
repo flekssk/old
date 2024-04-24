@@ -3,6 +3,8 @@ import React from "react";
 import { Select, type SelectOption } from "../Select";
 import { useSearchParams } from "react-router-dom";
 import type { StoredGroupSettings } from "@/types/types";
+import type { Filters } from "@/api/report/types";
+import { parse, stringify } from "qs";
 
 type GroupSettingsProps = {
   groupSettingsName: string;
@@ -24,7 +26,14 @@ export const GroupSettings = ({ groupSettingsName }: GroupSettingsProps) => {
     const newSearchParams = new URLSearchParams();
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
-    newSearchParams.set("article", JSON.stringify(selectedGroupData));
+
+    if (selectedGroupData) {
+      const filters = parse(newSearchParams.get("filters") || "{}") as Filters;
+      filters["article"] = selectedGroupData;
+      newSearchParams.set("filters", stringify(filters));
+      setSearchParams(newSearchParams);
+    }
+
     if (dateFrom && dateTo) {
       newSearchParams.set("dateFrom", dateFrom);
       newSearchParams.set("dateTo", dateTo);
