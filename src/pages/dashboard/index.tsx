@@ -130,7 +130,9 @@ const DashboardPage: FC = function () {
   if (!mainReportRequest.data?.stats) {
     return (
       <NavbarSidebarLayout>
-        <DashboardSkeleton />
+        <ProfileSubscriptionInfo>
+          <DashboardSkeleton />
+        </ProfileSubscriptionInfo>
       </NavbarSidebarLayout>
     );
   }
