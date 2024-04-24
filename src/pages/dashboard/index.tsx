@@ -21,7 +21,7 @@ import { DATE_FORMAT, getPrevInterval } from "@/helpers/date";
 import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
 import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
-import { Spinner } from "flowbite-react";
+import { DashboardSkeleton } from "./DashboardSkeleton";
 import { parse as qsParse } from "qs";
 
 function getDefaultDates(
@@ -127,36 +127,36 @@ const DashboardPage: FC = function () {
     return urlSearchParams.toString();
   }, [params]);
 
+  if (!mainReportRequest.data?.stats) {
+    return (
+      <NavbarSidebarLayout>
+        <DashboardSkeleton />
+      </NavbarSidebarLayout>
+    );
+  }
+
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
-        {!mainReportRequest.data?.stats ? (
-          <div className="flex justify-center">
-            <Spinner />
+        <div className="flex flex-col gap-4 px-4 pt-6">
+          <Filters params={params} setSearchParams={setSearchParams} />
+          {statsData && <StatsDashBoard data={statsData} />}
+          <MainChart
+            data={mainReportRequest.data?.chart ?? []}
+            prevData={prevMainReportRequest.data?.chart}
+          />
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+            <TopProductsChart data={mainReportRequest.data?.topFiveProducts} />
+            <StructureOfIncomeChart />
           </div>
-        ) : (
-          <div className="flex flex-col gap-4 px-4 pt-6">
-            <Filters params={params} setSearchParams={setSearchParams} />
-            {statsData && <StatsDashBoard data={statsData} />}
-            <MainChart
-              data={mainReportRequest.data?.chart ?? []}
-              prevData={prevMainReportRequest.data?.chart}
+          {mainReportRequest.data?.byProduct && (
+            <StatTable
+              redirectFilters={filtersForRedirect}
+              items={mainReportRequest.data?.byProduct}
+              prevItems={prevMainReportRequest.data?.byProduct}
             />
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-              <TopProductsChart
-                data={mainReportRequest.data?.topFiveProducts}
-              />
-              <StructureOfIncomeChart />
-            </div>
-            {mainReportRequest.data?.byProduct && (
-              <StatTable
-                redirectFilters={filtersForRedirect}
-                items={mainReportRequest.data?.byProduct}
-                prevItems={prevMainReportRequest.data?.byProduct}
-              />
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </ProfileSubscriptionInfo>
     </NavbarSidebarLayout>
   );
