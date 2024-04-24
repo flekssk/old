@@ -64,6 +64,9 @@ export const StatTable: FC<StatTableProps> = ({
       columnHelper.accessor("vendorCode", {
         id: "vendorCode",
         header: "Артикул",
+        meta: {
+          filterType: "string",
+        },
         cell: ({ cell }) => (
           <Link
             to={`${ROUTES.product}/${cell.row.original.article}?${redirectFilters}`}
@@ -72,45 +75,76 @@ export const StatTable: FC<StatTableProps> = ({
             {cell.getValue()}
           </Link>
         ),
+        enableSorting: true,
       }),
-      columnHelper.accessor("brand", { id: "brand", header: "Бренд" }),
+      columnHelper.accessor("brand", {
+        id: "brand",
+        header: "Бренд",
+        meta: {
+          filterType: "string",
+        },
+        enableSorting: true,
+      }),
       columnHelper.accessor("category", {
         id: "category",
         header: "Категория",
+        meta: {
+          filterType: "string",
+        },
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
-      columnHelper.accessor("article", { id: "article", header: "Артикул" }),
+      columnHelper.accessor("article", {
+        id: "article",
+        header: "Артикул",
+        meta: {
+          filterType: "string",
+        },
+        enableSorting: true,
+        enableColumnFilter: true,
+      }),
       columnHelper.accessor("cost", {
         id: "cost",
         header: "Себестоимость",
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("averagePriceBeforeSPP", {
         id: "averagePriceBeforeSPP",
         header: "Средняя цена до СПП",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("realisation", {
         id: "realisation",
         header: "Реализация (сумма продаж до СПП)",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("sale", {
         id: "sale",
         header: "Продажи",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("toTransfer", {
         id: "toTransfer",
