@@ -4,7 +4,6 @@ import type {
   RowSelectionState,
   SortingState,
   VisibilityState,
-  Row,
 } from "@tanstack/react-table";
 import {
   flexRender,
@@ -22,6 +21,11 @@ import { ColumnSettings } from "./ColumnSettings";
 import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
 import { SaveGroupModal } from "./SaveGroupModal";
+import { useSaveSettingsMutation } from "@/api/user";
+import { ServerSuccess } from "../ServerSuccess";
+import { ServerError } from "../ServerError";
+import type { StoredGroupSettings } from "@/types/types";
+import { TableFilters } from "./TableFilters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,9 +50,10 @@ export function DataTable<TData, TValue>({
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
 }: DataTableProps<TData, TValue>) {
+  const [visibleFilterColumn, setVisibleFilterColumn] =
+    React.useState<string>();
   const [columns, setColumns] = React.useState<ColumnDef<TData, TValue>[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [displayedData, setDisplayedData] = React.useState<number[]>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
@@ -63,10 +68,13 @@ export function DataTable<TData, TValue>({
     });
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const saveSettingsMutation =
+    useSaveSettingsMutation<Record<string, StoredGroupSettings>>();
 
   const table = useReactTable({
     data,
     columns,
+    enableMultiSort: false,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -97,13 +105,6 @@ export function DataTable<TData, TValue>({
           rows.find((selectedRow) => row === selectedRow.id)?.original.article,
       )
       .filter((article): article is number => !!article) || [];
-
-  const renderRows = displayedData.length
-    ? displayedData
-        //@ts-expect-error TODO-mchuev: Types
-        ?.map((data) => rows.find((row) => data === row.original.article))
-        .filter((row): row is Row<TData> => !!row)
-    : rows;
 
   const isEmptyRowSelection = Object.keys(rowSelection).length === 0;
 
@@ -139,10 +140,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-end gap-2 py-2">
         <div>
           {groupSettings && (
-            <GroupSettings
-              groupSettingsName={groupSettingsName}
-              setDisplayedData={setDisplayedData}
-            />
+            <GroupSettings groupSettingsName={groupSettingsName} />
           )}
         </div>
         <div>
@@ -176,12 +174,19 @@ export function DataTable<TData, TValue>({
                       width: header.getSize(),
                     }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    <div className="relative flex items-center justify-between">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                      <TableFilters
+                        column={header.column}
+                        visibleFilterColumn={visibleFilterColumn}
+                        setVisibleFilterColumn={setVisibleFilterColumn}
+                      />
+                    </div>
                     <div
                       {...{
                         onDoubleClick: () => header.column.resetSize(),
@@ -201,7 +206,7 @@ export function DataTable<TData, TValue>({
             ))}
           </TableFlowbite.Head>
           <TableFlowbite.Body {...getBodyProps()}>
-            {renderRows.map((row) => (
+            {rows.map((row) => (
               <React.Fragment key={row.id}>
                 <TableFlowbite.Row className=" border-b">
                   {row.getVisibleCells().map((cell, index) => {
@@ -256,7 +261,13 @@ export function DataTable<TData, TValue>({
           </div>
         ) : null}
       </div>
+      <div className="mt-1 w-full">
+        {/* @ts-expect-error TODO-mchuev: Types meessage */}
+        <ServerSuccess message={saveSettingsMutation.data?.meessage} />
+        <ServerError mutation={saveSettingsMutation} className="mt-3" />
+      </div>
       <SaveGroupModal
+        saveSettingsMutation={saveSettingsMutation}
         groupSettingsName={groupSettingsName}
         rowsSelected={rowsSelected}
         isOpen={isOpenGroupSettingsModal}

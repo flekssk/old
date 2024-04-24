@@ -1,27 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Modal, TextInput } from "flowbite-react";
 import React from "react";
 import { Select } from "@/components/Select";
-import { useSaveSettingsMutation, useSettingsItemByName } from "@/api/user";
+import { useSettingsItemByName } from "@/api/user";
 import type { SelectOption } from "@/components/Select";
-import { ServerSuccess } from "../ServerSuccess";
-import { ServerError } from "../ServerError";
+import type { StoredGroupSettings } from "@/types/types";
+import type { UseMutationResult } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
 type SaveGroupModalProps = {
   groupSettingsName: string;
   isOpen: boolean;
   rowsSelected: number[];
+  saveSettingsMutation: UseMutationResult<
+    any,
+    AxiosError<{ message: string }>,
+    any,
+    any
+  >;
   onClose: () => void;
-};
-
-type StoredGroupSettings = {
-  name: string;
-  rowsSelected: number[];
 };
 
 export const SaveGroupModal = ({
   groupSettingsName,
   isOpen,
   rowsSelected,
+  saveSettingsMutation,
   onClose,
 }: SaveGroupModalProps) => {
   const [selectedGroup, setSelectedGroup] = React.useState<
@@ -30,9 +34,6 @@ export const SaveGroupModal = ({
   const [groupName, setGroupName] = React.useState("");
   const [isAddNewGroupFormVisible, setIsAddNewGroupFormVisible] =
     React.useState(false);
-
-  const saveSettingsMutation =
-    useSaveSettingsMutation<Record<string, StoredGroupSettings>>();
 
   const storedSettingsQuery = useSettingsItemByName<
     Record<string, StoredGroupSettings>
@@ -65,6 +66,7 @@ export const SaveGroupModal = ({
 
     setSelectedGroup(undefined);
     storedSettingsQuery.refetch();
+    handleCloseModal();
   };
 
   const handleSaveGroup = async () => {
@@ -82,6 +84,7 @@ export const SaveGroupModal = ({
 
     setGroupName("");
     storedSettingsQuery.refetch();
+    handleCloseModal();
   };
 
   const groupOptions = React.useMemo(() => {
@@ -168,10 +171,6 @@ export const SaveGroupModal = ({
           >
             {isAddNewGroupFormVisible ? "Сохранить" : "Применить"}
           </Button>
-        </div>
-        <div className="mt-5 w-full">
-          <ServerSuccess message={saveSettingsMutation.data?.message} />
-          <ServerError mutation={saveSettingsMutation} className="mt-3" />
         </div>
       </Modal.Footer>
     </Modal>

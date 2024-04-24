@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useEffect, useMemo } from "react";
+import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-// import { useArticleReport, useMainReport } from "@/api/report";
 import { useMainReport, useReportFilterAggregation } from "@/api/report";
 import type {
+  ArticleFilter,
+  NumberFilter,
   ReportFilterAggregationResponse,
   ReportRequest,
+  TextFilter,
 } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/dashboard/StatTable";
@@ -19,6 +21,8 @@ import { DATE_FORMAT, getPrevInterval } from "@/helpers/date";
 import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
 import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
+import { DashboardSkeleton } from "./DashboardSkeleton";
+import { parse as qsParse } from "qs";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -48,7 +52,9 @@ const DashboardPage: FC = function () {
 
   const { params, prevParams } = useMemo(() => {
     const defaultDates = getDefaultDates(reportFilterAggregatedRequest.data);
-    const result: ReportRequest = {};
+    const result: ReportRequest = {
+      filters: {},
+    };
     const dateFrom = searchParams.get("dateFrom") ?? defaultDates?.dateFrom;
     if (dateFrom) {
       result.dateFrom = dateFrom;
@@ -69,10 +75,24 @@ const DashboardPage: FC = function () {
       result.brand = brand;
     }
 
+    const orderBy = searchParams.get("orderBy");
+    if (orderBy) {
+      result.orderBy = qsParse(orderBy) as { field: string; direction: string };
+    }
+
+    const filters = searchParams.get("filters");
+    if (filters) {
+      result.filters = qsParse(filters) as Record<
+        string,
+        NumberFilter | ArticleFilter | TextFilter
+      >;
+    }
+
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
         : null;
+
     const prevParams = prevInterval
       ? {
           ...result,
@@ -83,10 +103,6 @@ const DashboardPage: FC = function () {
 
     return { params: result, prevParams };
   }, [searchParams, reportFilterAggregatedRequest.data]);
-
-  useEffect(() => {
-    setSearchParams(params as string);
-  }, [params]);
 
   const mainReportRequest = useMainReport(params, {
     enabled: !!reportFilterAggregatedRequest.data,
@@ -111,34 +127,36 @@ const DashboardPage: FC = function () {
     return urlSearchParams.toString();
   }, [params]);
 
+  if (!mainReportRequest.data?.stats) {
+    return (
+      <NavbarSidebarLayout>
+        <DashboardSkeleton />
+      </NavbarSidebarLayout>
+    );
+  }
+
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
-        {!mainReportRequest.data?.stats ? (
-          <div>NO DATA</div>
-        ) : (
-          <div className="flex flex-col gap-4 px-4 pt-6">
-            <Filters params={params} setSearchParams={setSearchParams} />
-            {statsData && <StatsDashBoard data={statsData} />}
-            <MainChart
-              data={mainReportRequest.data?.chart ?? []}
-              prevData={prevMainReportRequest.data?.chart}
-            />
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-              <TopProductsChart
-                data={mainReportRequest.data?.topFiveProducts}
-              />
-              <StructureOfIncomeChart />
-            </div>
-            {mainReportRequest.data?.byProduct ? (
-              <StatTable
-                redirectFilters={filtersForRedirect}
-                items={mainReportRequest.data?.byProduct}
-                prevItems={prevMainReportRequest.data?.byProduct}
-              />
-            ) : null}
+        <div className="flex flex-col gap-4 px-4 pt-6">
+          <Filters params={params} setSearchParams={setSearchParams} />
+          {statsData && <StatsDashBoard data={statsData} />}
+          <MainChart
+            data={mainReportRequest.data?.chart ?? []}
+            prevData={prevMainReportRequest.data?.chart}
+          />
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+            <TopProductsChart data={mainReportRequest.data?.topFiveProducts} />
+            <StructureOfIncomeChart />
           </div>
-        )}
+          {mainReportRequest.data?.byProduct && (
+            <StatTable
+              redirectFilters={filtersForRedirect}
+              items={mainReportRequest.data?.byProduct}
+              prevItems={prevMainReportRequest.data?.byProduct}
+            />
+          )}
+        </div>
       </ProfileSubscriptionInfo>
     </NavbarSidebarLayout>
   );

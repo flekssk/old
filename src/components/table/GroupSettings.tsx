@@ -2,23 +2,17 @@ import { useSettingsItemByName } from "@/api/user";
 import React from "react";
 import { Select, type SelectOption } from "../Select";
 import { useSearchParams } from "react-router-dom";
-
-type StoredGroupSettings = {
-  name: string;
-  rowsSelected: number[];
-};
+import type { StoredGroupSettings } from "@/types/types";
+import type { Filters } from "@/api/report/types";
+import { parse, stringify } from "qs";
 
 type GroupSettingsProps = {
   groupSettingsName: string;
-  setDisplayedData: (data: number[]) => void;
 };
 
 const baseTableOption = { label: "Исходная таблица", value: "baseTable" };
 
-export const GroupSettings = ({
-  groupSettingsName,
-  setDisplayedData,
-}: GroupSettingsProps) => {
+export const GroupSettings = ({ groupSettingsName }: GroupSettingsProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [groups, setGroups] = React.useState<SelectOption[]>([]);
   const [selectedGroup, setSelectedGroup] = React.useState<SelectOption>();
@@ -28,10 +22,18 @@ export const GroupSettings = ({
     retry: false,
   });
 
-  const handleResetFilters = () => {
+  const handleSetFilters = (selectedGroupData?: number[]) => {
     const newSearchParams = new URLSearchParams();
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
+
+    if (selectedGroupData) {
+      const filters = parse(newSearchParams.get("filters") || "{}") as Filters;
+      filters["article"] = selectedGroupData;
+      newSearchParams.set("filters", stringify(filters));
+      setSearchParams(newSearchParams);
+    }
+
     if (dateFrom && dateTo) {
       newSearchParams.set("dateFrom", dateFrom);
       newSearchParams.set("dateTo", dateTo);
@@ -41,15 +43,15 @@ export const GroupSettings = ({
 
   const handleGroupChange = (selectedGroup: SelectOption) => {
     if (selectedGroup.value === "baseTable") {
-      setDisplayedData([]);
+      const newSearchParams = new URLSearchParams();
+      setSearchParams(newSearchParams);
       setSelectedGroup(selectedGroup);
     } else {
       const selectedGroupName = selectedGroup.value;
       const selectedGroupData =
         storedSettingsQuery.data?.settings[selectedGroupName]?.rowsSelected;
-      handleResetFilters();
+      handleSetFilters(selectedGroupData);
       setSelectedGroup(selectedGroup);
-      setDisplayedData(selectedGroupData || []);
     }
   };
 

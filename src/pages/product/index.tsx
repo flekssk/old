@@ -19,6 +19,7 @@ import { getPrevInterval } from "@/helpers/date";
 import { useProductStatsData } from "./useProductStatsData";
 import { Filters } from "./Filters";
 import { MainChart } from "../dashboard/MainChart";
+import { ProductSkeleton } from "./ProductSkeleton";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -80,14 +81,23 @@ const Product: FC = function () {
     articleRequest.data,
     prevArticleRequest.data,
   );
+
+  if (articleRequest.isLoading) {
+    return (
+      <NavbarSidebarLayout>
+        <ProductSkeleton />
+      </NavbarSidebarLayout>
+    );
+  }
+
   return (
     <NavbarSidebarLayout>
       <div className="flex flex-col gap-4 px-4 pt-6">
-        {articleRequest.data ? (
+        {articleRequest.data && (
           <ProductInfo product={articleRequest.data.productData} />
-        ) : null}
+        )}
         <Filters params={params} setSearchParams={setSearchParams} />
-        {statsData ? <StatsProduct data={statsData} /> : null}
+        {statsData && <StatsProduct data={statsData} />}
         <MainChart
           data={articleRequest.data?.chart ?? []}
           prevData={prevArticleRequest.data?.chart}
@@ -97,10 +107,10 @@ const Product: FC = function () {
           <TopProductsChart />
           <StructureOfIncomeChart />
         </div>
-        {articleRequest.data?.stocks ? (
+        {articleRequest.data?.stocks && (
           <ProductAvailability stocks={articleRequest.data?.stocks} />
-        ) : null}
-        {articleRequest.data?.byBarcode ? (
+        )}
+        {articleRequest.data?.byBarcode && (
           <StatTable
             items={Object.values(articleRequest.data.byBarcode)}
             prevItems={
@@ -109,7 +119,7 @@ const Product: FC = function () {
                 : undefined
             }
           />
-        ) : null}
+        )}
         {/*<SizeComparison />*/}
 
         {/*<ComparisonByOption />*/}
