@@ -1,25 +1,44 @@
-import { Card, Tooltip } from "flowbite-react";
+import { Card, Pagination, Tooltip } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { ProductReportItem } from "@/api/report/types";
 import { DataTable } from "@/components/table/DataTable";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { DiffNumberCell } from "@/components/table/DiffNumberCell";
+import {
+  usePagination,
+  type Pagination as PaginationType,
+} from "@/hooks/usePagination";
+import { Select } from "@/components/Select";
+import { SIZES_ROWS_FOR_REPORT_TABLE } from "@/constants/constants";
 
 export type StatTableProps = {
   items: ProductReportItem[];
+  pagination: PaginationType;
   prevItems?: ProductReportItem[];
   redirectFilters?: string;
 };
 
 export const StatTable: FC<StatTableProps> = ({
   items,
+  pagination,
   prevItems,
   redirectFilters,
 }) => {
+  const [searchParam, setSearchParam] = useSearchParams();
+  const pageValue = searchParam.get("page") || "1";
+
+  const { totalPages, onChangePage, onChangeSelect } = usePagination({
+    pagination,
+    setSearchParam,
+    searchParam,
+  });
+
+  const isPaginationVisible = totalPages && items.length !== pagination.total;
+
   const data = useMemo<ProductReportItem[]>(() => {
     return items.map((item) => {
       return {
@@ -341,6 +360,28 @@ export const StatTable: FC<StatTableProps> = ({
         data={data}
         cellRangeSelection={true}
       />
+      {isPaginationVisible && (
+        <div className="flex items-center gap-2">
+          <Pagination
+            currentPage={Number(pageValue)}
+            totalPages={totalPages}
+            onPageChange={onChangePage}
+            nextLabel=""
+            previousLabel=""
+            showIcons
+            className="mt-0"
+          />
+          <div className="mt-2">
+            <Select
+              placeholder="Отображать по"
+              options={SIZES_ROWS_FOR_REPORT_TABLE}
+              setSelectedOption={(option) =>
+                onChangeSelect(String(option.value))
+              }
+            />
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
