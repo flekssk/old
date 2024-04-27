@@ -23,6 +23,7 @@ import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 import { parse as qsParse } from "qs";
+import { useArticleList } from "@/api/wb";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -52,9 +53,8 @@ const DashboardPage: FC = function () {
 
   const { params, prevParams } = useMemo(() => {
     const defaultDates = getDefaultDates(reportFilterAggregatedRequest.data);
-    const result: ReportRequest = {
-      filters: {},
-    };
+    const result: ReportRequest = {};
+
     const dateFrom = searchParams.get("dateFrom") ?? defaultDates?.dateFrom;
     if (dateFrom) {
       result.dateFrom = dateFrom;
@@ -81,6 +81,7 @@ const DashboardPage: FC = function () {
     }
 
     const filters = searchParams.get("filters");
+
     if (filters) {
       result.filters = qsParse(filters) as Record<
         string,
@@ -107,13 +108,17 @@ const DashboardPage: FC = function () {
   const mainReportRequest = useMainReport(params, {
     enabled: !!reportFilterAggregatedRequest.data,
   });
+
   const prevMainReportRequest = useMainReport(prevParams, {
     enabled: !!reportFilterAggregatedRequest.data,
   });
+
   const statsData = useDashBoardStatsData(
     mainReportRequest.data,
     prevMainReportRequest.data,
   );
+
+  const articleList = useArticleList();
 
   const filtersForRedirect = useMemo(() => {
     const urlSearchParams = new URLSearchParams();
@@ -141,7 +146,11 @@ const DashboardPage: FC = function () {
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
         <div className="flex flex-col gap-4 px-4 pt-6">
-          <Filters params={params} setSearchParams={setSearchParams} />
+          <Filters
+            params={params}
+            setSearchParams={setSearchParams}
+            articles={articleList.data?.items}
+          />
           {statsData && <StatsDashBoard data={statsData} />}
           <MainChart
             data={mainReportRequest.data?.chart ?? []}
