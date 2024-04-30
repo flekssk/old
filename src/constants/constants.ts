@@ -34,3 +34,9 @@ export const REPORT_TABLE_COLUMNS_NAMES: { [key: string]: string } = {
   advertisingExpenses: "Рекламные расходы",
   ddr: "ДДР",
 };
+
+export const SIZES_ROWS_FOR_REPORT_TABLE = [
+  { label: "10", value: 10 },
+  { label: "30", value: 30 },
+  { label: "50", value: 50 },
+];

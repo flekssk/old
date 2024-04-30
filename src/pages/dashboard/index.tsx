@@ -88,6 +88,16 @@ const DashboardPage: FC = function () {
       >;
     }
 
+    const limit = searchParams.get("limit");
+    if (limit) {
+      result.limit = Number(limit);
+    }
+
+    const page = searchParams.get("page");
+    if (page) {
+      result.page = Number(page);
+    }
+
     const prevInterval =
       result.dateFrom && result.dateTo
         ? getPrevInterval(result.dateFrom, result.dateTo)
@@ -154,6 +164,7 @@ const DashboardPage: FC = function () {
           {mainReportRequest.data?.byProduct && (
             <StatTable
               redirectFilters={filtersForRedirect}
+              pagination={mainReportRequest.data?.pagination}
               items={mainReportRequest.data?.byProduct}
               prevItems={prevMainReportRequest.data?.byProduct}
             />

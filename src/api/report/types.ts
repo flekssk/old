@@ -1,3 +1,5 @@
+import type { Pagination } from "@/hooks/usePagination";
+
 // филтры и сортировки по всем полям кроме img, url
 export interface ProductReportItem {
   select: boolean;
@@ -136,6 +138,7 @@ export interface ReportResponse {
   topFiveProducts: TopProduct[];
   stats: ReportStats;
   revenueStructure: RevenueStructure;
+  pagination: Pagination;
 }
 
 export type NumberFilter = { min: number; max: number };
@@ -149,6 +152,8 @@ export interface ReportRequest {
   brand?: string;
   filters?: Filters;
   orderBy?: { field: string; direction: string };
+  limit?: number;
+  page?: number;
 }
 
 // филтры и сортировки по всем полям кроме img, url
