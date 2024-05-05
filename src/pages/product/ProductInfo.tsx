@@ -1,16 +1,39 @@
 import type { ReportItemResponse } from "@/api/report/types";
+import { Breadcrumb } from "flowbite-react";
 import { type FC } from "react";
+import { HiHome } from "react-icons/hi";
+import { useNavigate } from "react-router";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 type ProductInfoProps = {
   product: ReportItemResponse["productData"];
 };
 
 const ProductInfo: FC<ProductInfoProps> = function ({ product }) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="mb-2 text-lg">
-        Отчет → {product.vendorCode} • {product.name}
-      </h2>
+      <Breadcrumb className="mb-4">
+        <Breadcrumb.Item>
+          <div className="flex items-center gap-x-3">
+            <IoMdArrowRoundBack
+              className="text-xl"
+              cursor="pointer"
+              onClick={() => navigate(-1)}
+            />
+          </div>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/">
+          <div className="flex items-center gap-x-3">
+            <HiHome className="text-xl" />
+            <span className="dark:text-white">Главная</span>
+          </div>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          {product.vendorCode} • {product.name}
+        </Breadcrumb.Item>
+      </Breadcrumb>
       <div className="flex items-center gap-5">
         <img className="w-32" src={product.image} alt={product.name} />
         <div className="grid grid-cols-2 gap-2 ">
