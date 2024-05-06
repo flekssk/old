@@ -1,4 +1,4 @@
-import { Pagination } from "../types";
+import type { Pagination } from "../types";
 
 export type WbAccount = {
   id: number;
@@ -53,7 +53,7 @@ export type ArticleListResponse = {
 };
 
 export type ArticleListRequest = {
-  page: number;
-  limit: number;
-  withBarcodes: number;
+  page?: number;
+  limit?: number;
+  withBarcodes?: number;
 };

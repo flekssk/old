@@ -29,7 +29,7 @@ export const useUpdateAccountMutation = createCustomMutation(updateAccount);
 export const useDeleteAccountMutation = createCustomMutation(deleteAccount);
 
 export const useArticleList = (
-  params: ArticleListRequest,
+  params: ArticleListRequest = {},
   options: Partial<UseQueryOptions<ArticleListResponse, Error>> = {},
 ) =>
   useQuery({

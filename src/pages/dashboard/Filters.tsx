@@ -4,97 +4,60 @@ import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
 import { DATE_FORMAT } from "@/helpers/date";
-import { endOfWeek, formatDate, parse, startOfWeek, subWeeks } from "date-fns";
-import { Datepicker, Dropdown, Badge, Button } from "flowbite-react";
+import { formatDate, parse } from "date-fns";
+import { Datepicker, Badge, Button } from "flowbite-react";
 import { type FC, useMemo } from "react";
-import type {
-  ArticleFilter,
-  NumberFilter,
-  ReportRequest,
-  TextFilter,
-} from "@/api/report/types";
-import { getLabelDateFilter, getValueDateFilter } from "@/utils/dashboard";
+import type { ReportRequest } from "@/api/report/types";
+import {
+  dateFilters,
+  getLabelDateFilter,
+  getValueDateFilter,
+  isNumberFilter,
+  isTextFilter,
+} from "@/utils/dashboard";
 import { REPORT_TABLE_COLUMNS_NAMES } from "@/constants/constants";
 import { MdClose } from "react-icons/md";
 import { parse as qsParse, stringify } from "qs";
 import { useSearchParams } from "react-router-dom";
+import type { MultiSelectOption } from "@/components/MultiSelect";
+import { MultiSelect } from "@/components/MultiSelect";
+import type { Article } from "@/api/wb/types";
 
-export type DateFilterValue = {
-  dateFrom: string;
-  dateTo: string;
-};
-
-export type DateFilter = Partial<DateFilterValue> & {
-  text: string;
-  value: string;
-};
-
-export const dateFilters: DateFilter[] = [
-  {
-    text: "Последняя неделя",
-    value: "lastWeek",
-    dateFrom: formatDate(
-      startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
-      DATE_FORMAT.SERVER_DATE,
-    ),
-    dateTo: formatDate(
-      endOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
-      DATE_FORMAT.SERVER_DATE,
-    ),
-  },
-  {
-    text: "Предыдущая неделя",
-    value: "prevWeek",
-    dateFrom: formatDate(
-      startOfWeek(subWeeks(new Date(), 2), { weekStartsOn: 1 }),
-      DATE_FORMAT.SERVER_DATE,
-    ),
-    dateTo: formatDate(
-      endOfWeek(subWeeks(new Date(), 2), { weekStartsOn: 1 }),
-      DATE_FORMAT.SERVER_DATE,
-    ),
-  },
-  {
-    text: "Последние 30 дней",
-    value: "last30Days",
-    dateFrom: formatDate(subWeeks(new Date(), 4), DATE_FORMAT.SERVER_DATE),
-    dateTo: formatDate(new Date(), DATE_FORMAT.SERVER_DATE),
-  },
-  {
-    text: "Последние 90 дней",
-    value: "last90Days",
-    dateFrom: formatDate(subWeeks(new Date(), 13), DATE_FORMAT.SERVER_DATE),
-    dateTo: formatDate(new Date(), DATE_FORMAT.SERVER_DATE),
-  },
-  {
-    text: "Произвольный период",
-    value: "custom",
-  },
-];
 type FiltersProps = {
   params: ReportRequest;
+  articles?: Article[];
   setSearchParams: (searchParams: URLSearchParams) => void;
 };
 
-const isNumberFilter = (
-  filter: TextFilter | NumberFilter | ArticleFilter,
-): filter is NumberFilter => {
-  return (
-    typeof filter === "object" &&
-    filter !== null &&
-    ("min" in filter || "max" in filter)
-  );
-};
-
-const isTextFilter = (
-  filter: TextFilter | NumberFilter | ArticleFilter,
-): filter is TextFilter => {
-  return typeof filter === "object" && filter !== null && "value" in filter;
-};
-
-export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
+export const Filters: FC<FiltersProps> = ({
+  params,
+  articles,
+  setSearchParams,
+}) => {
   const reportFilterAggregationRequest = useReportFilterAggregation();
   const [searchParams] = useSearchParams();
+
+  const articlesOptions = useMemo(() => {
+    if (!articles) return [];
+
+    return articles.map(({ title, nmId }) => ({
+      label: title,
+      value: nmId,
+    }));
+  }, [articles]);
+
+  const selectedArticles = useMemo(() => {
+    const currentArticles = params.filters?.["article"];
+
+    if (!currentArticles || !Array.isArray(currentArticles)) return [];
+
+    return currentArticles.flatMap((article) => {
+      const foundArticle = articlesOptions.find(
+        (articleItem) => articleItem.value === String(article),
+      );
+      return foundArticle ? [foundArticle] : [];
+    });
+  }, [params, articlesOptions]);
 
   const dateFilterOptions = useMemo(() => {
     return dateFilters.map((filter) => ({
@@ -192,6 +155,7 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
         new Date(),
       )
     : undefined;
+
   const maxDate = reportFilterAggregationRequest.data?.date?.maxDate
     ? parse(
         reportFilterAggregationRequest.data?.date?.maxDate,
@@ -227,6 +191,15 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
   const handleBrandChange = (brand: string) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
     newSearchParams.set("brand", brand);
+    setSearchParams(newSearchParams);
+  };
+
+  const handleArticlesChange = (options: MultiSelectOption[]) => {
+    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    const filters = qsParse(newSearchParams.get("filters") || "");
+    const articles = options.map((option) => String(option.value));
+    filters["article"] = articles;
+    newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };
 
@@ -369,19 +342,11 @@ export const Filters: FC<FiltersProps> = ({ params, setSearchParams }) => {
               placeholder="Все категории"
               options={filterOptions.categories}
             />
-            <Dropdown color="gray" label="Все артикулы">
-              <Dropdown.Item>
-                <strong>Sep 16, 2021 - Sep 22, 2021</strong>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>Yesterday</Dropdown.Item>
-              <Dropdown.Item>Today</Dropdown.Item>
-              <Dropdown.Item>Last 7 days</Dropdown.Item>
-              <Dropdown.Item>Last 30 days</Dropdown.Item>
-              <Dropdown.Item>Last 90 days</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>Custom...</Dropdown.Item>
-            </Dropdown>
+            <MultiSelect
+              options={articlesOptions || []}
+              selectedOptions={selectedArticles}
+              setSelectedOptions={handleArticlesChange}
+            />
           </div>
         </div>
       </div>
