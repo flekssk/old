@@ -1,12 +1,41 @@
-import { useMemo } from "react";
+import { type FC, useMemo } from "react";
 import { useUserProfile } from "@/api/user";
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@/constants/routes";
 import { OnBoardingStatus } from "@/api/user/constants";
+import type { OnBoardings, UserProfileResponse } from "@/api/user/types";
+import { BlockSpinner } from "./BlockSpinner";
 
 type ProfileSubscriptionInfoProps = {
   children: React.ReactNode;
+};
+
+const OnBoardingInProcess: FC<{
+  onboarding: OnBoardings;
+  accounts: UserProfileResponse["accounts"];
+}> = ({ onboarding, accounts }) => {
+  const account = useMemo(() => {
+    return accounts.find(
+      (account) => account.id === onboarding.settings.accountId,
+    );
+  }, [accounts, onboarding]);
+  return (
+    <tr className="bg-white text-center">
+      <td className="border border-gray-400 px-4 py-2">
+        {account ? account.name : onboarding.name}
+      </td>
+      <td className="border border-gray-400 px-4 py-2">
+        {onboarding.settings.allSteps}
+      </td>
+      <td className="border border-gray-400 px-4 py-2">
+        {onboarding.settings.completeSteps}
+      </td>
+      <td className="border border-gray-400 px-4 py-2">
+        {onboarding.settings.failSteps}
+      </td>
+    </tr>
+  );
 };
 
 const ProfileSubscriptionInfo = ({
@@ -51,6 +80,10 @@ const ProfileSubscriptionInfo = ({
     userProfile.data?.accountsCount,
     userProfile.isSuccess,
   ]);
+
+  if (userProfile.isLoading) {
+    return <BlockSpinner />;
+  }
 
   if (typeOfContent === "subscriptionExpired") {
     return (
@@ -124,20 +157,11 @@ const ProfileSubscriptionInfo = ({
             </thead>
             <tbody>
               {onBoardingInProcess?.map((el) => (
-                <tr key={el.id} className="bg-white text-center">
-                  <td className="border border-gray-400 px-4 py-2">
-                    {el.name}
-                  </td>
-                  <td className="border border-gray-400 px-4 py-2">
-                    {el.settings.allSteps}
-                  </td>
-                  <td className="border border-gray-400 px-4 py-2">
-                    {el.settings.completeSteps}
-                  </td>
-                  <td className="border border-gray-400 px-4 py-2">
-                    {el.settings.failSteps}
-                  </td>
-                </tr>
+                <OnBoardingInProcess
+                  onboarding={el}
+                  accounts={userProfile.data?.accounts || []}
+                  key={el.id}
+                />
               ))}
             </tbody>
           </table>

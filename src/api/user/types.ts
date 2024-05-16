@@ -7,6 +7,7 @@ export type UserProfileResponse = {
     reportTableSettings?: null;
   };
   onboardings: OnBoardings[];
+  accounts: Array<{ id: number; name: string }>;
   email: string;
   name: string;
   message?: string;
@@ -24,6 +25,7 @@ type OnBoardingsSettings = {
   completeSteps: number;
   failSteps: 0;
   status: OnBoardingStatusType;
+  accountId?: number;
 };
 
 type OnBoardingStatusType = "in-process" | "finished" | "failed";
