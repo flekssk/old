@@ -75,7 +75,7 @@ export const Table = <T extends Record<string, any>>({
             </div>
             <div className="flex gap-2 bg-[#F2F2F2] px-5 py-3">
               <img alt="groups" src="/images/table/columns.svg" />
-              <Dropdown label="Стобцы" inline size="sm">
+              <Dropdown label="Столбцы" inline size="sm">
                 <Dropdown.Item>
                   <strong>пункт 1</strong>
                 </Dropdown.Item>

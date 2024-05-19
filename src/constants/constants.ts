@@ -12,7 +12,7 @@ export const REPORT_TABLE_COLUMNS_NAMES: { [key: string]: string } = {
   sale: "Продажа",
   toTransfer: "К перечислению",
   returns: "Возвраты",
-  costOfSales: "Cебестоимость продаж",
+  costOfSales: "Себестоимость продаж",
   fines: "Штрафы",
   compensationForSubstitutedGoods: "Компенсация подмененного товара",
   reimbursementOfTransportationCosts: "Компенсация поставщика",
