@@ -180,7 +180,7 @@ export const StatTable: FC<StatTableProps> = ({
       }),
       columnHelper.accessor("toTransfer", {
         id: "toTransfer",
-        header: "К перечеслению",
+        header: "К перечислению",
         meta: {
           suffix: "₽",
         },

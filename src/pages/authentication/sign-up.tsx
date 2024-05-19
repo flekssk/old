@@ -193,8 +193,8 @@ const SignUpPage: FC = function () {
                       htmlFor="terms"
                       className="text-gray-500 dark:text-gray-300"
                     >
-                      Регистрируясь, вы создаете учетную запись Flowbite и
-                      соглашаетесь с условиями Flowbite.&nbsp;
+                      Регистрируясь, вы создаете учетную запись TrueStat и
+                      соглашаетесь с условиями TrueStat.&nbsp;
                       <a
                         className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                         href="#"
@@ -232,7 +232,7 @@ const SignUpPage: FC = function () {
                 isProcessing={isPending}
                 disabled={isPending || !terms}
               >
-                Cоздать учетную запись
+                Создать учетную запись
               </Button>
               <ServerError mutation={registrationMutation} />
               {registrationMutation.data?.message ? (

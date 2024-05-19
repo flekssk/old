@@ -93,7 +93,7 @@ export const ApiKeys: FC = function () {
             />
           ))
         ) : (
-          <div>Добавте свой первый API ключ</div>
+          <div>Добавьте свой первый API ключ</div>
         )}
       </div>
     </Card>

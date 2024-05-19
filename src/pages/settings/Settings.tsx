@@ -120,7 +120,7 @@ export const Settings: FC = () => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="flex flex-col gap-5">
-                  <p>Выбор нологовой ставки</p>
+                  <p>Выбор налоговой ставки</p>
                   <Controller
                     name="taxationTypeId"
                     control={control}
@@ -143,7 +143,7 @@ export const Settings: FC = () => {
                             title: label,
                           });
                         }}
-                        placeholder="Выбор нологовой ставки"
+                        placeholder="Выбор налоговой ставки"
                       />
                     )}
                   />

@@ -106,7 +106,7 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
 
   return (
     <Card>
-      <h2 className="text-xl">Топ 5 мажинальных товаров</h2>
+      <h2 className="text-xl">Топ 5 маржинальных товаров</h2>
       <Chart height={305} options={options} series={series} type="donut" />
     </Card>
   );

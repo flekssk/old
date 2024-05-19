@@ -138,7 +138,7 @@ export function ColumnSettings<TData>({
                 });
               }}
             >
-              Все включино
+              Все включено
             </Dropdown.Item>
             {storedSettingsList.length ? (
               <>

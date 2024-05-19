@@ -30,7 +30,7 @@ const CreateCommand = ({
         <div className="border-y-2 pb-[15px] pt-[20px]">
           <div className="flex flex-col pl-[15px]">
             <Label htmlFor="title" className="m-1">
-              Комманда
+              Команда
             </Label>
             <TextInput
               className="max-w-[364px]"
