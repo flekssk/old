@@ -40,10 +40,11 @@ export const Filters: FC<FiltersProps> = ({
   const articlesOptions = useMemo(() => {
     if (!articles) return [];
 
-    return articles.map(({ title, nmId }) => ({
+    return articles.map(({ title, nmId, vendorCode }) => ({
       label: title,
       value: nmId,
-    }));
+      searchValues: [nmId.toString(), title, vendorCode],
+    })) as MultiSelectOption[];
   }, [articles]);
 
   const selectedArticles = useMemo(() => {
@@ -343,6 +344,7 @@ export const Filters: FC<FiltersProps> = ({
               options={filterOptions.categories}
             />
             <MultiSelect
+              position="top-right"
               options={articlesOptions || []}
               selectedOptions={selectedArticles}
               setSelectedOptions={handleArticlesChange}

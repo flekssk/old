@@ -24,6 +24,7 @@ import { format, parse, sub } from "date-fns";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 import { parse as qsParse } from "qs";
 import { useArticleList } from "@/api/wb";
+import { DisplayDateRange } from "@/components/DisplayDateRange";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -152,6 +153,11 @@ const DashboardPage: FC = function () {
     );
   }
 
+  console.log(
+    "by products ",
+    mainReportRequest,
+    mainReportRequest?.data?.byProduct,
+  );
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
@@ -161,6 +167,7 @@ const DashboardPage: FC = function () {
             setSearchParams={setSearchParams}
             articles={articleList.data?.items}
           />
+          <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
           {statsData && <StatsDashBoard data={statsData} />}
           <MainChart
             data={mainReportRequest.data?.chart ?? []}

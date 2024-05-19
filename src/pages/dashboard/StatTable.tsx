@@ -28,6 +28,7 @@ export const StatTable: FC<StatTableProps> = ({
   prevItems,
   redirectFilters,
 }) => {
+  console.log("🚀 ~ items:", items);
   const [searchParam, setSearchParam] = useSearchParams();
   const pageValue = searchParam.get("page") || "1";
 
@@ -118,6 +119,18 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Артикул",
         meta: {
           filterType: "string",
+        },
+        cell: ({ cell }) => {
+          return (
+            <a
+              className="underline"
+              href={`https://www.wildberries.ru/catalog/${cell.row.original.article}/detail.aspx`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {cell.getValue()}
+            </a>
+          );
         },
         enableSorting: true,
         enableColumnFilter: true,
@@ -338,7 +351,7 @@ export const StatTable: FC<StatTableProps> = ({
       }),
       columnHelper.accessor("ddr", {
         id: "ddr",
-        header: "ДДР",
+        header: "ДРР",
         meta: {
           suffix: "%",
           positiveIfGrow: false,

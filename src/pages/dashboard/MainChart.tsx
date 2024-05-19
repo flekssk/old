@@ -117,7 +117,7 @@ export const MainChart: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (params.includes("ddr")) {
       result.push({
-        name: "ДДР %",
+        name: "ДРР %",
         data: sortedData.map((item) => item.ddr),
         type: "line",
         group: "price",
@@ -127,7 +127,7 @@ export const MainChart: FC<MainChartProps> = ({ data, prevData }) => {
 
       if (displayPrevData) {
         result.push({
-          name: "ДДР %",
+          name: "ДРР %",
           data: prevSortedData.map((item) => item.ddr),
           group: "price",
           type: "area",
@@ -239,29 +239,14 @@ export const MainChart: FC<MainChartProps> = ({ data, prevData }) => {
           id="averagePriceBeforeSPP"
           title="Средняя цена"
         />
-        <CheckboxCharts
-          deleteParams={deleteParams}
-          getParams={getParams}
-          params={params}
-          color={strokeColors[2]}
-          id="ordersCount"
-          title="Заказы"
-        />
-        <CheckboxCharts
-          deleteParams={deleteParams}
-          getParams={getParams}
-          params={params}
-          color={strokeColors[3]}
-          id="orders"
-          title="Заказы р."
-        />
+
         <CheckboxCharts
           deleteParams={deleteParams}
           getParams={getParams}
           params={params}
           color={strokeColors[4]}
           id="ddr"
-          title="ДДР %"
+          title="ДРР %"
         />
         <CheckboxCharts
           deleteParams={deleteParams}

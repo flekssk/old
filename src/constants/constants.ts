@@ -32,7 +32,7 @@ export const REPORT_TABLE_COLUMNS_NAMES: { [key: string]: string } = {
   shareInTotalProfit: "Доля в общей прибыли",
   marginality: "Маржинальность",
   advertisingExpenses: "Рекламные расходы",
-  ddr: "ДДР",
+  ddr: "ДРР",
 };
 
 export const SIZES_ROWS_FOR_REPORT_TABLE = [

@@ -5,7 +5,6 @@ import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { StatsProduct } from "./StatsProduct";
 
-import { TopProductsChart } from "../dashboard/TopProductsChart";
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
 // import { useArticleReport, useMainReport } from "@/api/report";
 import { useArticleReport } from "@/api/report";
@@ -20,6 +19,8 @@ import { useProductStatsData } from "./useProductStatsData";
 import { Filters } from "./Filters";
 import { MainChart } from "../dashboard/MainChart";
 import { ProductSkeleton } from "./ProductSkeleton";
+import { SizesChart } from "./SizesChart";
+import { DisplayDateRange } from "@/components/DisplayDateRange";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -97,6 +98,7 @@ const Product: FC = function () {
           <ProductInfo product={articleRequest.data.productData} />
         )}
         <Filters params={params} setSearchParams={setSearchParams} />
+        <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
         {statsData && <StatsProduct data={statsData} />}
         <MainChart
           data={articleRequest.data?.chart ?? []}
@@ -104,7 +106,9 @@ const Product: FC = function () {
         />
 
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-          <TopProductsChart />
+          {articleRequest.data?.byBarcode ? (
+            <SizesChart data={Object.values(articleRequest.data.byBarcode)} />
+          ) : null}
           <StructureOfIncomeChart />
         </div>
         {articleRequest.data?.stocks && (
@@ -112,6 +116,7 @@ const Product: FC = function () {
         )}
         {articleRequest.data?.byBarcode && (
           <StatTable
+            image={articleRequest.data.productData.image || null}
             items={Object.values(articleRequest.data.byBarcode)}
             prevItems={
               prevArticleRequest.data?.byBarcode

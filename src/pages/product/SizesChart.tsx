@@ -1,31 +1,23 @@
-import { mockByArticle } from "@/mocks/mock-by-article";
 import { Card, useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
-import type { TopProduct } from "@/api/report/types";
+import type { BarcodeReportItem } from "@/api/report/types";
 
-type TopProductsChartProps = {
-  data?: TopProduct[];
+type SizesChartProps = {
+  data: BarcodeReportItem[];
 };
 
-export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
+export const SizesChart: FC<SizesChartProps> = ({ data }) => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 
   const sortedProducts = useMemo(() => {
-    if (data) {
-      return data.sort((a, b) => b.profitShare - a.profitShare);
-    } else {
-      return mockByArticle
-        .sort((a, b) => b.profitShare - a.profitShare)
-        .slice(0, 5);
-    }
+    return data.sort((a, b) => b.profit - a.profit);
   }, [data]);
 
   const options: ApexCharts.ApexOptions = {
-    labels: sortedProducts.map((item) => item.name),
-
+    labels: sortedProducts.map((item) => item.size),
     colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
     chart: {
       fontFamily: "Inter, sans-serif",
@@ -36,13 +28,7 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
     stroke: {
       colors: [isDarkTheme ? "#111827" : "#fff"],
     },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "5%",
-        },
-      },
-    },
+
     states: {
       hover: {
         filter: {
@@ -102,11 +88,17 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
       },
     },
   };
-  const series = sortedProducts.map((item) => item.profitShare);
+
+  const allProfit = sortedProducts.reduce(
+    (result, item) => item.profit + result,
+    0,
+  );
+  const series = sortedProducts.map((item) => (item.profit / allProfit) * 100);
+  console.log("🚀 ~ series:", series);
 
   return (
     <Card>
-      <h2 className="text-xl">Топ 5 мажинальных товаров</h2>
+      <h2 className="text-xl">Размеры по прибыли</h2>
       <Chart height={305} options={options} series={series} type="donut" />
     </Card>
   );

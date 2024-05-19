@@ -1,11 +1,12 @@
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { HiChevronDown, HiCheck, HiChevronUp } from "react-icons/hi";
-import classNames from "classnames";
+import { cn } from "@/utils/utils";
 
 export type MultiSelectOption = {
   label: string;
   value: string | number;
+  searchValues?: string[];
 };
 
 type MultiSelectProps = {
@@ -26,14 +27,29 @@ export const MultiSelect = ({
 }: MultiSelectProps) => {
   const [query, setQuery] = useState("");
 
+  const optionsForSearch = useMemo(() => {
+    return options.map((item) => {
+      const searchValues = item.searchValues ?? [
+        item.value.toString(),
+        item.label.toString(),
+      ];
+      return {
+        ...item,
+        searchValues: searchValues.map((el) => el.toLowerCase()),
+      };
+    });
+  }, [options]);
+
   const filteredOptions =
     query === ""
       ? options
-      : options.filter((option) =>
-          option.label
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, "")),
+      : optionsForSearch.filter(({ searchValues }) =>
+          searchValues.some((val) =>
+            val
+              .toLowerCase()
+              .replace(/\s+/g, "")
+              .includes(query.toLowerCase().replace(/\s+/g, "")),
+          ),
         );
 
   return (
@@ -59,8 +75,8 @@ export const MultiSelect = ({
             afterLeave={() => setQuery("")}
           >
             <Combobox.Options
-              className={classNames(
-                "z-10 absolute top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700",
+              className={cn(
+                "z-10 absolute top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow min-w-full dark:bg-gray-700",
                 {
                   "left-0": position === "top-left",
                   "right-0": position === "top-right",

@@ -10,7 +10,11 @@ import type {
 export const getMainReport = (
   payload: ReportRequest = {},
 ): Promise<ReportResponse> =>
-  api.post<ReportResponse>(ENDPOINTS.main, payload).then((res) => res.data);
+  api.post<ReportResponse>(ENDPOINTS.main, payload).then((res) => {
+    console.log("🚀 ~ api.post<ReportResponse> ~ res:", payload, res.data);
+
+    return res.data;
+  });
 
 export const getReportFilterAggregation =
   (): Promise<ReportFilterAggregationResponse> =>

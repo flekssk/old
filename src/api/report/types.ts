@@ -74,7 +74,7 @@ export interface ProductReportItem {
   marginality: number;
   // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
   advertisingExpenses: number;
-  // ДДР % advertisingExpenses / sales
+  // ДРР % advertisingExpenses / sales
   ddr: number;
 }
 
@@ -221,7 +221,7 @@ export interface BarcodeReportItem {
   marginality: number;
   // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
   advertisingExpenses: number;
-  // ДДР % advertisingExpenses / sales
+  // ДРР % advertisingExpenses / sales
   ddr: number;
 }
 

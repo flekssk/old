@@ -1,4 +1,4 @@
-import { Card } from "flowbite-react";
+import { Card, Tooltip } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -10,13 +10,14 @@ import { DiffNumberCell } from "@/components/table/DiffNumberCell";
 export type StatTableProps = {
   items: BarcodeReportItem[];
   prevItems?: BarcodeReportItem[];
+  image: string | null;
 };
 
 type BarcodeReportItemWithPrev = BarcodeReportItem & {
   prev?: BarcodeReportItem;
 };
 
-export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
+export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
   const data = useMemo<BarcodeReportItemWithPrev[]>(() => {
     return items.map((item) => {
       return {
@@ -34,6 +35,23 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems }) => {
       // columnHelper.accessor("orders", { header: "Заказы р." }),
       // columnHelper.accessor("ordersCount", { header: "Заказы шт" }),
       // columnHelper.accessor("name", { header: "Название" }),
+
+      columnHelper.accessor("image", {
+        id: "photo",
+        header: "Фото",
+        cell: () => {
+          return image ? (
+            <div>
+              <Tooltip
+                style="light"
+                content={<img className="w-28" src={image} alt="img" />}
+              >
+                <img className="w-5" src={image} alt="img" />
+              </Tooltip>
+            </div>
+          ) : null;
+        },
+      }),
 
       columnHelper.accessor("barcode", { id: "barcode", header: "Баркод" }),
       columnHelper.accessor("size", { id: "size", header: "Размер" }),

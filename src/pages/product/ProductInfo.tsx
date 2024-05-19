@@ -36,17 +36,25 @@ const ProductInfo: FC<ProductInfoProps> = function ({ product }) {
       </Breadcrumb>
       <div className="flex items-center gap-5">
         <img className="w-32" src={product.image} alt={product.name} />
-        <div className="grid grid-cols-2 gap-2 ">
-          <span className="font-bold">Артикул:</span>
-          <span>
-            {product.vendorCode} ({product.article})
-          </span>
-          <span className="font-bold">Название:</span>
-          <span>{product.name}</span>
-          <span className="font-bold">Бренд:</span>
-          <span>{product.brand}</span>
-          <span className="font-bold">Категория:</span>
-          <span>{product.category}</span>
+        <div className="flex flex-col gap-2 ">
+          <div>
+            <span className="mr-2 font-bold">Артикул:</span>
+            <span>
+              {product.vendorCode} ({product.article})
+            </span>
+          </div>
+          <div>
+            <span className="mr-2 font-bold">Название:</span>
+            <span>{product.name}</span>
+          </div>
+          <div>
+            <span className="mr-2 font-bold">Бренд:</span>
+            <span>{product.brand}</span>
+          </div>
+          <div>
+            <span className="mr-2 font-bold">Категория:</span>
+            <span>{product.category}</span>
+          </div>
 
           {/* <div className="flex gap-5">
             <p className="w-56 font-bold">Цена, продажи, отзывы</p>
