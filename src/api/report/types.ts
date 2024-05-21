@@ -120,6 +120,7 @@ export interface ReportStats {
   advertisingExpenses: number;
   returns: number;
   roi: number;
+  totalSales?: number;
 }
 
 export interface RevenueStructure {

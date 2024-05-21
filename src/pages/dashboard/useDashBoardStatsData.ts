@@ -44,6 +44,9 @@ export const useDashBoardStatsData = (
     roi: {
       value: displayNumber(currentData.stats.roi),
     },
+    salesCount: {
+      value: displayNumber(currentData.stats.totalSales || 0),
+    },
   };
   if (prevData) {
     if (prevData.stats.profitability) {
@@ -115,6 +118,13 @@ export const useDashBoardStatsData = (
       result.sale.diff = calculateDiff(
         currentData.stats.sale,
         prevData.stats.sale,
+      );
+    }
+
+    if (prevData.stats.totalSales) {
+      result.salesCount.diff = calculateDiff(
+        currentData.stats.totalSales || 0,
+        prevData.stats.totalSales,
       );
     }
   }
