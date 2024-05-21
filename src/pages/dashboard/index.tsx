@@ -19,12 +19,12 @@ import { StructureOfIncomeChart } from "@/pages/dashboard/StructureOfIncomeChart
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
 import { DATE_FORMAT, getPrevInterval } from "@/helpers/date";
 import { useDashBoardStatsData } from "@/pages/dashboard/useDashBoardStatsData";
-import { MainChart } from "@/pages/dashboard/MainChart";
 import { format, parse, sub } from "date-fns";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 import { parse as qsParse } from "qs";
 import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
+import { MainChartNew } from "./MainChartNew";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -169,7 +169,7 @@ const DashboardPage: FC = function () {
           />
           <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
           {statsData && <StatsDashBoard data={statsData} />}
-          <MainChart
+          <MainChartNew
             data={mainReportRequest.data?.chart ?? []}
             prevData={prevMainReportRequest.data?.chart}
           />

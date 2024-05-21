@@ -17,10 +17,10 @@ import { StatTable } from "./StatTable";
 import { getPrevInterval } from "@/helpers/date";
 import { useProductStatsData } from "./useProductStatsData";
 import { Filters } from "./Filters";
-import { MainChart } from "../dashboard/MainChart";
 import { ProductSkeleton } from "./ProductSkeleton";
 import { SizesChart } from "./SizesChart";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
+import { MainChartNew } from "../dashboard/MainChartNew";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -100,7 +100,7 @@ const Product: FC = function () {
         <Filters params={params} setSearchParams={setSearchParams} />
         <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
         {statsData && <StatsProduct data={statsData} />}
-        <MainChart
+        <MainChartNew
           data={articleRequest.data?.chart ?? []}
           prevData={prevArticleRequest.data?.chart}
         />

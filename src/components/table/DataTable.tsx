@@ -31,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   cellRangeSelection?: boolean;
   className?: string;
+  wrapperClassName?: string;
   resizeColumns?: boolean;
   columnSettings?: boolean;
   groupSettings?: boolean;
@@ -43,6 +44,7 @@ export function DataTable<TData, TValue>({
   data,
   cellRangeSelection,
   className,
+  wrapperClassName,
   resizeColumns,
   columnSettings,
   groupSettings,
@@ -134,8 +136,8 @@ export function DataTable<TData, TValue>({
   }, [initialColumns, groupSettings]);
 
   return (
-    <div>
-      <div className="flex items-center justify-end gap-2 py-2">
+    <div className={cn("flex flex-col", wrapperClassName)}>
+      <div className="flex shrink-0 items-center justify-end gap-2 pb-2">
         <div>
           {groupSettings && (
             <GroupSettings groupSettingsName={groupSettingsName} />
@@ -161,7 +163,7 @@ export function DataTable<TData, TValue>({
             },
           }}
         >
-          <TableFlowbite.Head>
+          <TableFlowbite.Head className="sticky top-0 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -230,7 +232,7 @@ export function DataTable<TData, TValue>({
         </TableFlowbite>
       </div>
       <div
-        className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex items-center p-4`}
+        className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex shrink-0 items-center p-4`}
       >
         {groupSettings && !isEmptyRowSelection && (
           <div>

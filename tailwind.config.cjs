@@ -33,6 +33,7 @@ module.exports = {
         900: "#1e3a8a",
       },
     },
+    
     fontFamily: {
       sans: [
         "Inter",
@@ -79,7 +80,11 @@ module.exports = {
         "monospace",
       ],
     },
-    extend: {},
+    extend: {
+      height: {
+        statTable: "calc(100vh - 100px)",
+      },
+    },
   },
   plugins: [require("flowbite/plugin")],
 };

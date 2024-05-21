@@ -1,19 +1,36 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReportChartItem } from "@/api/report/types";
-import { strokeColors } from "@/data/charts";
-import { format, parse } from "date-fns";
-import { DATE_FORMAT } from "@/helpers/date";
-import { useThemeMode } from "flowbite-react";
+import type { ChartOptions } from "chart.js";
+import { ru } from "date-fns/locale";
+import "chartjs-adapter-date-fns";
 
 type ChartParamsProps = {
   data: ReportChartItem[];
   prevData?: ReportChartItem[];
+  displayPrevData: boolean;
 };
 
-const useChartParams = ({ data, prevData }: ChartParamsProps) => {
+const getAllValues = (
+  key: keyof ReportChartItem,
+  displayPrevData: boolean,
+  currentData: ReportChartItem[],
+  prevData?: ReportChartItem[],
+): number[] => {
+  return displayPrevData && prevData
+    ? [
+        ...prevData.map((item) => Math.ceil(item[key] as number)),
+        ...currentData.map((item) => Math.ceil(item[key] as number)),
+      ]
+    : [...currentData.map((item) => Math.ceil(item[key] as number))];
+};
+
+const useChartParams = ({
+  data,
+  prevData,
+  displayPrevData,
+}: ChartParamsProps) => {
   const [params, setParams] = useState(["sale"]);
-  const { mode } = useThemeMode();
-  const isDarkTheme = mode === "dark";
+
   const getParams = useCallback((id: string) => {
     setParams((prevParams) => [...prevParams, id]);
   }, []);
@@ -21,6 +38,18 @@ const useChartParams = ({ data, prevData }: ChartParamsProps) => {
   const deleteParams = useCallback((id: string) => {
     setParams((prevParams) => prevParams.filter((param) => param !== id));
   }, []);
+
+  const labels = data
+    .sort((a, b) => {
+      const aDate = new Date(a.date).getTime();
+      const bDate = new Date(b.date).getTime();
+      return aDate - bDate;
+    })
+    .map((item) => {
+      const date = new Date(item.date);
+      date.setHours(0);
+      return date;
+    });
 
   const { sortedData, prevSortedData } = useMemo(
     () => ({
@@ -37,150 +66,134 @@ const useChartParams = ({ data, prevData }: ChartParamsProps) => {
     }),
     [data, prevData],
   );
-  const borderColor = isDarkTheme ? "#F3F4F6" : "#9F9F9F";
-  const labelColor = isDarkTheme ? "#93ACAF" : "#6B7280";
-  const options: ApexCharts.ApexOptions = {
-    stroke: {
-      curve: "straight",
-    },
+  //const borderColor = isDarkTheme ? "#F3F4F6" : "#9F9F9F";
+  //const labelColor = isDarkTheme ? "#93ACAF" : "#6B7280";
 
-    chart: {
-      zoom: {
-        enabled: false,
+  const options = useMemo(() => {
+    const allSales = getAllValues(
+      "sale",
+      displayPrevData,
+      sortedData,
+      prevSortedData,
+    );
+
+    const allLogistics = getAllValues(
+      "logistics",
+      displayPrevData,
+      sortedData,
+      prevSortedData,
+    );
+
+    const allProfit = getAllValues(
+      "profit",
+      displayPrevData,
+      sortedData,
+      prevSortedData,
+    );
+
+    const allReturns = getAllValues(
+      "returns",
+      displayPrevData,
+      sortedData,
+      prevSortedData,
+    );
+
+    const allAvgPrices = getAllValues(
+      "averagePriceBeforeSPP",
+      displayPrevData,
+      sortedData,
+      prevSortedData,
+    );
+
+    const maxY1 = Math.max(
+      ...allSales,
+      ...allLogistics,
+      ...allProfit,
+      ...allReturns,
+    );
+
+    const minY1 = Math.min(
+      ...allSales,
+      ...allLogistics,
+      ...allProfit,
+      ...allReturns,
+    );
+
+    const result: ChartOptions<"line"> = {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index" as const,
+        intersect: false,
       },
-      type: "area",
-      fontFamily: "Inter, sans-serif",
-      foreColor: labelColor,
-      toolbar: {
-        show: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    tooltip: {
-      style: {
-        fontSize: "14px",
-        fontFamily: "Inter, sans-serif",
-      },
-    },
-    grid: {
-      position: "back",
-      show: true,
-      borderColor: borderColor,
-      strokeDashArray: 1,
-      padding: {
-        left: 15,
-        bottom: 15,
-      },
-      xaxis: {
-        lines: {
-          show: true,
+
+      plugins: {
+        title: {
+          display: false,
+          text: "Chart.js Line Chart - Multi Axis",
         },
       },
-      yaxis: {
-        lines: {
-          show: true,
-        },
-      },
-    },
-    markers: {
-      size: 5,
-      strokeColors: strokeColors,
-      hover: {
-        size: undefined,
-        sizeOffset: 3,
-      },
-    },
-    xaxis: {
-      categories: sortedData.map((item) =>
-        parse(item.date, DATE_FORMAT.SERVER_DATE, new Date()),
-      ),
-      labels: {
-        style: {
-          colors: [labelColor],
-          fontSize: "14px",
-          fontWeight: 500,
-        },
-        formatter: (value) => {
-          return value ? format(value, DATE_FORMAT.DAY_MONTH) : "";
-        },
-      },
-      axisBorder: {
-        color: borderColor,
-      },
-      axisTicks: {
-        color: borderColor,
-      },
-      crosshairs: {
-        show: true,
-        position: "back",
-        stroke: {
-          color: borderColor,
-          width: 1,
-          dashArray: 10,
-        },
-      },
-    },
-    yaxis: [
-      {
-        axisBorder: {
-          show: true,
-          color: "#AA21CC",
-        },
-        labels: {
-          style: {
-            colors: "#AA21CC",
+      scales: {
+        x: {
+          type: "time",
+
+          time: {
+            unit: "day",
+            displayFormats: {
+              day: "d MMMM",
+            },
+            tooltipFormat: "d MMMM",
           },
-          formatter: (value) => {
-            return value ? `${value.toFixed(0)} Р` : "0 Р";
-          },
-        },
-      },
-      {
-        axisBorder: {
-          show: true,
-          color: "#1777FC",
-        },
-        opposite: true,
-        labels: {
-          style: {
-            colors: "#1777FC",
-          },
-          formatter: (value) => {
-            return value ? `${value.toFixed(0)} шт` : "0 шт";
-          },
-        },
-      },
-    ],
-    legend: {
-      show: false,
-      fontSize: "14px",
-      fontWeight: 500,
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "Inter, sans-serif",
-      labels: {
-        colors: [labelColor],
-      },
-      itemMargin: {
-        horizontal: 10,
-      },
-    },
-    responsive: [
-      {
-        breakpoint: 1024,
-        options: {
-          xaxis: {
-            labels: {
-              show: false,
+          // add this:
+          adapters: {
+            date: {
+              locale: ru,
             },
           },
         },
+        y1: {
+          max: Math.ceil(maxY1 * 1.3),
+          min: Math.ceil(minY1 >= 0 ? minY1 * 0.7 : minY1 * 1.3),
+          type: "linear" as const,
+          display: true,
+          position: "left" as const,
+          grid: {
+            drawOnChartArea: false,
+          },
+        },
+        y2: {
+          max: Math.ceil(Math.max(...allAvgPrices) * 1.3),
+          min: Math.ceil(Math.min(...allAvgPrices) * 0.7),
+          type: "linear" as const,
+          display: true,
+          position: "right" as const,
+          grid: {
+            drawOnChartArea: false,
+          },
+        },
+        y3: {
+          min: 0,
+          max: 100,
+          type: "linear" as const,
+          display: true,
+          position: "right" as const,
+          grid: {
+            drawOnChartArea: false,
+          },
+        },
+        y4: {
+          type: "linear" as const,
+          display: false,
+          position: "left" as const,
+          grid: {
+            drawOnChartArea: false,
+          },
+        },
       },
-    ],
-  };
-
+    };
+    return result;
+  }, [sortedData, prevSortedData, displayPrevData]);
+  console.log("🚀 ~ options:", options);
   return {
     prevSortedData,
     sortedData,
@@ -188,6 +201,7 @@ const useChartParams = ({ data, prevData }: ChartParamsProps) => {
     getParams,
     params,
     options,
+    labels,
   };
 };
 

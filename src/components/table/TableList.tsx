@@ -1,4 +1,4 @@
-import { Table as TableFlowbite } from "flowbite-react/lib/esm/components/Table/Table";
+import { Table as TableFlowbite } from "flowbite-react";
 import React from "react";
 import type { Row, Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";

@@ -367,6 +367,7 @@ export const StatTable: FC<StatTableProps> = ({
         resizeColumns
         columnSettings
         groupSettings
+        wrapperClassName="h-statTable"
         groupSettingsName="main-report-user-groups"
         storedSettingsName="main-report-table"
         columns={columns}
