@@ -1,4 +1,5 @@
 import type {
+  Column,
   ColumnDef,
   ColumnFiltersState,
   RowSelectionState,
@@ -12,6 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import type { CSSProperties } from "react";
 import React from "react";
 import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
@@ -38,6 +40,22 @@ interface DataTableProps<TData, TValue> {
   groupSettingsName?: string;
   storedSettingsName?: string;
 }
+
+const getCommonPinningStyles = (
+  column: Column<unknown, unknown>,
+  isHeader?: boolean,
+): CSSProperties => {
+  const isPinned = column.getIsPinned();
+  return {
+    background: isHeader ? "white" : "inherit",
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    opacity: 1,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? 1 : 0,
+  };
+};
 
 export function DataTable<TData, TValue>({
   columns: initialColumns,
@@ -75,6 +93,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    columnResizeMode: "onChange",
     enableMultiSort: false,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -84,6 +103,9 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
+      columnPinning: {
+        left: ["select", "vendorCode"],
+      },
       sorting,
       columnFilters,
       columnVisibility,
@@ -172,6 +194,10 @@ export function DataTable<TData, TValue>({
                     className="relative"
                     style={{
                       width: header.getSize(),
+                      ...getCommonPinningStyles(
+                        header.column as Column<unknown, unknown>,
+                        true,
+                      ),
                     }}
                   >
                     <div className="relative flex items-center justify-between">
@@ -213,7 +239,12 @@ export function DataTable<TData, TValue>({
                     return (
                       <TableFlowbite.Cell
                         {...getCellProps(cell, row, index)}
-                        style={{ width: cell.column.getSize() }}
+                        style={{
+                          width: cell.column.getSize(),
+                          ...getCommonPinningStyles(
+                            cell.column as Column<unknown, unknown>,
+                          ),
+                        }}
                         key={cell.id}
                       >
                         <span className="overflow-hidden text-ellipsis">
