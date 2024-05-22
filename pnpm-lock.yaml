@@ -14,6 +14,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.3.4
     version: 3.4.0(react-hook-form@7.51.4)
+  '@kurkle/color':
+    specifier: ^0.3.2
+    version: 0.3.2
   '@tanstack/react-query':
     specifier: ^5.24.8
     version: 5.37.1(react@18.3.1)

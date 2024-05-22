@@ -2,6 +2,7 @@ import type { ReportChartItem } from "@/api/report/types";
 import "chartjs-adapter-date-fns";
 import { Toggle } from "@/components/Toggle";
 import { areaColors, strokeColors } from "@/data/charts";
+import colorLib from "@kurkle/color";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +12,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
   TimeScale,
   type ChartData,
 } from "chart.js";
@@ -31,6 +33,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  Filler,
   Title,
   Tooltip,
   Legend,
@@ -48,6 +51,11 @@ export type Series = {
   profit: number[];
   prev?: Omit<Series, "prev">;
 };
+
+export function transparentize(value: string, opacity: number = 0.5) {
+  const alpha = opacity === undefined ? 0.5 : 1 - opacity;
+  return colorLib(value).alpha(alpha).rgbString();
+}
 
 export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
   const [displayPrevData, setDisplayPrevData] = useState<boolean>(false);
@@ -136,6 +144,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y1",
       borderColor: strokeColors[0],
       backgroundColor: strokeColors[0],
+      tension: 0.4,
     });
 
     if (displayPrevData) {
@@ -143,9 +152,13 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
         label: "Продажи пред. периуд",
         data: prevSortedData.map((item) => item.sale),
         yAxisID: "y1",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[0] as string, 0.7),
+        },
         borderColor: areaColors[0],
         backgroundColor: areaColors[0],
+        tension: 0.4,
       });
     }
 
@@ -155,6 +168,8 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y2",
       borderColor: strokeColors[1],
       backgroundColor: strokeColors[1],
+      tension: 0.4,
+      hidden: true,
     });
 
     if (displayPrevData) {
@@ -164,9 +179,14 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
           Math.ceil(item.averagePriceBeforeSPP),
         ),
         yAxisID: "y2",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[1] as string, 0.7),
+        },
         borderColor: areaColors[1],
         backgroundColor: areaColors[1],
+        tension: 0.4,
+        hidden: true,
       });
     }
 
@@ -202,16 +222,23 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y3",
       borderColor: strokeColors[2],
       backgroundColor: strokeColors[2],
+      tension: 0.4,
+      hidden: true,
     });
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "ДРР %",
+        label: "ДРР % пред. периуд",
         data: prevSortedData.map((item) => item.ddr),
         yAxisID: "y3",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[2] as string, 0.7),
+        },
         borderColor: areaColors[2],
         backgroundColor: areaColors[2],
+        tension: 0.4,
+        hidden: true,
       });
     }
 
@@ -221,16 +248,23 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y1",
       borderColor: strokeColors[3],
       backgroundColor: strokeColors[3],
+      tension: 0.4,
+      hidden: true,
     });
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Логистика",
+        label: "Логистика пред. периуд",
         data: prevSortedData.map((item) => item.logistics),
         yAxisID: "y1",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[3] as string, 0.7),
+        },
         borderColor: areaColors[3],
         backgroundColor: areaColors[3],
+        tension: 0.4,
+        hidden: true,
       });
     }
 
@@ -240,16 +274,23 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y1",
       borderColor: strokeColors[4],
       backgroundColor: strokeColors[4],
+      tension: 0.4,
+      hidden: true,
     });
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Возвраты",
+        label: "Возвраты пред. периуд",
         data: prevSortedData.map((item) => item.returns),
         yAxisID: "y1",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[4] as string, 0.7),
+        },
         borderColor: areaColors[4],
         backgroundColor: areaColors[4],
+        tension: 0.4,
+        hidden: true,
       });
     }
 
@@ -259,16 +300,23 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       yAxisID: "y1",
       borderColor: strokeColors[5],
       backgroundColor: strokeColors[5],
+      tension: 0.4,
+      hidden: true,
     });
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Прибыль",
+        label: "Прибыль пред. периуд",
         data: prevSortedData.map((item) => item.profit),
         yAxisID: "y1",
-        fill: true,
+        fill: {
+          target: "start",
+          above: transparentize(areaColors[5] as string, 0.7),
+        },
         borderColor: areaColors[5],
         backgroundColor: areaColors[5],
+        tension: 0.4,
+        hidden: true,
       });
     }
 
