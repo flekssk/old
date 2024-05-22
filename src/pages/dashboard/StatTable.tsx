@@ -14,6 +14,7 @@ import {
 } from "@/hooks/usePagination";
 import { Select } from "@/components/Select";
 import { SIZES_ROWS_FOR_REPORT_TABLE } from "@/constants/constants";
+import { HiOutlineQuestionMarkCircle } from "react-icons/hi";
 
 export type StatTableProps = {
   items: ProductReportItem[];
@@ -28,7 +29,6 @@ export const StatTable: FC<StatTableProps> = ({
   prevItems,
   redirectFilters,
 }) => {
-  console.log("🚀 ~ items:", items);
   const [searchParam, setSearchParam] = useSearchParams();
   const pageValue = searchParam.get("page") || "1";
 
@@ -58,23 +58,22 @@ export const StatTable: FC<StatTableProps> = ({
         id: "photo",
         header: "Фото",
         cell: (row) => {
+          const ing = row.getValue() ? (
+            <img className="w-full" src={row.getValue()} alt="img" />
+          ) : (
+            <HiOutlineQuestionMarkCircle />
+          );
           return (
             <div>
               <Tooltip
                 style="light"
                 content={
-                  <img
-                    className="w-28"
-                    src={row.getValue()?.replace("small", "big")}
-                    alt="img"
-                  />
+                  <div className="w-28 inline-flex justify-center text-3xl">
+                    {ing}
+                  </div>
                 }
               >
-                <img
-                  className="w-5"
-                  src={row.getValue()?.replace("small", "big")}
-                  alt="img"
-                />
+                <div className="w-5 text-center text-xl">{ing}</div>
               </Tooltip>
             </div>
           );
@@ -372,6 +371,9 @@ export const StatTable: FC<StatTableProps> = ({
         storedSettingsName="main-report-table"
         columns={columns}
         data={data}
+        columnPinning={{
+          left: ["select", "photo", "vendorCode"],
+        }}
         cellRangeSelection={true}
       />
       {isPaginationVisible && (

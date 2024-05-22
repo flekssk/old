@@ -2,6 +2,7 @@ import type {
   Column,
   ColumnDef,
   ColumnFiltersState,
+  ColumnPinningState,
   RowSelectionState,
   SortingState,
   VisibilityState,
@@ -39,6 +40,7 @@ interface DataTableProps<TData, TValue> {
   groupSettings?: boolean;
   groupSettingsName?: string;
   storedSettingsName?: string;
+  columnPinning?: ColumnPinningState;
 }
 
 const getCommonPinningStyles = (
@@ -46,6 +48,7 @@ const getCommonPinningStyles = (
   isHeader?: boolean,
 ): CSSProperties => {
   const isPinned = column.getIsPinned();
+
   return {
     background: isHeader ? "white" : "inherit",
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
@@ -66,6 +69,7 @@ export function DataTable<TData, TValue>({
   resizeColumns,
   columnSettings,
   groupSettings,
+  columnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
 }: DataTableProps<TData, TValue>) {
@@ -103,9 +107,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      columnPinning: {
-        left: ["select", "vendorCode"],
-      },
+      columnPinning,
       sorting,
       columnFilters,
       columnVisibility,
