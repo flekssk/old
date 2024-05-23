@@ -96,6 +96,7 @@ export const StatTable: FC<StatTableProps> = ({
           </Link>
         ),
         enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("brand", {
         id: "brand",
@@ -104,6 +105,7 @@ export const StatTable: FC<StatTableProps> = ({
           filterType: "string",
         },
         enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("category", {
         id: "category",
@@ -116,7 +118,7 @@ export const StatTable: FC<StatTableProps> = ({
       }),
       columnHelper.accessor("article", {
         id: "article",
-        header: "Артикул",
+        header: "Артикул WB",
         meta: {
           filterType: "string",
         },
@@ -166,6 +168,7 @@ export const StatTable: FC<StatTableProps> = ({
           filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("sale", {
@@ -176,6 +179,7 @@ export const StatTable: FC<StatTableProps> = ({
           filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("toTransfer", {
@@ -183,8 +187,11 @@ export const StatTable: FC<StatTableProps> = ({
         header: "К перечислению",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("returns", {
         id: "returns",
@@ -192,17 +199,23 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("costOfSales", {
         id: "costOfSales",
-        header: "Стоимость продаж",
+        header: "Себестоимость продаж",
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("fines", {
         id: "fines",
@@ -210,16 +223,22 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("compensationForSubstitutedGoods", {
         id: "compensationForSubstitutedGoods",
         header: "Компенсация подмененного товара",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("reimbursementOfTransportationCosts", {
         id: "reimbursementOfTransportationCosts",
@@ -227,8 +246,11 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("paymentForMarriageAndLostGoods", {
         id: "paymentForMarriageAndLostGoods",
@@ -241,8 +263,11 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("logistics", {
         id: "logistics",
@@ -250,8 +275,11 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("storage", {
         id: "storage",
@@ -259,18 +287,27 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "₽",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("rejectionsAndReturns", {
         header: "Количество отказов+ возвраты",
         meta: {
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("totalSales", {
         id: "totalSales",
+        meta: {
+          filterType: "number",
+        },
         header: "Всего продаж",
         cell: DiffNumberCell,
       }),
@@ -279,41 +316,56 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Средний процент выкупа",
         meta: {
           suffix: "%",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("averageProfitPerPiece", {
         id: "averageProfitPerPiece",
         header: "Средняя прибыль на 1 шт",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("tax", {
         id: "tax",
         header: "Налоги",
         meta: {
           suffix: "₽",
+          filterType: "number",
           positiveIfGrow: false,
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("profit", {
         id: "profit",
         header: "Прибыль",
         meta: {
           suffix: "₽",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("roi", {
         id: "roi",
         header: "ROI",
         meta: {
           suffix: "%",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
 
       columnHelper.accessor("shareInTotalRevenue", {
@@ -321,33 +373,45 @@ export const StatTable: FC<StatTableProps> = ({
         header: "Доля в общей выручке",
         meta: {
           suffix: "%",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("shareInTotalProfit", {
         id: "shareInTotalProfit",
         header: "Доля в общей прибыли",
         meta: {
           suffix: "%",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("profitability", {
         id: "profitability",
         header: "Маржинальность",
         meta: {
           suffix: "%",
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("advertisingExpenses", {
         id: "advertisingExpenses",
         header: "Расходы на рекламу",
         meta: {
           suffix: "₽",
+          filterType: "number",
           positiveIfGrow: false,
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
       columnHelper.accessor("ddr", {
         id: "ddr",
@@ -355,8 +419,11 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           suffix: "%",
           positiveIfGrow: false,
+          filterType: "number",
         },
         cell: DiffNumberCell,
+        enableSorting: true,
+        enableColumnFilter: true,
       }),
     ];
   }, [redirectFilters]);

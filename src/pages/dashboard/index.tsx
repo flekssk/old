@@ -25,6 +25,7 @@ import { parse as qsParse } from "qs";
 import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "./MainChartNew";
+import { Accordion } from "@/components/Accordion";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -169,14 +170,20 @@ const DashboardPage: FC = function () {
           />
           <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
           {statsData && <StatsDashBoard data={statsData} />}
-          <MainChartNew
-            data={mainReportRequest.data?.chart ?? []}
-            prevData={prevMainReportRequest.data?.chart}
-          />
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-            <TopProductsChart data={mainReportRequest.data?.topFiveProducts} />
-            <StructureOfIncomeChart />
-          </div>
+          <Accordion title="Главный график">
+            <MainChartNew
+              data={mainReportRequest.data?.chart ?? []}
+              prevData={prevMainReportRequest.data?.chart}
+            />
+          </Accordion>
+          <Accordion title="Структура выручки">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+              <TopProductsChart
+                data={mainReportRequest.data?.topFiveProducts}
+              />
+              <StructureOfIncomeChart />
+            </div>
+          </Accordion>
           {mainReportRequest.data?.byProduct && (
             <StatTable
               redirectFilters={filtersForRedirect}
