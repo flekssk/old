@@ -1,6 +1,8 @@
 import type { Stocks } from "@/api/report/types";
+import type { SelectOption } from "@/components/Select";
+import { Select } from "@/components/Select";
 import { Toggle } from "@/components/Toggle";
-import { Card, Dropdown, useThemeMode } from "flowbite-react";
+import { Card, useThemeMode } from "flowbite-react";
 import { useState, type FC, useMemo } from "react";
 import Chart from "react-apexcharts";
 
@@ -8,8 +10,18 @@ type ProductAvailabilityProps = {
   stocks: Stocks[];
 };
 
+const OTHER_WAREHOUSES = "Остальные склады";
+const ALL_WARHOUSES = "Все склады";
+const DEFAULT_OPTION = {
+  label: ALL_WARHOUSES,
+  value: ALL_WARHOUSES,
+};
+
 const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
   const [showSizes, setShowSizes] = useState<boolean>(false);
+  const [selectCategory, setSelectCategory] =
+    useState<SelectOption>(DEFAULT_OPTION);
+
   const warehouses = stocks.reduce(
     (acc, item) => {
       acc[item.warehouseId] = item.warehouseName;
@@ -43,28 +55,15 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
     }, [] as string[]);
   }, [warehouses, stocks]);
 
-  const otherWarehouses = "Остальные склады";
-  const stockBySize = stocks.reduce(
-    (acc, item) => {
-      if (!acc[item.size]) {
-        acc[item.size] = {};
-      }
+  const categories = [
+    OTHER_WAREHOUSES,
+    ...Object.values(displayWarehouseNames),
+  ];
 
-      const bySize = acc[item.size] as Record<string, number>;
-      const warehouseId = displayWarehouseNames.includes(item.warehouseName)
-        ? item.warehouseName
-        : otherWarehouses;
-      if (!bySize[warehouseId]) {
-        bySize[warehouseId] = 0;
-      }
-      bySize[warehouseId] += item.quantity;
-
-      return acc;
-    },
-    {} as Record<string, Record<string, number>>,
-  );
-
-  const categories = [otherWarehouses, ...Object.values(displayWarehouseNames)];
+  const categoriesOptions = [ALL_WARHOUSES, ...categories].map((value) => ({
+    label: value,
+    value,
+  }));
 
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
@@ -123,27 +122,59 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
       },
     },
   };
-  const seriesBySize = Object.keys(stockBySize).map((size) => ({
+
+  const filteredStocks = stocks.filter((stock) => {
+    if (selectCategory.value === ALL_WARHOUSES) {
+      return true;
+    }
+    if (selectCategory.value === OTHER_WAREHOUSES) {
+      return !displayWarehouseNames.includes(stock.warehouseName);
+    }
+    return stock.warehouseName === selectCategory.value;
+  });
+
+  const filteredStockBySize = filteredStocks.reduce(
+    (acc, item) => {
+      if (!acc[item.size]) {
+        acc[item.size] = {};
+      }
+
+      const bySize = acc[item.size] as Record<string, number>;
+      const warehouseId = displayWarehouseNames.includes(item.warehouseName)
+        ? item.warehouseName
+        : OTHER_WAREHOUSES;
+      if (!bySize[warehouseId]) {
+        bySize[warehouseId] = 0;
+      }
+      bySize[warehouseId] += item.quantity;
+
+      return acc;
+    },
+    {} as Record<string, Record<string, number>>,
+  );
+
+  const seriesBySize = Object.keys(filteredStockBySize).map((size) => ({
     name: size,
     data: categories.map(
       (category) =>
-        (stockBySize[size] as Record<string, number>)[category] ?? 0,
+        (filteredStockBySize[size] as Record<string, number>)[category] ?? 0,
     ),
   })) as ApexAxisChartSeries;
 
   const seriesAllSize = [
-    Object.keys(stockBySize).reduce(
+    Object.keys(filteredStockBySize).reduce(
       (acc, item) => {
         if (!acc.name) {
           acc.name = "Все размеры";
           acc.data = categories.map(
             (category) =>
-              (stockBySize[item] as Record<string, number>)[category] ?? 0,
+              (filteredStockBySize[item] as Record<string, number>)[category] ??
+              0,
           );
         } else {
           categories.forEach((category, index) => {
             const val =
-              ((stockBySize[item] as Record<string, number>)[
+              ((filteredStockBySize[item] as Record<string, number>)[
                 category
               ] as number) ?? 0;
             (acc.data as number[])[index] += val;
@@ -163,14 +194,15 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
         <div className="flex justify-between">
           <h2 className="text-xl">Наличие товара на складах</h2>
           <div className="flex gap-3">
-            <Dropdown label="Все склады" inline size="sm">
-              <Dropdown.Item>
-                <strong>пункт 1</strong>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item>пункт 2</Dropdown.Item>
-              <Dropdown.Item>пункт 3</Dropdown.Item>
-            </Dropdown>
+            <Select
+              placeholder="Все склады"
+              selectedOption={{
+                label: selectCategory?.label || "",
+                value: selectCategory?.value || "",
+              }}
+              options={categoriesOptions || []}
+              setSelectedOption={setSelectCategory}
+            />
             <Toggle
               position="right"
               checked={showSizes}
