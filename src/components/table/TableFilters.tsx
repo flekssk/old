@@ -194,7 +194,7 @@ export const TableFilters = ({
             aria-labelledby="area-popover"
             open={visibleFilterColumn === column.id}
             placement="bottom"
-            className="!top-10 z-10 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
+            className="!top-10 z-30 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
             arrow={false}
             content={renderTableFilters()}
             onOpenChange={(isOpen) => handleOpenPopover(isOpen)}

@@ -18,7 +18,7 @@ import type { CSSProperties } from "react";
 import React from "react";
 import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
-import { Table as TableFlowbite, Button, Checkbox } from "flowbite-react";
+import { Button, Checkbox, theme } from "flowbite-react";
 import { ColumnSettings } from "./ColumnSettings";
 import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
@@ -50,7 +50,7 @@ const getCommonPinningStyles = (
   const isPinned = column.getIsPinned();
 
   return {
-    background: isHeader ? "white" : "inherit",
+    background: isHeader ? undefined : "inherit",
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
     opacity: 1,
@@ -178,22 +178,26 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="overflow-auto">
-        <TableFlowbite
-          className={className}
-          striped
+        <div
+          className={cn(className, theme.table?.root?.base)}
           {...{
             style: {
               width: resizeColumns ? table.getCenterTotalSize() : undefined,
             },
           }}
         >
-          <TableFlowbite.Head className="sticky top-0 ">
+          <div
+            className={cn("sticky flex top-0 z-10 ", theme.table?.head?.base)}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableFlowbite.HeadCell
+                  <div
                     key={header.id}
-                    className="relative"
+                    className={cn(
+                      "relative shrink-0 grow-0",
+                      theme.table?.head?.cell.base,
+                    )}
                     style={{
                       width: header.getSize(),
                       ...getCommonPinningStyles(
@@ -228,20 +232,33 @@ export function DataTable<TData, TValue>({
                         ),
                       }}
                     ></div>
-                  </TableFlowbite.HeadCell>
+                  </div>
                 ))}
               </React.Fragment>
             ))}
-          </TableFlowbite.Head>
-          <TableFlowbite.Body {...getBodyProps()}>
-            {rows.map((row) => (
+          </div>
+          <div className={cn(theme.table?.body?.base)} {...getBodyProps()}>
+            {rows.map((row, rowIndex) => (
               <React.Fragment key={row.id}>
-                <TableFlowbite.Row className=" border-b">
+                <div
+                  className={cn(
+                    " relative flex border-b",
+                    theme.table?.row?.base,
+                    theme.table?.row?.striped,
+                  )}
+                >
                   {row.getVisibleCells().map((cell, index) => {
+                    const cellProps = getCellProps(cell, row, index);
                     return (
-                      <TableFlowbite.Cell
-                        {...getCellProps(cell, row, index)}
+                      <div
+                        {...cellProps}
+                        className={cn(
+                          cellProps.className,
+                          "shrink-0 grow-0 flex items-center ",
+                          theme.table?.body?.cell.base,
+                        )}
                         style={{
+                          height: 69,
                           width: cell.column.getSize(),
                           ...getCommonPinningStyles(
                             cell.column as Column<unknown, unknown>,
@@ -249,20 +266,20 @@ export function DataTable<TData, TValue>({
                         }}
                         key={cell.id}
                       >
-                        <span className="overflow-hidden text-ellipsis">
+                        <div className="max-w-full truncate">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
                           )}
-                        </span>
-                      </TableFlowbite.Cell>
+                        </div>
+                      </div>
                     );
                   })}
-                </TableFlowbite.Row>
+                </div>
               </React.Fragment>
             ))}
-          </TableFlowbite.Body>
-        </TableFlowbite>
+          </div>
+        </div>
       </div>
       <div
         className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex shrink-0 items-center p-4`}
