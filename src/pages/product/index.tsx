@@ -21,6 +21,7 @@ import { ProductSkeleton } from "./ProductSkeleton";
 import { SizesChart } from "./SizesChart";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "../dashboard/MainChartNew";
+import { Accordion } from "@/components/Accordion";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -100,19 +101,30 @@ const Product: FC = function () {
         <Filters params={params} setSearchParams={setSearchParams} />
         <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
         {statsData && <StatsProduct data={statsData} />}
-        <MainChartNew
-          data={articleRequest.data?.chart ?? []}
-          prevData={prevArticleRequest.data?.chart}
-        />
+        <Accordion title="Период в графике" id="chart-period-of-product">
+          <MainChartNew
+            data={articleRequest.data?.chart ?? []}
+            prevData={prevArticleRequest.data?.chart}
+          />
+        </Accordion>
 
         <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-          {articleRequest.data?.byBarcode ? (
-            <SizesChart data={Object.values(articleRequest.data.byBarcode)} />
-          ) : null}
-          <StructureOfIncomeChart />
+          {articleRequest.data?.byBarcode && (
+            <Accordion title="Размеры по прибыли" id="chart-profit-sizes">
+              <SizesChart data={Object.values(articleRequest.data.byBarcode)} />
+            </Accordion>
+          )}
+          <Accordion title="Структура выручки" id="chart-product-availability">
+            <StructureOfIncomeChart />
+          </Accordion>
         </div>
         {articleRequest.data?.stocks && (
-          <ProductAvailability stocks={articleRequest.data?.stocks} />
+          <Accordion
+            title="Наличие товара на складах"
+            id="chart-availability-warehouses"
+          >
+            <ProductAvailability stocks={articleRequest.data?.stocks} />
+          </Accordion>
         )}
         {articleRequest.data?.byBarcode && (
           <StatTable

@@ -10,6 +10,7 @@ export type MultiSelectOption = {
 };
 
 type MultiSelectProps = {
+  placeholder: string;
   options: MultiSelectOption[];
   selectedOptions?: MultiSelectOption[];
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
@@ -20,6 +21,7 @@ const getDisplayValues = (options: MultiSelectOption[]) =>
   options.map((option) => option.label).join(", ");
 
 export const MultiSelect = ({
+  placeholder,
   options,
   selectedOptions,
   position,
@@ -59,7 +61,7 @@ export const MultiSelect = ({
           <div>
             <Combobox.Input
               className="rounded-lg border border-gray-200 py-2.5 pl-3 pr-10 text-sm font-medium text-gray-900"
-              placeholder="Все артикулы"
+              placeholder={placeholder}
               displayValue={getDisplayValues}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -91,34 +93,43 @@ export const MultiSelect = ({
                 </div>
               ) : (
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                  {filteredOptions.map((option) => (
-                    <Combobox.Option
-                      key={option.value}
-                      className={({ active }) =>
-                        `block px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${active ? "text-bold" : ""}`
-                      }
-                      value={option}
-                    >
-                      {({ selected }) => (
-                        <div className="flex">
-                          {selected && (
+                  {filteredOptions.map((option) => {
+                    const isSelected = selectedOptions?.some(
+                      (selectedOption) => selectedOption.value === option.value,
+                    );
+
+                    return (
+                      <Combobox.Option
+                        key={option.value}
+                        className={({ active }) =>
+                          `block px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${active ? "text-bold" : ""}`
+                        }
+                        value={option}
+                      >
+                        {() => (
+                          <div className="flex">
+                            {isSelected && (
+                              <span
+                                className={`inset-y-0 left-0 flex items-center pr-1 text-blue-700`}
+                              >
+                                <HiCheck
+                                  className="size-5"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            )}
                             <span
-                              className={`inset-y-0 left-0 flex items-center pr-1 text-blue-700`}
+                              className={`block truncate ${
+                                isSelected ? "font-medium" : "font-normal"
+                              }`}
                             >
-                              <HiCheck className="size-5" aria-hidden="true" />
+                              {option.label}
                             </span>
-                          )}
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-medium" : "font-normal"
-                            }`}
-                          >
-                            {option.label}
-                          </span>
-                        </div>
-                      )}
-                    </Combobox.Option>
-                  ))}
+                          </div>
+                        )}
+                      </Combobox.Option>
+                    );
+                  })}
                 </ul>
               )}
             </Combobox.Options>

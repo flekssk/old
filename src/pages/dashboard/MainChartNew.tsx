@@ -17,7 +17,6 @@ import {
   type ChartData,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { Card } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo, useState } from "react";
 
@@ -324,9 +323,8 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
   }, [sortedData, params, prevSortedData, displayPrevData, labels]);
 
   return (
-    <Card>
-      <div className="flex justify-between">
-        <h2 className="text-xl">Период в графике</h2>
+    <>
+      <div className="flex justify-end">
         <div>
           {prevData ? (
             <Toggle
@@ -343,6 +341,6 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       <div className="h-96">
         <Line options={options} data={series} />
       </div>
-    </Card>
+    </>
   );
 };

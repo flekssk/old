@@ -1,5 +1,5 @@
 import { mockRevenue } from "@/mocks/mock-by-article";
-import { Card, useThemeMode } from "flowbite-react";
+import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
@@ -92,10 +92,5 @@ export const StructureOfIncomeChart: FC = () => {
   };
   const series = sortedProducts.map((item) => item.partOfIncome);
 
-  return (
-    <Card>
-      <h2 className="text-xl">Стуктура выручки</h2>
-      <Chart height={305} options={options} series={series} type="donut" />
-    </Card>
-  );
+  return <Chart height={305} options={options} series={series} type="donut" />;
 };

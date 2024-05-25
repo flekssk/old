@@ -170,20 +170,25 @@ const DashboardPage: FC = function () {
           />
           <DisplayDateRange dateFrom={params.dateFrom} dateTo={params.dateTo} />
           {statsData && <StatsDashBoard data={statsData} />}
-          <Accordion title="Главный график">
+          <Accordion title="Период в графике" id="chart-period">
             <MainChartNew
               data={mainReportRequest.data?.chart ?? []}
               prevData={prevMainReportRequest.data?.chart}
             />
           </Accordion>
-          <Accordion title="Структура выручки">
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+            <Accordion
+              title="Топ 5 маржинальных товаров"
+              id="chart-top-products"
+            >
               <TopProductsChart
                 data={mainReportRequest.data?.topFiveProducts}
               />
+            </Accordion>
+            <Accordion title="Структура выручки" id="chart-structure">
               <StructureOfIncomeChart />
-            </div>
-          </Accordion>
+            </Accordion>
+          </div>
           {mainReportRequest.data?.byProduct && (
             <StatTable
               redirectFilters={filtersForRedirect}
