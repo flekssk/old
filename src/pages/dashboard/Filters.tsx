@@ -354,6 +354,7 @@ export const Filters: FC<FiltersProps> = ({
               options={filterOptions.categories}
             />
             <MultiSelect
+              placeholder="Все артикулы"
               position="top-right"
               options={articlesOptions || []}
               selectedOptions={selectedArticles}

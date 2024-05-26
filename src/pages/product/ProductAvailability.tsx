@@ -1,8 +1,8 @@
 import type { Stocks } from "@/api/report/types";
-import type { SelectOption } from "@/components/Select";
-import { Select } from "@/components/Select";
+import type { MultiSelectOption } from "@/components/MultiSelect";
+import { MultiSelect } from "@/components/MultiSelect";
 import { Toggle } from "@/components/Toggle";
-import { Card, useThemeMode } from "flowbite-react";
+import { Button, useThemeMode } from "flowbite-react";
 import { useState, type FC, useMemo } from "react";
 import Chart from "react-apexcharts";
 
@@ -11,16 +11,13 @@ type ProductAvailabilityProps = {
 };
 
 const OTHER_WAREHOUSES = "Остальные склады";
-const ALL_WARHOUSES = "Все склады";
-const DEFAULT_OPTION = {
-  label: ALL_WARHOUSES,
-  value: ALL_WARHOUSES,
-};
+const ALL_WAREHOUSES = "Все склады";
 
 const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
   const [showSizes, setShowSizes] = useState<boolean>(false);
-  const [selectCategory, setSelectCategory] =
-    useState<SelectOption>(DEFAULT_OPTION);
+  const [selectedCategories, setSelectedCategories] = useState<
+    MultiSelectOption[]
+  >([]);
 
   const warehouses = stocks.reduce(
     (acc, item) => {
@@ -60,7 +57,7 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
     ...Object.values(displayWarehouseNames),
   ];
 
-  const categoriesOptions = [ALL_WARHOUSES, ...categories].map((value) => ({
+  const categoriesOptions = categories.map((value) => ({
     label: value,
     value,
   }));
@@ -96,7 +93,10 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: categories,
+      categories:
+        selectedCategories.length > 0
+          ? selectedCategories.map((option) => option.value)
+          : categories,
       labels: {
         style: {
           colors: [labelColor],
@@ -123,15 +123,26 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
     },
   };
 
-  const filteredStocks = stocks.filter((stock) => {
-    if (selectCategory.value === ALL_WARHOUSES) {
-      return true;
+  const filteredStocks = useMemo(() => {
+    if (
+      selectedCategories.length === 0 ||
+      selectedCategories.some((category) => category.value === ALL_WAREHOUSES)
+    ) {
+      return stocks;
     }
-    if (selectCategory.value === OTHER_WAREHOUSES) {
-      return !displayWarehouseNames.includes(stock.warehouseName);
-    }
-    return stock.warehouseName === selectCategory.value;
-  });
+    return stocks.filter((stock) => {
+      if (
+        selectedCategories.some(
+          (category) => category.value === OTHER_WAREHOUSES,
+        )
+      ) {
+        return !displayWarehouseNames.includes(stock.warehouseName);
+      }
+      return selectedCategories.some(
+        (category) => category.value === stock.warehouseName,
+      );
+    });
+  }, [stocks, selectedCategories, displayWarehouseNames]);
 
   const filteredStockBySize = filteredStocks.reduce(
     (acc, item) => {
@@ -164,15 +175,19 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
   const seriesAllSize = [
     Object.keys(filteredStockBySize).reduce(
       (acc, item) => {
+        const categoriesAvailable =
+          selectedCategories.length > 0
+            ? selectedCategories.map((option) => option.value)
+            : categories;
         if (!acc.name) {
           acc.name = "Все размеры";
-          acc.data = categories.map(
+          acc.data = categoriesAvailable.map(
             (category) =>
               (filteredStockBySize[item] as Record<string, number>)[category] ??
               0,
           );
         } else {
-          categories.forEach((category, index) => {
+          categoriesAvailable.forEach((category, index) => {
             const val =
               ((filteredStockBySize[item] as Record<string, number>)[
                 category
@@ -186,45 +201,54 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
       {} as { name?: string; data?: number[] },
     ),
   ];
-  console.log("🚀 ~ seriesAllSize:", seriesAllSize, seriesBySize, categories);
+
+  const handleCategoryChange = (selectedOptions: MultiSelectOption[]) => {
+    const uniqueOptions = selectedOptions.reduce<MultiSelectOption[]>(
+      (acc, option) => {
+        const exists = acc.find((o) => o.value === option.value);
+        return exists
+          ? acc.filter((o) => o.value !== option.value)
+          : [...acc, option];
+      },
+      [],
+    );
+    setSelectedCategories(uniqueOptions);
+  };
 
   return (
-    <Card>
-      <div className="flex flex-col gap-3">
-        <div className="flex justify-between">
-          <h2 className="text-xl">Наличие товара на складах</h2>
-          <div className="flex gap-3">
-            <Select
-              placeholder="Все склады"
-              selectedOption={{
-                label: selectCategory?.label || "",
-                value: selectCategory?.value || "",
-              }}
-              options={categoriesOptions || []}
-              setSelectedOption={setSelectCategory}
-            />
-            <Toggle
-              position="right"
-              checked={showSizes}
-              label="Показывать по размерам"
-              onChange={(e) => {
-                setShowSizes(e.target.checked);
-              }}
-            />
-          </div>
-        </div>
-        <div className="">
-          <Chart
-            height={420}
-            options={options}
-            series={
-              showSizes ? seriesBySize : (seriesAllSize as ApexAxisChartSeries)
-            }
-            type="bar"
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-end">
+        <div className="flex gap-3">
+          <MultiSelect
+            placeholder="Все склады"
+            selectedOptions={selectedCategories}
+            options={categoriesOptions || []}
+            setSelectedOptions={handleCategoryChange}
           />
+          <Toggle
+            position="right"
+            checked={showSizes}
+            label="Показывать по размерам"
+            onChange={(e) => {
+              setShowSizes(e.target.checked);
+            }}
+          />
+          <Button size="sm" onClick={() => setSelectedCategories([])}>
+            Сбросить
+          </Button>
         </div>
       </div>
-    </Card>
+      <div className="">
+        <Chart
+          height={420}
+          options={options}
+          series={
+            showSizes ? seriesBySize : (seriesAllSize as ApexAxisChartSeries)
+          }
+          type="bar"
+        />
+      </div>
+    </div>
   );
 };
 

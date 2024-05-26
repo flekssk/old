@@ -1,4 +1,4 @@
-import { Card, useThemeMode } from "flowbite-react";
+import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
@@ -96,10 +96,5 @@ export const SizesChart: FC<SizesChartProps> = ({ data }) => {
   const series = sortedProducts.map((item) => (item.profit / allProfit) * 100);
   console.log("🚀 ~ series:", series);
 
-  return (
-    <Card>
-      <h2 className="text-xl">Размеры по прибыли</h2>
-      <Chart height={305} options={options} series={series} type="donut" />
-    </Card>
-  );
+  return <Chart height={305} options={options} series={series} type="donut" />;
 };
