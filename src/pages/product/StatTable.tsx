@@ -275,6 +275,9 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
         columnSettings
         storedSettingsName="barcode-report-table"
         columns={columns}
+        columnPinning={{
+          left: ["photo", "barcode"],
+        }}
         data={data}
         cellRangeSelection={true}
       />

@@ -1,6 +1,8 @@
 import type {
+  Column,
   ColumnDef,
   ColumnFiltersState,
+  ColumnPinningState,
   RowSelectionState,
   SortingState,
   VisibilityState,
@@ -12,10 +14,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import type { CSSProperties } from "react";
 import React from "react";
 import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
-import { Table as TableFlowbite, Button, Checkbox } from "flowbite-react";
+import { Button, Checkbox, theme } from "flowbite-react";
 import { ColumnSettings } from "./ColumnSettings";
 import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
@@ -37,7 +40,25 @@ interface DataTableProps<TData, TValue> {
   groupSettings?: boolean;
   groupSettingsName?: string;
   storedSettingsName?: string;
+  columnPinning?: ColumnPinningState;
 }
+
+const getCommonPinningStyles = (
+  column: Column<unknown, unknown>,
+  isHeader?: boolean,
+): CSSProperties => {
+  const isPinned = column.getIsPinned();
+
+  return {
+    background: isHeader ? undefined : "inherit",
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    opacity: 1,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? 1 : 0,
+  };
+};
 
 export function DataTable<TData, TValue>({
   columns: initialColumns,
@@ -48,6 +69,7 @@ export function DataTable<TData, TValue>({
   resizeColumns,
   columnSettings,
   groupSettings,
+  columnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
 }: DataTableProps<TData, TValue>) {
@@ -75,6 +97,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    columnResizeMode: "onChange",
     enableMultiSort: false,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -84,6 +107,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
+      columnPinning,
       sorting,
       columnFilters,
       columnVisibility,
@@ -154,24 +178,32 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="overflow-auto">
-        <TableFlowbite
-          className={className}
-          striped
+        <div
+          className={cn(className, theme.table?.root?.base)}
           {...{
             style: {
               width: resizeColumns ? table.getCenterTotalSize() : undefined,
             },
           }}
         >
-          <TableFlowbite.Head className="sticky top-0 ">
+          <div
+            className={cn("sticky flex top-0 z-10 ", theme.table?.head?.base)}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableFlowbite.HeadCell
+                  <div
                     key={header.id}
-                    className="relative"
+                    className={cn(
+                      "relative shrink-0 grow-0",
+                      theme.table?.head?.cell.base,
+                    )}
                     style={{
                       width: header.getSize(),
+                      ...getCommonPinningStyles(
+                        header.column as Column<unknown, unknown>,
+                        true,
+                      ),
                     }}
                   >
                     <div className="relative flex items-center justify-between">
@@ -200,36 +232,54 @@ export function DataTable<TData, TValue>({
                         ),
                       }}
                     ></div>
-                  </TableFlowbite.HeadCell>
+                  </div>
                 ))}
               </React.Fragment>
             ))}
-          </TableFlowbite.Head>
-          <TableFlowbite.Body {...getBodyProps()}>
-            {rows.map((row) => (
+          </div>
+          <div className={cn(theme.table?.body?.base)} {...getBodyProps()}>
+            {rows.map((row, rowIndex) => (
               <React.Fragment key={row.id}>
-                <TableFlowbite.Row className=" border-b">
+                <div
+                  className={cn(
+                    " relative flex border-b",
+                    theme.table?.row?.base,
+                    theme.table?.row?.striped,
+                  )}
+                >
                   {row.getVisibleCells().map((cell, index) => {
+                    const cellProps = getCellProps(cell, row, index);
                     return (
-                      <TableFlowbite.Cell
-                        {...getCellProps(cell, row, index)}
-                        style={{ width: cell.column.getSize() }}
+                      <div
+                        {...cellProps}
+                        className={cn(
+                          cellProps.className,
+                          "shrink-0 grow-0 flex items-center ",
+                          theme.table?.body?.cell.base,
+                        )}
+                        style={{
+                          height: 69,
+                          width: cell.column.getSize(),
+                          ...getCommonPinningStyles(
+                            cell.column as Column<unknown, unknown>,
+                          ),
+                        }}
                         key={cell.id}
                       >
-                        <span className="overflow-hidden text-ellipsis">
+                        <div className="max-w-full truncate">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
                           )}
-                        </span>
-                      </TableFlowbite.Cell>
+                        </div>
+                      </div>
                     );
                   })}
-                </TableFlowbite.Row>
+                </div>
               </React.Fragment>
             ))}
-          </TableFlowbite.Body>
-        </TableFlowbite>
+          </div>
+        </div>
       </div>
       <div
         className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex shrink-0 items-center p-4`}

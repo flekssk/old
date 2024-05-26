@@ -41,7 +41,7 @@ export const Filters: FC<FiltersProps> = ({
     if (!articles) return [];
 
     return articles.map(({ title, nmId, vendorCode }) => ({
-      label: title,
+      label: vendorCode,
       value: nmId,
       searchValues: [nmId.toString(), title, vendorCode],
     })) as MultiSelectOption[];
@@ -87,6 +87,16 @@ export const Filters: FC<FiltersProps> = ({
       });
     }
 
+    if (selectedArticles) {
+      selectedArticles.forEach((item, index) => {
+        result.push({
+          keyForDelete: `filters.article.${index}`,
+          label: "Артикул",
+          value: item.label,
+        });
+      });
+    }
+
     if (params.filters && Object.keys(params.filters).length > 0) {
       for (const key in params.filters) {
         const filter = params.filters[key];
@@ -119,7 +129,7 @@ export const Filters: FC<FiltersProps> = ({
       }
     }
     return result;
-  }, [params]);
+  }, [params, selectedArticles]);
 
   const filterOptions = useMemo(() => {
     const result = {
