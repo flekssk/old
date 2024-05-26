@@ -41,6 +41,7 @@ interface DataTableProps<TData, TValue> {
   groupSettingsName?: string;
   storedSettingsName?: string;
   columnPinning?: ColumnPinningState;
+  small?: boolean;
 }
 
 const getCommonPinningStyles = (
@@ -72,6 +73,7 @@ export function DataTable<TData, TValue>({
   columnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
+  small,
 }: DataTableProps<TData, TValue>) {
   const [visibleFilterColumn, setVisibleFilterColumn] =
     React.useState<string>();
@@ -195,8 +197,11 @@ export function DataTable<TData, TValue>({
                   <div
                     key={header.id}
                     className={cn(
-                      "relative shrink-0 grow-0",
+                      "relative shrink-0 grow-0 flex items-center",
                       theme.table?.head?.cell.base,
+                      {
+                        "px-2 py-1": small,
+                      },
                     )}
                     style={{
                       width: header.getSize(),
@@ -238,7 +243,7 @@ export function DataTable<TData, TValue>({
             ))}
           </div>
           <div className={cn(theme.table?.body?.base)} {...getBodyProps()}>
-            {rows.map((row, rowIndex) => (
+            {rows.map((row) => (
               <React.Fragment key={row.id}>
                 <div
                   className={cn(
@@ -256,9 +261,11 @@ export function DataTable<TData, TValue>({
                           cellProps.className,
                           "shrink-0 grow-0 flex items-center ",
                           theme.table?.body?.cell.base,
+                          {
+                            "px-2 py-1 ": small,
+                          },
                         )}
                         style={{
-                          height: 69,
                           width: cell.column.getSize(),
                           ...getCommonPinningStyles(
                             cell.column as Column<unknown, unknown>,

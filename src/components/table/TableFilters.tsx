@@ -187,7 +187,7 @@ export const TableFilters = ({
   };
 
   return (
-    <div className="flex items-center gap-1 pl-2">
+    <div className="flex items-center  gap-1 pl-2">
       {column.columnDef.enableColumnFilter && filterType && (
         <div>
           <Popover

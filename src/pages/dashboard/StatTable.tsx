@@ -51,6 +51,7 @@ export const StatTable: FC<StatTableProps> = ({
     });
   }, [items, prevItems]);
 
+  // @ts-expect-error fix ts error
   const columns = useMemo<Array<ColumnDef<ProductReportItem>>>(() => {
     const columnHelper = createColumnHelper<ProductReportItem>();
     return [
@@ -58,7 +59,7 @@ export const StatTable: FC<StatTableProps> = ({
         id: "photo",
         header: "Фото",
         cell: (row) => {
-          const ing = row.getValue() ? (
+          const img = row.getValue() ? (
             <img className="w-full" src={row.getValue()} alt="img" />
           ) : (
             <HiOutlineQuestionMarkCircle />
@@ -68,12 +69,12 @@ export const StatTable: FC<StatTableProps> = ({
               <Tooltip
                 style="light"
                 content={
-                  <div className="w-28 inline-flex justify-center text-3xl">
-                    {ing}
+                  <div className="inline-flex w-28 justify-center text-3xl">
+                    {img}
                   </div>
                 }
               >
-                <div className="w-5 text-center text-xl">{ing}</div>
+                <div className="w-5 text-center text-xl">{img}</div>
               </Tooltip>
             </div>
           );
@@ -433,7 +434,8 @@ export const StatTable: FC<StatTableProps> = ({
         resizeColumns
         columnSettings
         groupSettings
-        wrapperClassName="h-statTable"
+        small
+        wrapperClassName="max-h-statTable"
         groupSettingsName="main-report-user-groups"
         storedSettingsName="main-report-table"
         columns={columns}

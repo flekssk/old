@@ -29,6 +29,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
     });
   }, [items, prevItems]);
 
+  // @ts-expect-error fix ts error
   const columns = useMemo<Array<ColumnDef<BarcodeReportItemWithPrev>>>(() => {
     const columnHelper = createColumnHelper<BarcodeReportItemWithPrev>();
     return [
@@ -49,7 +50,9 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
                 <img className="w-5" src={image} alt="img" />
               </Tooltip>
             </div>
-          ) : null;
+          ) : (
+            ""
+          );
         },
       }),
 

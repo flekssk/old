@@ -81,7 +81,10 @@ module.exports = {
       ],
     },
     extend: {
-      height: {
+      fontSize: {
+        xxs: "0.5rem",
+      },
+      maxHeight: {
         statTable: "calc(100vh - 100px)",
       },
     },
