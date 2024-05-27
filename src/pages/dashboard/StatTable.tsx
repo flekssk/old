@@ -51,7 +51,7 @@ export const StatTable: FC<StatTableProps> = ({
     });
   }, [items, prevItems]);
 
-  // @ts-expect-error fix ts error
+  // @ts-ignore
   const columns = useMemo<Array<ColumnDef<ProductReportItem>>>(() => {
     const columnHelper = createColumnHelper<ProductReportItem>();
     return [
