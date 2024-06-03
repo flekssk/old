@@ -25,6 +25,7 @@ export function SidebarProvider({ children }: PropsWithChildren) {
       ? window.localStorage.getItem("isSidebarOpen") === "true"
       : false,
   );
+
   const toggleCollapseAdminPanel = () => {
     setIsAdminPanelCollapsed((prev) => !prev);
   };
@@ -47,6 +48,7 @@ export function SidebarProvider({ children }: PropsWithChildren) {
       setOpen(false);
     }
   }, [location]);
+
   // Close Sidebar on mobile tap inside main content
   useEffect(() => {
     function handleMobileTapInsideMain(event: MouseEvent) {

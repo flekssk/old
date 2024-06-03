@@ -46,7 +46,7 @@ const ExampleSidebar: FC = function () {
     >
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
-        collapsed={isOpenOnSmallScreens && !isSmallScreen()}
+        collapsed={!isOpenOnSmallScreens && !isSmallScreen()}
       >
         <div className="flex h-full flex-col justify-between py-2">
           <div>

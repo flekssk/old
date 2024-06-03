@@ -19,14 +19,6 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
     MultiSelectOption[]
   >([]);
 
-  const warehouses = stocks.reduce(
-    (acc, item) => {
-      acc[item.warehouseId] = item.warehouseName;
-      return acc;
-    },
-    {} as Record<number, string>,
-  );
-
   const displayWarehouseNames = useMemo(() => {
     const warehouseCounts = stocks.reduce(
       (acc, stock) => {
@@ -44,18 +36,38 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
       0,
     );
 
-    return Object.keys(warehouseCounts).reduce((acc, warehouseName) => {
-      if (((warehouseCounts[warehouseName] as number) / allStocks) * 100 > 3) {
-        acc.push(warehouseName);
-      }
-      return acc;
-    }, [] as string[]);
-  }, [warehouses, stocks]);
+    const mainWarehouses = Object.keys(warehouseCounts).filter(
+      (warehouseName) =>
+        ((warehouseCounts[warehouseName] as number) / allStocks) * 100 > 3,
+    );
 
-  const categories = [
-    OTHER_WAREHOUSES,
-    ...Object.values(displayWarehouseNames),
-  ];
+    const otherWarehouseCount = Object.keys(warehouseCounts)
+      .filter((warehouseName) => !mainWarehouses.includes(warehouseName))
+      .reduce(
+        (acc, warehouseName) =>
+          acc + (warehouseCounts[warehouseName] as number),
+        0,
+      );
+
+    const sortedWarehouses = mainWarehouses.reduce(
+      (acc, warehouseName) => {
+        acc[warehouseName] = warehouseCounts[warehouseName] as number;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    if (otherWarehouseCount > 0) {
+      sortedWarehouses[OTHER_WAREHOUSES] = otherWarehouseCount;
+    }
+
+    return Object.keys(sortedWarehouses).sort(
+      (a, b) =>
+        (sortedWarehouses[b] as number) - (sortedWarehouses[a] as number),
+    );
+  }, [stocks]);
+
+  const categories = [...displayWarehouseNames];
 
   const categoriesOptions = categories.map((value) => ({
     label: value,
@@ -240,7 +252,7 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
       </div>
       <div className="">
         <Chart
-          height={420}
+          height={350}
           options={options}
           series={
             showSizes ? seriesBySize : (seriesAllSize as ApexAxisChartSeries)

@@ -1,13 +1,17 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReportChartItem } from "@/api/report/types";
-import type { ChartOptions } from "chart.js";
+import type { ChartOptions, TooltipItem } from "chart.js";
 import { ru } from "date-fns/locale";
 import "chartjs-adapter-date-fns";
 
 type ChartParamsProps = {
   data: ReportChartItem[];
-  prevData?: ReportChartItem[];
   displayPrevData: boolean;
+  prevData?: ReportChartItem[];
+  additionalValueForToolip?: {
+    yAxisID: string;
+    additionalDataKey: keyof ReportChartItem;
+  };
 };
 
 const getAllValues = (
@@ -26,8 +30,9 @@ const getAllValues = (
 
 const useChartParams = ({
   data,
-  prevData,
   displayPrevData,
+  prevData,
+  additionalValueForToolip,
 }: ChartParamsProps) => {
   const [params, setParams] = useState(["sale"]);
 
@@ -38,6 +43,33 @@ const useChartParams = ({
   const deleteParams = useCallback((id: string) => {
     setParams((prevParams) => prevParams.filter((param) => param !== id));
   }, []);
+
+  const getCustomTooltip = (context: TooltipItem<"line">) => {
+    if (
+      additionalValueForToolip &&
+      context.dataset.yAxisID === additionalValueForToolip?.yAxisID
+    ) {
+      let label = context.dataset.label || "";
+
+      if (label) {
+        label += ": ";
+      }
+
+      if (context.parsed.y !== null) {
+        label += context.formattedValue + "%";
+
+        const additionalValue =
+          sortedData[context.dataIndex]?.[
+            additionalValueForToolip.additionalDataKey
+          ];
+
+        if (additionalValue !== undefined) {
+          label += ` (${additionalValue} руб.)`;
+        }
+      }
+      return label;
+    }
+  };
 
   const labels = data
     .sort((a, b) => {
@@ -131,6 +163,11 @@ const useChartParams = ({
         title: {
           display: false,
           text: "Chart.js Line Chart - Multi Axis",
+        },
+        tooltip: {
+          callbacks: {
+            label: getCustomTooltip,
+          },
         },
       },
       scales: {
