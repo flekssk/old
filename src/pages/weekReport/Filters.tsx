@@ -3,18 +3,10 @@
 import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
-import { DATE_FORMAT } from "@/helpers/date";
-import { formatDate, parse } from "date-fns";
-import { Datepicker, Badge, Button } from "flowbite-react";
+import { Badge, Button } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
-import {
-  dateFilters,
-  getLabelDateFilter,
-  getValueDateFilter,
-  isNumberFilter,
-  isTextFilter,
-} from "@/utils/dashboard";
+import { isNumberFilter, isTextFilter } from "@/utils/dashboard";
 import { REPORT_TABLE_COLUMNS_NAMES } from "@/constants/constants";
 import { MdClose } from "react-icons/md";
 import { parse as qsParse, stringify } from "qs";
@@ -59,13 +51,6 @@ export const Filters: FC<FiltersProps> = ({
       return foundArticle ? [foundArticle] : [];
     });
   }, [params, articlesOptions]);
-
-  const dateFilterOptions = useMemo(() => {
-    return dateFilters.map((filter) => ({
-      value: filter.value,
-      label: filter.text,
-    }));
-  }, []);
 
   const selectedFilters = useMemo(() => {
     const result: { keyForDelete: string; label: string; value?: string }[] =
@@ -158,40 +143,6 @@ export const Filters: FC<FiltersProps> = ({
 
     return result;
   }, [reportFilterAggregationRequest.data]);
-
-  const minDate = reportFilterAggregationRequest.data?.date?.minDate
-    ? parse(
-        reportFilterAggregationRequest.data?.date?.minDate,
-        DATE_FORMAT.SERVER_DATE,
-        new Date(),
-      )
-    : undefined;
-
-  const maxDate = reportFilterAggregationRequest.data?.date?.maxDate
-    ? parse(
-        reportFilterAggregationRequest.data?.date?.maxDate,
-        DATE_FORMAT.SERVER_DATE,
-        new Date(),
-      )
-    : new Date();
-
-  const handleDateFilterChange = (value: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    if (value === "custom") {
-      newSearchParams.delete("dateFrom");
-      newSearchParams.delete("dateTo");
-    } else {
-      newSearchParams.set(
-        "dateFrom",
-        dateFilters.find((item) => item.value === value)?.dateFrom as string,
-      );
-      newSearchParams.set(
-        "dateTo",
-        dateFilters.find((item) => item.value === value)?.dateTo as string,
-      );
-    }
-    setSearchParams(newSearchParams);
-  };
 
   const handleCategoryChange = (category: string) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);

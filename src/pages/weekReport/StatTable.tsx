@@ -25,7 +25,7 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
     });
   }, [items]);
 
-  // @ts-ignore
+  // @ts-expect-error test
   const columns = useMemo<Array<ColumnDef<WeekReportItem>>>(() => {
     const columnHelper = createColumnHelper<WeekReportItem>();
     return [

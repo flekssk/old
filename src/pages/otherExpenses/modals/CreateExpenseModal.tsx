@@ -20,7 +20,7 @@ import { z } from "zod";
 
 const formSchema = z.object({
   amount: z.number(),
-  category_id: z.number(),
+  categoryId: z.number(),
   description: z.string(),
   date: z.string(),
   accountId: z.number(),
@@ -30,7 +30,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 const defaultValues = {
   amount: 0,
-  category_id: 0,
+  categoryId: 0,
   description: "",
   date: "",
   accountId: 0,
@@ -111,19 +111,19 @@ export const CreateExpenseModal = ({
               type="number"
             />
             <Controller
-              name="category_id"
+              name="categoryId"
               control={control}
               render={({ field: { value: fieldValue } }) => (
                 <SelectControl
                   label="Статья"
-                  name="category_id"
+                  name="categoryId"
                   placeholder="Статья расхода"
                   selectedOption={expensesCategoriesOptions.find(
                     ({ value }) => fieldValue === value,
                   )}
                   options={expensesCategoriesOptions}
                   setSelectedOption={(option) =>
-                    setValue("category_id", Number(option.value))
+                    setValue("categoryId", Number(option.value))
                   }
                 />
               )}

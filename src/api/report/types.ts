@@ -135,9 +135,9 @@ export interface WeekReportItem {
   // маржинальность (в %) realization / profit
   marginality: number;
   // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
-  advertisingExpenses: number;
+  advertisingExpense: number;
   // ДРР % advertisingExpenses / sales
-  ddr: number;
+  drr: number;
 }
 
 export interface WeekReportResponse {

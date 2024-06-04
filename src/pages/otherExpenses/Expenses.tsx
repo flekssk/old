@@ -69,9 +69,6 @@ export const Expenses = () => {
       );
 
       const filteredExpenses = filteredByDate.filter((expense) =>
-        // TODO: Поправить типы на беке
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         categoryIds.has(expense.categoryId),
       );
 
