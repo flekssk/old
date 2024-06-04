@@ -14,25 +14,32 @@ import { SelectControl } from "@/components/forms/SelectControl";
 import { formatDateToString } from "@/helpers/date";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Modal } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const formSchema = z.object({
-  amount: z.number(),
-  category_id: z.number(),
-  description: z.string(),
-  date: z.string(),
-  accountId: z.number(),
+  amount: z
+    .string()
+    .nonempty("Сумма не может быть пустой")
+    .refine((value) => !isNaN(parseFloat(value)), {
+      message: "Сумма должна быть числом",
+    })
+    .transform((value) => parseFloat(value)),
+  categoryId: z.number().min(1, "Необходимо выбрать категорию"),
+  description: z.string().nonempty("Описание не может быть пустым"),
+  date: z.string().min(1, "Дата не может быть пустой"),
+  accountId: z.number().min(1, "Необходимо выбрать аккаунт"),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 const defaultValues = {
-  amount: 0,
-  category_id: 0,
+  amount: undefined,
+  categoryId: 0,
   description: "",
-  date: "",
+  date: formatDateToString(new Date()),
   accountId: 0,
 };
 
@@ -58,9 +65,24 @@ export const CreateExpenseModal = ({
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues,
+    mode: "onTouched",
   });
 
-  const { control, watch, setValue, reset } = form;
+  const { control, watch, setValue, reset, formState } = form;
+  const { isDirty } = formState;
+
+  const watchedFields = watch();
+
+  const isFormFilled = useMemo(
+    () =>
+      Object.values(watchedFields).every(
+        (field) => field !== "" && field !== 0,
+      ),
+    [watchedFields],
+  );
+
+  const isButtonDisabled = isEdit ? !isDirty : !isFormFilled;
 
   const expensesCategoriesOptions =
     expensesCategoriesData?.map(({ id, name }) => ({
@@ -81,10 +103,15 @@ export const CreateExpenseModal = ({
 
   const onSubmit = async () => {
     const data = form.getValues();
-    if (isEdit && expense) {
-      await updateMutation.mutateAsync({ id: expense?.id, data });
-    } else {
-      await createMutation.mutateAsync(data);
+    try {
+      if (isEdit && expense) {
+        await updateMutation.mutateAsync({ id: expense?.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
+      toast.success("Данные добавлены/обновлены");
+    } catch {
+      toast.error("Ошибка, запрос не выполнен");
     }
     expensesList.refetch();
     handleOnClose();
@@ -95,7 +122,7 @@ export const CreateExpenseModal = ({
       setIsEdit(true);
       reset(expense);
     }
-  }, [expense, form]);
+  }, [expense, form, reset]);
 
   return (
     <Modal show={isOpen} onClose={handleOnClose}>
@@ -111,19 +138,19 @@ export const CreateExpenseModal = ({
               type="number"
             />
             <Controller
-              name="category_id"
+              name="categoryId"
               control={control}
               render={({ field: { value: fieldValue } }) => (
                 <SelectControl
                   label="Статья"
-                  name="category_id"
+                  name="categoryId"
                   placeholder="Статья расхода"
                   selectedOption={expensesCategoriesOptions.find(
                     ({ value }) => fieldValue === value,
                   )}
                   options={expensesCategoriesOptions}
                   setSelectedOption={(option) =>
-                    setValue("category_id", Number(option.value))
+                    setValue("categoryId", Number(option.value))
                   }
                 />
               )}
@@ -171,8 +198,8 @@ export const CreateExpenseModal = ({
           </Button>
           <Button
             onClick={onSubmit}
-            // disabled={!expenseCategoryName}
-            isProcessing={createMutation.isPending}
+            disabled={isButtonDisabled}
+            isProcessing={createMutation.isPending || updateMutation.isPending}
           >
             {isEdit ? "Сохранить" : "Создать"}
           </Button>

@@ -12,8 +12,6 @@ import {
 import { useMemo } from "react";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 
-type OverrideExpenes = Omit<Expense, "category_id"> & { categoryId: number };
-
 type Props = {
   data: Array<Expense>;
   onOpenDeleteModal: (id: number) => void;
@@ -31,7 +29,7 @@ export const ExpensesTable = ({
   const accountList = userProfile.data?.accounts;
 
   const columns = useMemo(() => {
-    const columnHelper = createColumnHelper<OverrideExpenes>();
+    const columnHelper = createColumnHelper<Expense>();
 
     return [
       columnHelper.accessor("date", {

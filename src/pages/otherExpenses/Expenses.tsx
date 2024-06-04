@@ -15,14 +15,13 @@ import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
 import { ExpensesSkeleton } from "@/components/skeletons";
 import type { DateRange } from "react-day-picker";
 import { addDays, isWithinInterval } from "date-fns";
+import { toast } from "react-toastify";
 
 export const Expenses = () => {
   const [date, setDate] = useState<DateRange | undefined>(undefined);
-
   const [selectedExpensesCategories, setSelectedExpensesCategories] = useState<
     MultiSelectOption[] | undefined
   >(undefined);
-
   const [expenseDeleteId, setExpenseDeleteId] = useState<number | undefined>(
     undefined,
   );
@@ -69,9 +68,6 @@ export const Expenses = () => {
       );
 
       const filteredExpenses = filteredByDate.filter((expense) =>
-        // TODO: Поправить типы на беке
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         categoryIds.has(expense.categoryId),
       );
 
@@ -103,9 +99,14 @@ export const Expenses = () => {
   };
 
   const handleConfirmDeleteExpense = async () => {
-    if (expenseDeleteId) {
-      await deleteExpense.mutateAsync(expenseDeleteId);
-      expensesList.refetch();
+    try {
+      if (expenseDeleteId) {
+        await deleteExpense.mutateAsync(expenseDeleteId);
+        expensesList.refetch();
+      }
+      toast.success("Данные успешно удалены");
+    } catch {
+      toast.error("Ошибка, запрос не выполнен");
     }
     setIsOpenDeleteExpenseModal(false);
   };

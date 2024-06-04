@@ -47,12 +47,8 @@ const queryClient = new QueryClient();
 const App: FC = function () {
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastContainer
-        hideProgressBar
-        autoClose={3000}
-        position={"top-center"}
-      />
       <Flowbite theme={{ theme }}>
+        <ToastContainer hideProgressBar autoClose={3000} />
         <AuthProvider>
           <BrowserRouter>
             <Routes>
