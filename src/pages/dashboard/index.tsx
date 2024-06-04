@@ -1,8 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useMemo } from "react";
+import { type FC, useMemo, useEffect } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { useMainReport, useReportFilterAggregation } from "@/api/report";
+import {
+  useMainReport,
+  useMainReportV2,
+  useReportFilterAggregation,
+} from "@/api/report";
 import type {
   ArticleFilter,
   NumberFilter,
@@ -120,6 +124,71 @@ const DashboardPage: FC = function () {
   const mainReportRequest = useMainReport(params, {
     enabled: !!reportFilterAggregatedRequest.data,
   });
+
+  const mainReportRequestV2 = useMainReportV2(params, {
+    enabled: !!reportFilterAggregatedRequest.data,
+  });
+
+  const compareFields = [
+    "realisation",
+    "sales",
+    "toTransfer",
+    "returns",
+    "costOfSales",
+    "fines",
+    "compensationForSubstitutedGoods",
+    "reimbursementOfTransportationCosts",
+    "paymentForMarriageAndLostGoods",
+    "logistics",
+    "rejectionsAndReturns",
+    "totalSales",
+    "tax",
+    "profit",
+    "profitability",
+    "ordersCount",
+    "returnsCount",
+    "salesCount",
+    "refunds",
+    "storage",
+    "advertisingExpense",
+    "commission",
+    "cost",
+    "averagePriceBeforeSPP",
+    "averageLogisticsCost",
+    "averageProfitPerPiece",
+    "profitability",
+    "marginality",
+    "roi",
+    "averageRedemption",
+    "drr",
+    "shareInTotalRevenue",
+  ];
+  useEffect(() => {
+    if (mainReportRequestV2.data && mainReportRequest.data) {
+      mainReportRequest.data.byProduct.forEach((item) => {
+        const nmId = item.article;
+        const sameItem = mainReportRequestV2.data.byProduct.find(
+          (el) => (el as any).article.toString() === nmId.toString(),
+        );
+        console.log(
+          "🚀 ~ mainReportRequest.data.byProduct.forEach ~ sameItem:",
+          sameItem,
+          nmId,
+          mainReportRequestV2.data.byProduct,
+        );
+
+        if (sameItem) {
+          console.log(`item diff: ${nmId} \n`);
+          compareFields.forEach((field) => {
+            console.log(
+              // @ts-ignore asd
+              `${field} : ${sameItem[field]}, ${item[field]} ${sameItem[field] - item[field]} \n`,
+            );
+          });
+        }
+      });
+    }
+  }, [mainReportRequestV2.data, mainReportRequest.data]);
 
   const prevMainReportRequest = useMainReport(prevParams, {
     enabled: !!reportFilterAggregatedRequest.data,

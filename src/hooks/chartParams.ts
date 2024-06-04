@@ -69,6 +69,8 @@ const useChartParams = ({
       }
       return label;
     }
+
+    return undefined;
   };
 
   const labels = data

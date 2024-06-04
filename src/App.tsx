@@ -31,6 +31,7 @@ import SubscribePackages from "@/pages/subPackages/SubscribePackages";
 import UserList from "@/pages/userList/UserList";
 import UserInfo from "@/pages/userInfo/UserInfo";
 import TaskQueue from "@/pages/taskQueue/TaskQueue";
+import WeekReportPage from "./pages/weekReport";
 import OtherExpenses from "@/pages/otherExpenses";
 
 // lng and resources key depend on your locale.
@@ -58,6 +59,15 @@ const App: FC = function () {
                   element={
                     <ProtectedRoute>
                       <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                  index
+                />
+                <Route
+                  path={ROUTES.week}
+                  element={
+                    <ProtectedRoute>
+                      <WeekReportPage />
                     </ProtectedRoute>
                   }
                   index

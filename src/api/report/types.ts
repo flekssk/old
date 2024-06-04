@@ -78,6 +78,72 @@ export interface ProductReportItem {
   ddr: number;
 }
 
+export interface WeekReportItem {
+  startWeek: string;
+  // Заказы
+  orders: number;
+  // Заказы шт
+  ordersCount: number;
+  // Название товара
+  realisation: number;
+  // Средняя цена до СПП
+  averagePriceBeforeSPP: number;
+  //Реализация (сумма продаж до СПП)
+  shareInTotalRevenue: number;
+  // продажа
+  sales: number;
+  // К перечислению
+  toTransfer: number;
+  //Возвраты
+  returns: number;
+  // Cебестоимость продаж
+  costOfSales: number;
+  // Штрафы
+  fines: number;
+  // Компенсация подмененного товара
+  compensationForSubstitutedGoods: number;
+  // Компенсация поставщика
+  reimbursementOfTransportationCosts: number;
+  //Оплата брака + потерянного товара
+  paymentForMarriageAndLostGoods: number;
+  //Ср. стоимость логистики
+  averageLogisticsCost: number;
+  // Логистика
+  logistics: number;
+  //Хранение
+  storage: number;
+  //Количество отказов+ возвраты
+  rejectionsAndReturns: number;
+  //Общее количество продаж, с учетом возвратов
+  totalSales: number;
+  // Средний процент выкупа
+  averageRedemption: number;
+  // Средняя прибыль на 1 шт
+  averageProfitPerPiece: number;
+  // Налог
+  tax: number;
+  // Прибыль
+  profit: number;
+  // ROI
+  roi: number;
+  // Рентабельность
+  profitability: number;
+  // Доля в общей выручке
+  shareInTotalRevenuePart: number;
+  // Доля в общей прибыли
+  shareInTotalProfit: number;
+  // маржинальность (в %) realization / profit
+  marginality: number;
+  // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
+  advertisingExpense: number;
+  // ДРР % advertisingExpenses / sales
+  drr: number;
+}
+
+export interface WeekReportResponse {
+  byWeek: WeekReportItem[];
+}
+
 export interface TopProduct {
   name: string;
   vendorCode: string;
@@ -155,6 +221,12 @@ export interface ReportRequest {
   orderBy?: { field: string; direction: string };
   limit?: number;
   page?: number;
+}
+
+export interface WeekReportRequest {
+  category?: string;
+  brand?: string;
+  filters?: Filters;
 }
 
 // филтры и сортировки по всем полям кроме img, url

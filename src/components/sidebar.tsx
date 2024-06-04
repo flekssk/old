@@ -63,18 +63,19 @@ const ExampleSidebar: FC = function () {
                 >
                   Оцифровка
                 </Sidebar.Item>
-                {/*<Sidebar.Item*/}
-                {/*  as={Link}*/}
-                {/*  to={ROUTES.unitTable}*/}
-                {/*  icon={HiCalculator}*/}
-                {/*  className={*/}
-                {/*    ROUTES.unitTable === currentPage*/}
-                {/*      ? "bg-gray-100 dark:bg-gray-700"*/}
-                {/*      : ""*/}
-                {/*  }*/}
-                {/*>*/}
-                {/*  Unit экономика*/}
-                {/*</Sidebar.Item>*/}
+                <Sidebar.Item
+                  as={Link}
+                  to={ROUTES.week}
+                  icon={HiViewGrid}
+                  className={
+                    ROUTES.week === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  По неделям
+                </Sidebar.Item>
+
                 <Sidebar.Item
                   as={Link}
                   to={ROUTES.cost}
