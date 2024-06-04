@@ -9,7 +9,7 @@ export interface SelectOption {
   value: string | number;
 }
 
-interface SelectProps {
+export interface SelectProps {
   options: SelectOption[];
   selectedOption?: SelectOption;
   isFullWidth?: boolean;

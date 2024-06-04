@@ -1,4 +1,4 @@
-import { differenceInSeconds, format, sub } from "date-fns";
+import { differenceInSeconds, format, parseISO, sub } from "date-fns";
 
 export const DATE_FORMAT = {
   SERVER_DATE: "yyyy-MM-dd",
@@ -20,3 +20,14 @@ export const getPrevInterval = (dateFrom: string, dateTo: string) => {
     ),
   };
 };
+
+export const parseIsoDateString = (date: string) => {
+  const parsedDate = parseISO(date);
+  const formattedDate = format(parsedDate, DATE_FORMAT.DATE);
+  return formattedDate;
+};
+
+export const formatDateToString = (
+  date: Date | number,
+  formatResult: string | undefined = DATE_FORMAT.DATE,
+) => format(date, formatResult);

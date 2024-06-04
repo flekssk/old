@@ -18,4 +18,5 @@ export const ROUTES = {
   usersList: "/users_list",
   userInfo: "/user-info",
   tasksQueue: "/task-queue",
+  otherExpenses: "/other-expenses",
 } as const;

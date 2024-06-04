@@ -63,6 +63,10 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       data,
       prevData,
       displayPrevData,
+      additionalValueForToolip: {
+        yAxisID: "y3",
+        additionalDataKey: "advertisingExpenses",
+      },
     });
 
   // const options = {
@@ -216,7 +220,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
     // }
 
     result.datasets.push({
-      label: "ДРР %",
+      label: "ДРР",
       data: sortedData.map((item) => item.ddr),
       yAxisID: "y3",
       borderColor: strokeColors[2],
@@ -227,7 +231,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "ДРР % пред. периуд",
+        label: "ДРР пред. периуд",
         data: prevSortedData.map((item) => item.ddr),
         yAxisID: "y3",
         fill: {
@@ -269,7 +273,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     result.datasets.push({
       label: "Возвраты",
-      data: sortedData.map((item) => item.returns),
+      data: sortedData.map((item) => Math.abs(item.returns)),
       yAxisID: "y1",
       borderColor: strokeColors[4],
       backgroundColor: strokeColors[4],
@@ -280,7 +284,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
     if (displayPrevData) {
       result.datasets.push({
         label: "Возвраты пред. периуд",
-        data: prevSortedData.map((item) => item.returns),
+        data: prevSortedData.map((item) => Math.abs(item.returns)),
         yAxisID: "y1",
         fill: {
           target: "start",

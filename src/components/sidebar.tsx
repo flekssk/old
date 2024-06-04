@@ -9,6 +9,7 @@ import {
   HiUser,
   HiUsers,
   HiViewGrid,
+  HiCurrencyDollar,
 } from "react-icons/hi";
 
 import { useSidebarContext } from "@/context/SidebarContext";
@@ -46,7 +47,7 @@ const ExampleSidebar: FC = function () {
     >
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
-        collapsed={isOpenOnSmallScreens && !isSmallScreen()}
+        collapsed={!isOpenOnSmallScreens && !isSmallScreen()}
       >
         <div className="flex h-full flex-col justify-between py-2">
           <div>
@@ -86,6 +87,18 @@ const ExampleSidebar: FC = function () {
                   }
                 >
                   Себестоимость
+                </Sidebar.Item>
+                <Sidebar.Item
+                  as={Link}
+                  to={ROUTES.otherExpenses}
+                  icon={HiCurrencyDollar}
+                  className={
+                    ROUTES.otherExpenses === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  Прочие расходы
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={Link}
