@@ -5,6 +5,7 @@ export const ROUTES = {
   resetPassword: "/reset-password",
   resetPasswordByToken: "/reset-password-with-token/:token",
   home: "/",
+  week: "/week",
   authVk: "/auth/vk",
   authYandex: "/auth/yandex",
   unitTable: "/unit-table",

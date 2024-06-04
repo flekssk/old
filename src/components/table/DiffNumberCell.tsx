@@ -12,18 +12,22 @@ export const DiffNumberCell = <T extends unknown>(
   const meta = (cellContext.column.columnDef.meta || {}) as {
     suffix?: string;
     positiveIfGrow?: boolean;
+    displayDiff?: boolean;
   };
   const positiveIfGrow = meta.positiveIfGrow ?? true;
   const suffix = meta.suffix ?? null;
   const prevValue = prev ? prev[cellContext.column.id as keyof T] : null;
+  const displayDiff = meta.displayDiff ?? false;
 
   let direction: "up" | "down" | null = null;
+  let diff: number | null = null;
   let isPositive = true;
   if (
     prevValue !== null &&
     typeof prevValue === "number" &&
     cellContext.getValue() !== prevValue
   ) {
+    diff = (cellContext.getValue() as number) - prevValue;
     direction = cellContext.getValue() > prevValue ? "up" : "down";
     isPositive =
       cellContext.getValue() > prevValue ? positiveIfGrow : !positiveIfGrow;
@@ -40,7 +44,9 @@ export const DiffNumberCell = <T extends unknown>(
       </div>
       {prevValue ? (
         <div className={`flex items-center gap-1 text-xs ${positiveClass}`}>
-          {displayNumber(prevValue as number)}
+          {displayNumber(
+            displayDiff ? (diff as number) : (prevValue as number),
+          )}
           {suffix ? <>&nbsp;{suffix}</> : null}
           {direction === null ? null : (
             <>{direction === "up" ? <HiArrowUp /> : <HiArrowDown />}</>

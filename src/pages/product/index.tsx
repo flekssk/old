@@ -7,7 +7,7 @@ import { StatsProduct } from "./StatsProduct";
 
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
 // import { useArticleReport, useMainReport } from "@/api/report";
-import { useArticleReport } from "@/api/report";
+import { useArticleReport, useArticleV2Report } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
 import { useParams, useSearchParams } from "react-router-dom";
 
@@ -77,6 +77,8 @@ const Product: FC = function () {
   //const mainReportRequest = useMainReport(params);
 
   const articleRequest = useArticleReport(+entityId, params);
+  const articleV2Request = useArticleV2Report(+entityId, params);
+  console.log("🚀 ~ articleV2Request:", articleV2Request);
   const prevArticleRequest = useArticleReport(+entityId, prevParams);
 
   const statsData = useProductStatsData(
