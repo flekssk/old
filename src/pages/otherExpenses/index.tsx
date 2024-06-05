@@ -36,7 +36,7 @@ const OtherExpenses = () => {
 
   return (
     <NavbarSidebarLayout>
-      <div className="mb-6 grid h-[70vh] grid-cols-1 gap-y-6  dark:border-gray-700 dark:bg-gray-900 xl:grid-cols-2 xl:gap-4">
+      <div className="mb-6 grid grid-cols-1 gap-y-6  dark:border-gray-700 dark:bg-gray-900 xl:grid-cols-2 xl:gap-4">
         <div className="col-span-full">
           <Breadcrumb className="mb-4">
             <Breadcrumb.Item href="#">
