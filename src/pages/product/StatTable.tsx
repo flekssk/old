@@ -29,7 +29,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
     });
   }, [items, prevItems]);
 
-  // @ts-ignore
+  // @ts-expect-error sss
   const columns = useMemo<Array<ColumnDef<BarcodeReportItemWithPrev>>>(() => {
     const columnHelper = createColumnHelper<BarcodeReportItemWithPrev>();
     return [
