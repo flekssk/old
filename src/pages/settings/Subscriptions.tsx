@@ -5,8 +5,15 @@ import {
 } from "@/api/subscription";
 import { BlockSpinner } from "@/components/BlockSpinner";
 import { displayNumber } from "@/helpers/number";
+import { format, parseISO } from "date-fns";
 import { Button, Card } from "flowbite-react";
 import type { FC } from "react";
+
+const parseIsoDateString = (date: string) => {
+  const parsedDate = parseISO(date);
+  const formattedDate = format(parsedDate, "dd.MM.yyyy HH:mm:ss");
+  return formattedDate;
+};
 
 export const Subscriptions: FC = () => {
   const subscriptionListQuery = useSubscriptionList();
@@ -39,13 +46,13 @@ export const Subscriptions: FC = () => {
                     <div className="text-xl">
                       Подписка: {item.subscription.title}
                     </div>
-                    <div className="max-w-3xl grid grid-cols-2 ">
+                    <div className="grid max-w-3xl grid-cols-2 ">
                       <span className=" font-bold">Куплена:</span>
-                      <span>{item.created_at}</span>
+                      <span>{parseIsoDateString(item.created_at)}</span>
                       <span className="  font-bold">
                         Будет продлена/закончится:
                       </span>
-                      <span>{item.expired_at}</span>
+                      <span>{parseIsoDateString(item.expired_at)}</span>
                     </div>
                   </Card>
                 ))

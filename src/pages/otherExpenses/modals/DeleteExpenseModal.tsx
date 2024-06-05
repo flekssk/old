@@ -1,4 +1,3 @@
-import { useCreateExpenseCategoryMutation } from "@/api/otherExpenses";
 import { Button, Modal } from "flowbite-react";
 
 type Props = {
@@ -12,8 +11,6 @@ export const DeleteExpenseModal = ({
   onClose,
   onConfirmDelete,
 }: Props) => {
-  const createMutation = useCreateExpenseCategoryMutation();
-
   return (
     <Modal show={isOpen} onClose={onClose}>
       <Modal.Header>Удаление расхода</Modal.Header>
@@ -25,11 +22,7 @@ export const DeleteExpenseModal = ({
           <Button color="gray" onClick={onClose}>
             Отменить
           </Button>
-          <Button
-            color="failure"
-            onClick={onConfirmDelete}
-            isProcessing={createMutation.isPending}
-          >
+          <Button color="failure" onClick={onConfirmDelete}>
             Подтвердить
           </Button>
         </div>

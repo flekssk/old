@@ -4,6 +4,7 @@ import {
 } from "@/api/otherExpenses";
 import { Button, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 type Props = {
   isOpen: boolean;
@@ -17,7 +18,12 @@ export const CreateExpenseCategoryModal = ({ isOpen, onClose }: Props) => {
   const expenseCategoriesList = useExpenseCategories();
 
   const handleSaveCategory = async () => {
-    await createMutation.mutateAsync({ name: expenseCategoryName });
+    try {
+      await createMutation.mutateAsync({ name: expenseCategoryName });
+      toast.success("Категория успешно создана");
+    } catch {
+      toast.error("Ошибка, запрос не выполнен");
+    }
     setExpenseCategoryName("");
     expenseCategoriesList.refetch();
     onClose();

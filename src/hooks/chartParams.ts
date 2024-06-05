@@ -1,6 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReportChartItem } from "@/api/report/types";
-import type { ChartOptions, TooltipItem } from "chart.js";
+import type {
+  ChartOptions,
+  LegendElement,
+  LegendItem,
+  TooltipItem,
+} from "chart.js";
 import { ru } from "date-fns/locale";
 import "chartjs-adapter-date-fns";
 
@@ -35,6 +40,12 @@ const useChartParams = ({
   additionalValueForToolip,
 }: ChartParamsProps) => {
   const [params, setParams] = useState(["sale"]);
+  const [yAxisVisibility, setYAxisVisibility] = useState({
+    y1: true,
+    y2: false,
+    y3: false,
+    y4: false,
+  });
 
   const getParams = useCallback((id: string) => {
     setParams((prevParams) => [...prevParams, id]);
@@ -72,6 +83,39 @@ const useChartParams = ({
 
     return undefined;
   };
+
+  const handleLegendClick = useCallback(
+    (legendItem: LegendItem, legend: LegendElement<"line">) => {
+      const index = legendItem.datasetIndex;
+
+      if (!index) return;
+
+      const ci = legend.chart;
+      const dataset = ci.data.datasets[index];
+      const yAxisID = dataset?.yAxisID as string;
+
+      if (ci.isDatasetVisible(index)) {
+        ci.hide(index);
+        legendItem.hidden = true;
+      } else {
+        ci.show(index);
+        legendItem.hidden = false;
+      }
+
+      setYAxisVisibility((prevVisibility) => {
+        const isAnyVisible = ci.data.datasets.some(
+          (ds, i) => ds.yAxisID === yAxisID && !ci.getDatasetMeta(i).hidden,
+        );
+        return {
+          ...prevVisibility,
+          [yAxisID]: isAnyVisible,
+        };
+      });
+
+      ci.update();
+    },
+    [],
+  );
 
   const labels = data
     .sort((a, b) => {
@@ -166,6 +210,10 @@ const useChartParams = ({
           display: false,
           text: "Chart.js Line Chart - Multi Axis",
         },
+        legend: {
+          onClick: (e, legendItem, legend) =>
+            handleLegendClick(legendItem, legend),
+        },
         tooltip: {
           callbacks: {
             label: getCustomTooltip,
@@ -194,7 +242,7 @@ const useChartParams = ({
           max: Math.ceil(maxY1 * 1.3),
           min: Math.ceil(minY1 >= 0 ? minY1 * 0.7 : minY1 * 1.3),
           type: "linear" as const,
-          display: true,
+          display: yAxisVisibility.y1,
           position: "left" as const,
           grid: {
             drawOnChartArea: false,
@@ -204,7 +252,7 @@ const useChartParams = ({
           max: Math.ceil(Math.max(...allAvgPrices) * 1.3),
           min: Math.ceil(Math.min(...allAvgPrices) * 0.7),
           type: "linear" as const,
-          display: true,
+          display: yAxisVisibility.y2,
           position: "right" as const,
           grid: {
             drawOnChartArea: false,
@@ -214,7 +262,7 @@ const useChartParams = ({
           min: 0,
           max: 100,
           type: "linear" as const,
-          display: true,
+          display: yAxisVisibility.y3,
           position: "right" as const,
           grid: {
             drawOnChartArea: false,
@@ -222,7 +270,7 @@ const useChartParams = ({
         },
         y4: {
           type: "linear" as const,
-          display: false,
+          display: yAxisVisibility.y4,
           position: "left" as const,
           grid: {
             drawOnChartArea: false,
@@ -231,7 +279,7 @@ const useChartParams = ({
       },
     };
     return result;
-  }, [sortedData, prevSortedData, displayPrevData]);
+  }, [sortedData, prevSortedData, displayPrevData, yAxisVisibility]);
   console.log("🚀 ~ options:", options);
   return {
     prevSortedData,
