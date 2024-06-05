@@ -1,18 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useMemo, useEffect } from "react";
+import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import {
-  useMainReport,
-  useMainReportV2,
-  useReportFilterAggregation,
-} from "@/api/report";
+import { useMainReportV2, useReportFilterAggregation } from "@/api/report";
 import type {
   ArticleFilter,
   NumberFilter,
   ReportFilterAggregationResponse,
   ReportRequest,
-  ReportResponse,
   TextFilter,
 } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
@@ -31,8 +26,6 @@ import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "./MainChartNew";
 import { Accordion } from "@/components/Accordion";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/api/report/constants";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,

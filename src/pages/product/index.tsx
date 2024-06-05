@@ -7,7 +7,7 @@ import { StatsProduct } from "./StatsProduct";
 
 import { StructureOfIncomeChart } from "../dashboard/StructureOfIncomeChart";
 // import { useArticleReport, useMainReport } from "@/api/report";
-import { useArticleReport, useArticleV2Report } from "@/api/report";
+import { useArticleV2Report } from "@/api/report";
 import type { ReportRequest } from "@/api/report/types";
 import { useParams, useSearchParams } from "react-router-dom";
 

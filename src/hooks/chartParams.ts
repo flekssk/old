@@ -149,7 +149,7 @@ const useChartParams = ({
 
   const options = useMemo(() => {
     const allSales = getAllValues(
-      "sale",
+      "sales",
       displayPrevData,
       sortedData,
       prevSortedData,
@@ -211,7 +211,7 @@ const useChartParams = ({
           text: "Chart.js Line Chart - Multi Axis",
         },
         legend: {
-          onClick: (e, legendItem, legend) =>
+          onClick: (_e, legendItem, legend) =>
             handleLegendClick(legendItem, legend),
         },
         tooltip: {

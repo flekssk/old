@@ -1,5 +1,4 @@
 import type { RevenueStructure } from "@/api/report/types";
-import { mockRevenue } from "@/mocks/mock-by-article";
 import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";

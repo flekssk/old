@@ -65,6 +65,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
       displayPrevData,
       additionalValueForToolip: {
         yAxisID: "y3",
+        // @ts-expect-error sss
         additionalDataKey: "advertisingExpenses",
       },
     });

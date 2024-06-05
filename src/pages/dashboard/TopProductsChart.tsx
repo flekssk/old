@@ -1,6 +1,5 @@
 import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
-import { useMemo } from "react";
 import Chart from "react-apexcharts";
 import type { TopProduct } from "@/api/report/types";
 
