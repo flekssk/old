@@ -127,7 +127,7 @@ export const CreateExpenseModal = ({
   return (
     <Modal show={isOpen} onClose={handleOnClose}>
       <Modal.Header>Добавить расход</Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="overflow-visible">
         <form className="flex flex-col gap-2">
           <FormProvider {...form}>
             <InputControl
