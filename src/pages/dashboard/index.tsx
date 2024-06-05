@@ -12,6 +12,7 @@ import type {
   NumberFilter,
   ReportFilterAggregationResponse,
   ReportRequest,
+  ReportResponse,
   TextFilter,
 } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
@@ -30,6 +31,8 @@ import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "./MainChartNew";
 import { Accordion } from "@/components/Accordion";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/api/report/constants";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -121,76 +124,12 @@ const DashboardPage: FC = function () {
     return { params: result, prevParams };
   }, [searchParams, reportFilterAggregatedRequest.data]);
 
-  const mainReportRequest = useMainReport(params, {
+  const mainReportRequest = useMainReportV2(params, {
     enabled: !!reportFilterAggregatedRequest.data,
+    placeholderData: (previousData) => previousData,
   });
 
-  const mainReportRequestV2 = useMainReportV2(params, {
-    enabled: !!reportFilterAggregatedRequest.data,
-  });
-
-  const compareFields = [
-    "realisation",
-    "sales",
-    "toTransfer",
-    "returns",
-    "costOfSales",
-    "fines",
-    "compensationForSubstitutedGoods",
-    "reimbursementOfTransportationCosts",
-    "paymentForMarriageAndLostGoods",
-    "logistics",
-    "rejectionsAndReturns",
-    "totalSales",
-    "tax",
-    "profit",
-    "profitability",
-    "ordersCount",
-    "returnsCount",
-    "salesCount",
-    "refunds",
-    "storage",
-    "advertisingExpense",
-    "commission",
-    "cost",
-    "averagePriceBeforeSPP",
-    "averageLogisticsCost",
-    "averageProfitPerPiece",
-    "profitability",
-    "marginality",
-    "roi",
-    "averageRedemption",
-    "drr",
-    "shareInTotalRevenue",
-  ];
-  useEffect(() => {
-    if (mainReportRequestV2.data && mainReportRequest.data) {
-      mainReportRequest.data.byProduct.forEach((item) => {
-        const nmId = item.article;
-        const sameItem = mainReportRequestV2.data.byProduct.find(
-          (el) => (el as any).article.toString() === nmId.toString(),
-        );
-        console.log(
-          "🚀 ~ mainReportRequest.data.byProduct.forEach ~ sameItem:",
-          sameItem,
-          nmId,
-          mainReportRequestV2.data.byProduct,
-        );
-
-        if (sameItem) {
-          console.log(`item diff: ${nmId} \n`);
-          compareFields.forEach((field) => {
-            console.log(
-              // @ts-ignore asd
-              `${field} : ${sameItem[field]}, ${item[field]} ${sameItem[field] - item[field]} \n`,
-            );
-          });
-        }
-      });
-    }
-  }, [mainReportRequestV2.data, mainReportRequest.data]);
-
-  const prevMainReportRequest = useMainReport(prevParams, {
+  const prevMainReportRequest = useMainReportV2(prevParams, {
     enabled: !!reportFilterAggregatedRequest.data,
   });
 
@@ -199,7 +138,9 @@ const DashboardPage: FC = function () {
     prevMainReportRequest.data,
   );
 
-  const articleList = useArticleList();
+  const articleList = useArticleList({
+    limit: 500,
+  });
 
   const filtersForRedirect = useMemo(() => {
     const urlSearchParams = new URLSearchParams();
@@ -223,11 +164,6 @@ const DashboardPage: FC = function () {
     );
   }
 
-  console.log(
-    "by products ",
-    mainReportRequest,
-    mainReportRequest?.data?.byProduct,
-  );
   return (
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
@@ -255,7 +191,11 @@ const DashboardPage: FC = function () {
               />
             </Accordion>
             <Accordion title="Структура выручки" id="chart-structure">
-              <StructureOfIncomeChart />
+              {mainReportRequest.data.revenueStructure ? (
+                <StructureOfIncomeChart
+                  structure={mainReportRequest.data.revenueStructure}
+                />
+              ) : null}
             </Accordion>
           </div>
           {mainReportRequest.data?.byProduct && (

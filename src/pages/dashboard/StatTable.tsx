@@ -51,7 +51,7 @@ export const StatTable: FC<StatTableProps> = ({
     });
   }, [items, prevItems]);
 
-  // @ts-ignore
+  // @ts-expect-error sss
   const columns = useMemo<Array<ColumnDef<ProductReportItem>>>(() => {
     const columnHelper = createColumnHelper<ProductReportItem>();
     return [
@@ -171,8 +171,8 @@ export const StatTable: FC<StatTableProps> = ({
         enableSorting: true,
         enableColumnFilter: true,
       }),
-      columnHelper.accessor("sale", {
-        id: "sale",
+      columnHelper.accessor("sales", {
+        id: "sales",
         header: "Продажи",
         meta: {
           suffix: "₽",
@@ -379,17 +379,17 @@ export const StatTable: FC<StatTableProps> = ({
         enableSorting: true,
         enableColumnFilter: true,
       }),
-      columnHelper.accessor("shareInTotalProfit", {
-        id: "shareInTotalProfit",
-        header: "Доля в общей прибыли",
-        meta: {
-          suffix: "%",
-          filterType: "number",
-        },
-        cell: DiffNumberCell,
-        enableSorting: true,
-        enableColumnFilter: true,
-      }),
+      // columnHelper.accessor("shareInTotalProfit", {
+      //   id: "shareInTotalProfit",
+      //   header: "Доля в общей прибыли",
+      //   meta: {
+      //     suffix: "%",
+      //     filterType: "number",
+      //   },
+      //   cell: DiffNumberCell,
+      //   enableSorting: true,
+      //   enableColumnFilter: true,
+      // }),
       columnHelper.accessor("profitability", {
         id: "profitability",
         header: "Маржинальность",
@@ -401,8 +401,8 @@ export const StatTable: FC<StatTableProps> = ({
         enableSorting: true,
         enableColumnFilter: true,
       }),
-      columnHelper.accessor("advertisingExpenses", {
-        id: "advertisingExpenses",
+      columnHelper.accessor("advertisingExpense", {
+        id: "advertisingExpense",
         header: "Расходы на рекламу",
         meta: {
           suffix: "₽",
@@ -413,8 +413,8 @@ export const StatTable: FC<StatTableProps> = ({
         enableSorting: true,
         enableColumnFilter: true,
       }),
-      columnHelper.accessor("ddr", {
-        id: "ddr",
+      columnHelper.accessor("drr", {
+        id: "drr",
         header: "ДРР",
         meta: {
           suffix: "%",

@@ -29,7 +29,7 @@ export interface ProductReportItem {
   //Реализация (сумма продаж до СПП)
   shareInTotalRevenue: number;
   // продажа
-  sale: number;
+  sales: number;
   // К перечислению
   toTransfer: number;
   //Возвраты
@@ -73,9 +73,9 @@ export interface ProductReportItem {
   // маржинальность (в %) realization / profit
   marginality: number;
   // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
-  advertisingExpenses: number;
+  advertisingExpense: number;
   // ДРР % advertisingExpenses / sales
-  ddr: number;
+  drr: number;
 }
 
 export interface WeekReportItem {
@@ -147,6 +147,7 @@ export interface WeekReportResponse {
 export interface TopProduct {
   name: string;
   vendorCode: string;
+  shareInTotalRevenue: number;
   profit: number;
   // расчитывается как доля прибыли от всех продуктов
   profitShare: number;
@@ -155,13 +156,13 @@ export interface TopProduct {
 export interface ReportChartItem {
   date: string;
   averagePriceBeforeSPP: number;
-  sale: number;
+  sales: number;
   returns: number;
   averageLogisticsCost: number;
   logistics: number;
   marginality: number;
-  advertisingExpenses: number;
-  ddr: number;
+  advertisingExpense: number;
+  drr: number;
   profit: number;
   orders: number;
   ordersCount: number;
@@ -176,17 +177,18 @@ export interface ReportStats {
   marginality: number;
   profitability: number;
   // Продажи
-  sale: number;
+  sales: number;
   // Заказы
   orders: number;
   // Заказы в штуках
   ordersCount: number;
   // ДРР
-  ddr: number;
-  advertisingExpenses: number;
+  drr: number;
+  advertisingExpense: number;
   returns: number;
   roi: number;
   totalSales?: number;
+  toTransfer: number;
 }
 
 export interface RevenueStructure {
@@ -194,9 +196,11 @@ export interface RevenueStructure {
   logistics: number;
   storage: number;
   cost: number;
+  fines: number;
   advertising: number;
   tax: number;
-  commission: number;
+  commission: number | null;
+  other: number;
 }
 
 export interface ReportResponse {
@@ -287,15 +291,15 @@ export interface BarcodeReportItem {
   // Рентабельность
   profitability: number;
   // Доля в общей выручке
-  shareInTotalRevenuePercent: number;
+  //shareInTotalRevenue: number;
   // Доля в общей прибыли
-  shareInTotalProfit: number;
+  // shareInTotalProfit: number;
   // маржинальность (в %) realization / profit
   marginality: number;
   // Рекламные расходы (собирается за день по артикулу  товара по всем рекламным компаниям)
-  advertisingExpenses: number;
+  advertisingExpense: number;
   // ДРР % advertisingExpenses / sales
-  ddr: number;
+  drr: number;
 }
 
 export interface Stocks {

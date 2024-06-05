@@ -10,6 +10,7 @@ import {
   HiUsers,
   HiViewGrid,
   HiCurrencyDollar,
+  HiCalendar,
 } from "react-icons/hi";
 
 import { useSidebarContext } from "@/context/SidebarContext";
@@ -66,7 +67,7 @@ const ExampleSidebar: FC = function () {
                 <Sidebar.Item
                   as={Link}
                   to={ROUTES.week}
-                  icon={HiViewGrid}
+                  icon={HiCalendar}
                   className={
                     ROUTES.week === currentPage
                       ? "bg-gray-100 dark:bg-gray-700"

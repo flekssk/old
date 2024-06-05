@@ -1,4 +1,3 @@
-import { mockByArticle } from "@/mocks/mock-by-article";
 import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
@@ -13,18 +12,10 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 
-  const sortedProducts = useMemo(() => {
-    if (data) {
-      return data.sort((a, b) => b.profitShare - a.profitShare);
-    } else {
-      return mockByArticle
-        .sort((a, b) => b.profitShare - a.profitShare)
-        .slice(0, 5);
-    }
-  }, [data]);
+  const renderData = data || [];
 
   const options: ApexCharts.ApexOptions = {
-    labels: sortedProducts.map((item) => item.name),
+    labels: renderData.map((item) => item.vendorCode),
 
     colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
     chart: {
@@ -102,7 +93,9 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
       },
     },
   };
-  const series = sortedProducts.map((item) => item.profitShare);
+  const series = renderData.map((item) => item.shareInTotalRevenue);
 
-  return <Chart height={305} options={options} series={series} type="donut" />;
+  return renderData.length ? (
+    <Chart height={305} options={options} series={series} type="donut" />
+  ) : null;
 };

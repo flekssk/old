@@ -46,7 +46,13 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
           );
 
           return (
-            <Link to={`${ROUTES.home}`} className="underline">
+            <Link
+              to={`${ROUTES.home}?dateFrom=${format(startOfWeek, DATE_FORMAT.SERVER_DATE)}&dateTo=${format(
+                endOfWeek(startOfWeek, { weekStartsOn: 1 }),
+                DATE_FORMAT.SERVER_DATE,
+              )}`}
+              className="underline"
+            >
               {startOfWeekFormatted} - {endOfWeekFormatted}
             </Link>
           );

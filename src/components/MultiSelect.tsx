@@ -78,7 +78,7 @@ export const MultiSelect = ({
           >
             <Combobox.Options
               className={cn(
-                "z-10 absolute top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow min-w-full dark:bg-gray-700",
+                "z-50 absolute max-h-screen overflow-y-auto top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow min-w-full dark:bg-gray-700",
                 {
                   "left-0": position === "top-left",
                   "right-0": position === "top-right",

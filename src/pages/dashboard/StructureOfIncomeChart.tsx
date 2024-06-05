@@ -1,22 +1,79 @@
+import type { RevenueStructure } from "@/api/report/types";
 import { mockRevenue } from "@/mocks/mock-by-article";
 import { useThemeMode } from "flowbite-react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
-export const StructureOfIncomeChart: FC = () => {
+type StructureOfIncomeChartProps = {
+  structure: RevenueStructure;
+};
+
+export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
+  structure,
+}) => {
   const { mode } = useThemeMode();
   const isDarkTheme = mode === "dark";
 
-  const sortedProducts = useMemo(() => {
-    return mockRevenue
-      .sort((a, b) => b.partOfIncome - a.partOfIncome)
-      .slice(0, 5);
-  }, [mockRevenue]);
+  const data = useMemo(() => {
+    const total =
+      Object.values(structure).reduce((acc, item) => {
+        return acc + item;
+      }, 0) || 1;
+
+    return [
+      {
+        title: "Реклама",
+        value: (structure.advertising / total) * 100,
+      },
+      {
+        title: "Налоги",
+        value: (structure.tax / total) * 100,
+      },
+      {
+        title: "Комиссия",
+        value: ((structure.commission || 0) / total) * 100,
+      },
+      {
+        title: "Себестоимость",
+        value: (structure.cost / total) * 100,
+      },
+      {
+        title: "Штрафы",
+        value: (structure.fines / total) * 100,
+      },
+      {
+        title: "Логистика",
+        value: (structure.logistics / total) * 100,
+      },
+      {
+        title: "Хранения",
+        value: (structure.storage / total) * 100,
+      },
+      {
+        title: "Прибыль",
+        value: (structure.margin / total) * 100,
+      },
+      {
+        title: "Прочее",
+        value: (structure.other / total) * 100,
+      },
+    ];
+  }, [structure]);
 
   const options: ApexCharts.ApexOptions = {
-    labels: sortedProducts.map((item) => item.title),
-    colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
+    labels: data.map((item) => item.title),
+    colors: [
+      "#16BDCA",
+      "#FDBA8C",
+      "#1A56DB",
+      "#D61F69",
+      "#9061F9",
+      "#F4C700",
+      "#29B573",
+      "#FF6B6B",
+      "#FF77FF",
+    ],
     chart: {
       fontFamily: "Inter, sans-serif",
       toolbar: {
@@ -90,7 +147,7 @@ export const StructureOfIncomeChart: FC = () => {
       },
     },
   };
-  const series = sortedProducts.map((item) => item.partOfIncome);
+  const series = data.map((item) => item.value);
 
   return <Chart height={305} options={options} series={series} type="donut" />;
 };

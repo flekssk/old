@@ -205,11 +205,13 @@ export const Filters: FC<FiltersProps> = ({
     setSearchParams(newSearchParams);
   };
 
-  const handleArticlesChange = (options: MultiSelectOption[]) => {
+  const handleArticlesChange = (selectedOptions: MultiSelectOption[]) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
     const filters = qsParse(newSearchParams.get("filters") || "");
-    const articles = options.map((option) => String(option.value));
-    filters["article"] = articles;
+    const filterArticles = selectedOptions.map((option) =>
+      String(option.value),
+    );
+    filters["article"] = filterArticles;
     newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };

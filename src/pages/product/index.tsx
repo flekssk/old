@@ -76,10 +76,10 @@ const Product: FC = function () {
   }, [params]);
   //const mainReportRequest = useMainReport(params);
 
-  const articleRequest = useArticleReport(+entityId, params);
-  const articleV2Request = useArticleV2Report(+entityId, params);
-  console.log("🚀 ~ articleV2Request:", articleV2Request);
-  const prevArticleRequest = useArticleReport(+entityId, prevParams);
+  const articleRequest = useArticleV2Report(+entityId, params, {
+    placeholderData: (previousData) => previousData,
+  });
+  const prevArticleRequest = useArticleV2Report(+entityId, prevParams);
 
   const statsData = useProductStatsData(
     articleRequest.data,
@@ -117,7 +117,11 @@ const Product: FC = function () {
             </Accordion>
           )}
           <Accordion title="Структура выручки" id="chart-product-availability">
-            <StructureOfIncomeChart />
+            {articleRequest.data?.revenueStructure ? (
+              <StructureOfIncomeChart
+                structure={articleRequest.data.revenueStructure}
+              />
+            ) : null}
           </Accordion>
         </div>
         {articleRequest.data?.stocks && (

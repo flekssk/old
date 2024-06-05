@@ -18,7 +18,7 @@ export const useProductStatsData = (
     },
     roi: { value: displayNumber(currentData.stats.roi) },
     profitability: { value: displayNumber(currentData.stats.profitability) },
-    drr: { value: displayNumber(currentData.stats.ddr) },
+    drr: { value: displayNumber(currentData.stats.drr) },
   };
 
   if (prevData) {
@@ -53,10 +53,10 @@ export const useProductStatsData = (
       );
     }
 
-    if (prevData.stats.ddr) {
+    if (prevData.stats.drr) {
       result.drr.diff = calculateDiff(
-        currentData.stats.ddr,
-        prevData.stats.ddr,
+        currentData.stats.drr,
+        prevData.stats.drr,
         { isPercentage: true, positiveIfGrow: false },
       );
     }

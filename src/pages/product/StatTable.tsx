@@ -241,16 +241,16 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
         cell: DiffNumberCell,
       }),
 
-      columnHelper.accessor("shareInTotalProfit", {
-        id: "shareInTotalProfit",
-        header: "Доля в общей прибыли",
-        meta: {
-          suffix: "%",
-        },
-        cell: DiffNumberCell,
-      }),
+      // columnHelper.accessor("shareInTotalProfit", {
+      //   id: "shareInTotalProfit",
+      //   header: "Доля в общей прибыли",
+      //   meta: {
+      //     suffix: "%",
+      //   },
+      //   cell: DiffNumberCell,
+      // }),
 
-      columnHelper.accessor("advertisingExpenses", {
+      columnHelper.accessor("advertisingExpense", {
         id: "advertisingExpenses",
         header: "Расходы на рекламу",
         meta: {
@@ -259,7 +259,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
         },
         cell: DiffNumberCell,
       }),
-      columnHelper.accessor("ddr", {
+      columnHelper.accessor("drr", {
         id: "ddr",
         header: "ДРР",
         meta: {

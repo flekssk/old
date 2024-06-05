@@ -143,7 +143,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     result.datasets.push({
       label: "Продажи",
-      data: sortedData.map((item) => item.sale),
+      data: sortedData.map((item) => item.sales),
       yAxisID: "y1",
       borderColor: strokeColors[0],
       backgroundColor: strokeColors[0],
@@ -153,7 +153,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
     if (displayPrevData) {
       result.datasets.push({
         label: "Продажи пред. периуд",
-        data: prevSortedData.map((item) => item.sale),
+        data: prevSortedData.map((item) => item.sales),
         yAxisID: "y1",
         fill: {
           target: "start",
@@ -221,7 +221,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     result.datasets.push({
       label: "ДРР",
-      data: sortedData.map((item) => item.ddr),
+      data: sortedData.map((item) => item.drr),
       yAxisID: "y3",
       borderColor: strokeColors[2],
       backgroundColor: strokeColors[2],
@@ -232,7 +232,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
     if (displayPrevData) {
       result.datasets.push({
         label: "ДРР пред. периуд",
-        data: prevSortedData.map((item) => item.ddr),
+        data: prevSortedData.map((item) => item.drr),
         yAxisID: "y3",
         fill: {
           target: "start",

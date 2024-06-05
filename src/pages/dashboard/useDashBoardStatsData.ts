@@ -12,13 +12,13 @@ export const useDashBoardStatsData = (
   }
   const result: DashBoardStatsData = {
     advertisingExpenses: {
-      value: displayNumber(currentData.stats.advertisingExpenses),
+      value: displayNumber(currentData.stats.advertisingExpense),
     },
     averageRedemption: {
       value: displayNumber(currentData.stats.averageRedemption),
     },
     ddr: {
-      value: displayNumber(currentData.stats.ddr),
+      value: displayNumber(currentData.stats.drr),
     },
     marginality: {
       value: displayNumber(currentData.stats.marginality),
@@ -36,7 +36,7 @@ export const useDashBoardStatsData = (
       value: displayNumber(currentData.stats.returns),
     },
     sale: {
-      value: displayNumber(currentData.stats.sale),
+      value: displayNumber(currentData.stats.sales),
     },
     profitability: {
       value: displayNumber(currentData.stats.profitability),
@@ -46,6 +46,9 @@ export const useDashBoardStatsData = (
     },
     salesCount: {
       value: displayNumber(currentData.stats.totalSales || 0),
+    },
+    toTransfer: {
+      value: displayNumber(currentData.stats.toTransfer || 0),
     },
   };
   if (prevData) {
@@ -64,10 +67,10 @@ export const useDashBoardStatsData = (
         { isPercentage: true, positiveIfGrow: true },
       );
     }
-    if (prevData.stats.advertisingExpenses) {
+    if (prevData.stats.advertisingExpense) {
       result.advertisingExpenses.diff = calculateDiff(
-        currentData.stats.advertisingExpenses,
-        prevData.stats.advertisingExpenses,
+        currentData.stats.advertisingExpense,
+        prevData.stats.advertisingExpense,
       );
     }
     if (prevData.stats.averageRedemption) {
@@ -77,10 +80,10 @@ export const useDashBoardStatsData = (
         { isPercentage: true, positiveIfGrow: true },
       );
     }
-    if (prevData.stats.ddr) {
+    if (prevData.stats.drr) {
       result.ddr.diff = calculateDiff(
-        currentData.stats.ddr,
-        prevData.stats.ddr,
+        currentData.stats.drr,
+        prevData.stats.drr,
         { isPercentage: true, positiveIfGrow: false },
       );
     }
@@ -114,10 +117,10 @@ export const useDashBoardStatsData = (
         prevData.stats.returns,
       );
     }
-    if (prevData.stats.sale) {
+    if (prevData.stats.sales) {
       result.sale.diff = calculateDiff(
-        currentData.stats.sale,
-        prevData.stats.sale,
+        currentData.stats.sales,
+        prevData.stats.sales,
       );
     }
 
@@ -127,7 +130,14 @@ export const useDashBoardStatsData = (
         prevData.stats.totalSales,
       );
     }
+
+    if (prevData.stats.toTransfer) {
+      result.toTransfer.diff = calculateDiff(
+        currentData.stats.toTransfer,
+        prevData.stats.toTransfer,
+      );
+    }
   }
-  console.log("🚀 ~ result:", currentData, prevData, result);
+
   return result;
 };

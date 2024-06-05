@@ -54,7 +54,7 @@ export const Select: React.FC<SelectProps> = ({
             <Listbox.Options
               static
               className={classNames(
-                "z-10 absolute top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700",
+                "z-50 absolute top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700",
                 {
                   "left-0": position === "top-left",
                   "right-0": position === "top-right",
