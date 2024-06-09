@@ -8,7 +8,6 @@ import {
   useExpensesList,
 } from "@/api/otherExpenses";
 import { DeleteExpenseModal } from "./modals/DeleteExpenseModal";
-import type { Expense } from "@/api/otherExpenses/types";
 import type { MultiSelectOption } from "@/components/MultiSelect";
 import { MultiSelect } from "@/components/MultiSelect";
 import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
@@ -25,7 +24,7 @@ export const Expenses = () => {
   const [expenseDeleteId, setExpenseDeleteId] = useState<number | undefined>(
     undefined,
   );
-  const [expenseEdit, setExpenseEdit] = useState<Expense | undefined>(
+  const [expenseUpdateId, setExpenseUpdateId] = useState<number | undefined>(
     undefined,
   );
   const [isOpenCreateExpenseModal, setIsOpenCreateExpenseModal] =
@@ -83,14 +82,8 @@ export const Expenses = () => {
   };
 
   const handleOpenEditModal = (expenseId: number) => {
-    const expenseEditData = expensesList.data?.items.find(
-      ({ id }) => expenseId === id,
-    );
-
-    if (expenseEditData) {
-      setExpenseEdit(expenseEditData);
-      setIsOpenCreateExpenseModal(true);
-    }
+    setExpenseUpdateId(expenseId);
+    setIsOpenCreateExpenseModal(true);
   };
 
   const handleResetFilters = () => {
@@ -113,7 +106,7 @@ export const Expenses = () => {
 
   const handleCloseCreateExpenseModal = () => {
     setIsOpenCreateExpenseModal(false);
-    setExpenseEdit(undefined);
+    setExpenseUpdateId(undefined);
   };
 
   const handleCloseDeleteExepenseModal = () => {
@@ -162,7 +155,7 @@ export const Expenses = () => {
       </Card>
       <CreateExpenseModal
         expensesCategoriesData={expenseCategories.data}
-        expense={expenseEdit}
+        expenseId={expenseUpdateId}
         isOpen={isOpenCreateExpenseModal}
         onClose={handleCloseCreateExpenseModal}
       />
