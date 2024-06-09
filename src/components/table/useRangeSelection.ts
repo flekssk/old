@@ -131,16 +131,19 @@ export const useCellRangeSelection = <T>(
   }, [selectedStartCell, selectedEndCell, table]);
 
   const model = table.getRowModel();
-  const cellKeysByIndex: Record<number, string> =
-    model.rows[0]?.getVisibleCells().reduce(
-      (acc, cell) => {
-        const cellId = cell.id.split("_")[1] as string;
-        acc[cell.column.getIndex()] = cellId;
+  const cellKeysByIndex: Record<number, string> = useMemo(() => {
+    return enabled && model.rows[0]
+      ? model.rows[0]?.getVisibleCells().reduce(
+          (acc, cell) => {
+            const cellId = cell.id.split("_")[1] as string;
+            acc[cell.column.getIndex()] = cellId;
 
-        return acc;
-      },
-      {} as Record<number, string>,
-    ) ?? {};
+            return acc;
+          },
+          {} as Record<number, string>,
+        )
+      : {};
+  }, [model.rows[0], enabled]);
 
   const getCellProps = (cell: Cell<T, unknown>, row: Row<T>, index: number) => {
     const onPointerEnter = () => {

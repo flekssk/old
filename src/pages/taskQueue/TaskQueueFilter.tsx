@@ -32,9 +32,7 @@ const TaskQueueFilter: FC<TaskQueueFilterProps> = ({
   setSearchParam,
   searchParam,
 }) => {
-  const { pagination } = commandList;
   const { onChangeSelect, onChangePage, totalPages } = usePagination({
-    pagination,
     searchParam,
     setSearchParam,
   });

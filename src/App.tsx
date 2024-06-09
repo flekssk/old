@@ -33,6 +33,8 @@ import UserInfo from "@/pages/userInfo/UserInfo";
 import TaskQueue from "@/pages/taskQueue/TaskQueue";
 import WeekReportPage from "./pages/weekReport";
 import OtherExpenses from "@/pages/otherExpenses";
+import ProfitAndLossPage from "./pages/profitAndLoss";
+import OtherDeductions from "./pages/otherDeductions";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -68,6 +70,15 @@ const App: FC = function () {
                   element={
                     <ProtectedRoute>
                       <WeekReportPage />
+                    </ProtectedRoute>
+                  }
+                  index
+                />
+                <Route
+                  path={ROUTES.pnl}
+                  element={
+                    <ProtectedRoute>
+                      <ProfitAndLossPage />
                     </ProtectedRoute>
                   }
                   index
@@ -162,6 +173,14 @@ const App: FC = function () {
                   element={
                     <ProtectedRoute>
                       <OtherExpenses />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.otherDeductions}
+                  element={
+                    <ProtectedRoute>
+                      <OtherDeductions />
                     </ProtectedRoute>
                   }
                 />

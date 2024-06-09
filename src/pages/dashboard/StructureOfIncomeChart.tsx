@@ -8,6 +8,18 @@ type StructureOfIncomeChartProps = {
   structure: RevenueStructure;
 };
 
+const filedsForCalculation = [
+  "advertising",
+  "tax",
+  "commission",
+  "cost",
+  "fines",
+  "logistics",
+  "storage",
+  "margin",
+  "other",
+];
+
 export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
   structure,
 }) => {
@@ -16,8 +28,10 @@ export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
 
   const data = useMemo(() => {
     const total =
-      Object.values(structure).reduce((acc, item) => {
-        return acc + item;
+      Object.keys(structure).reduce((acc, key) => {
+        return filedsForCalculation.includes(key)
+          ? acc + (structure[key as keyof RevenueStructure] ?? 0)
+          : acc;
       }, 0) || 1;
 
     return [

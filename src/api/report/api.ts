@@ -1,6 +1,8 @@
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {
+  PnLRequest,
+  PnLResponse,
   ReportFilterAggregationResponse,
   ReportItemResponse,
   ReportRequest,
@@ -51,3 +53,6 @@ export const getWeekReport = (
   api.post<WeekReportResponse>(ENDPOINTS.week, payload).then((res) => {
     return res.data;
   });
+
+export const getPnLReport = (payload: PnLRequest = {}): Promise<PnLResponse> =>
+  api.post<PnLResponse>(ENDPOINTS.pnl, payload).then((res) => res.data);

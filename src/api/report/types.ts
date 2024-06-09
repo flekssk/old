@@ -221,6 +221,7 @@ export interface ReportRequest {
   dateTo?: string;
   category?: string;
   brand?: string;
+  accountUid?: string;
   filters?: Filters;
   orderBy?: { field: string; direction: string };
   limit?: number;
@@ -230,6 +231,7 @@ export interface ReportRequest {
 export interface WeekReportRequest {
   category?: string;
   brand?: string;
+  accountUid?: string;
   filters?: Filters;
 }
 
@@ -336,3 +338,62 @@ export type ReportFilterAggregationResponse = {
   brands: string[];
   categories: string[];
 };
+
+interface Expense {
+  year: string;
+  month: string;
+  category_id: number;
+  amount: string;
+}
+
+interface OtherDeduction {
+  year: string;
+  month: string;
+  value: string;
+}
+
+export interface MonthlyData {
+  month: string;
+  realisation: number;
+  sales: number;
+  toTransfer: number;
+  returns: number;
+  costOfSales: number;
+  fines: number;
+  compensationForSubstitutedGoods: number;
+  reimbursementOfTransportationCosts: number;
+  paymentForMarriageAndLostGoods: number;
+  logistics: number;
+  rejectionsAndReturns: number;
+  totalSales: number;
+  tax: number;
+  profit: number;
+  profitability: number;
+  ordersCount: string;
+  returnsCount: string;
+  salesCount: string;
+  refunds: string;
+  storage: number;
+  advertisingExpense: number;
+  commission: number;
+  cost: number;
+  averagePriceBeforeSPP: number;
+  averageLogisticsCost: number;
+  averageProfitPerPiece: number;
+  marginality: number;
+  roi: number;
+  averageRedemption: number;
+  drr: number;
+  expensesSum: number;
+  otherDeductionSum: number;
+  expenses: Expense[];
+  otherDeductions: OtherDeduction[];
+}
+
+export interface PnLRequest {
+  dateFrom?: string;
+}
+
+export interface PnLResponse {
+  byMonth: MonthlyData[];
+}

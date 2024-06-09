@@ -41,6 +41,7 @@ interface DataTableProps<TData, TValue> {
   groupSettingsName?: string;
   storedSettingsName?: string;
   columnPinning?: ColumnPinningState;
+  loading?: boolean;
   small?: boolean;
 }
 
@@ -109,7 +110,10 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      columnPinning,
+      columnPinning: columnPinning ?? {
+        left: [],
+        right: [],
+      },
       sorting,
       columnFilters,
       columnVisibility,

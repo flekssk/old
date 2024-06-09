@@ -14,7 +14,6 @@ import { useSearchParams } from "react-router-dom";
 import type { MultiSelectOption } from "@/components/MultiSelect";
 import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
-import { useAccountList } from "@/api/wb";
 
 type FiltersProps = {
   params: ReportRequest;
@@ -27,18 +26,6 @@ export const Filters: FC<FiltersProps> = ({
   articles,
   setSearchParams,
 }) => {
-  const accountsRequest = useAccountList();
-  const accounts = accountsRequest.data ?? [];
-
-  const accountOptions = useMemo(() => {
-    if (!accounts) return [];
-
-    return accounts.map(({ name, id }) => ({
-      value: id,
-      label: name,
-    })) as SelectOption[];
-  }, [accounts]);
-
   const reportFilterAggregationRequest = useReportFilterAggregation();
   const [searchParams] = useSearchParams();
 
@@ -65,12 +52,6 @@ export const Filters: FC<FiltersProps> = ({
     });
   }, [params, articlesOptions]);
 
-  const selectedAccount = useMemo(() => {
-    return accountOptions.find(
-      (option) => option.value.toString() === params.accountUid?.toString(),
-    );
-  }, [params, accountOptions]);
-
   const selectedFilters = useMemo(() => {
     const result: { keyForDelete: string; label: string; value?: string }[] =
       [];
@@ -88,14 +69,6 @@ export const Filters: FC<FiltersProps> = ({
         keyForDelete: "brand",
         label: "Бренд",
         value: params.brand,
-      });
-    }
-
-    if (selectedAccount) {
-      result.push({
-        keyForDelete: "accountUid",
-        label: "Аккаунт",
-        value: selectedAccount.label,
       });
     }
 
@@ -141,7 +114,7 @@ export const Filters: FC<FiltersProps> = ({
       }
     }
     return result;
-  }, [params, selectedArticles, selectedAccount]);
+  }, [params, selectedArticles]);
 
   const filterOptions = useMemo(() => {
     const result = {
@@ -171,30 +144,9 @@ export const Filters: FC<FiltersProps> = ({
     return result;
   }, [reportFilterAggregationRequest.data]);
 
-  const handleCategoryChange = (category: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("category", category);
-    setSearchParams(newSearchParams);
-  };
-
   const handleBrandChange = (brand: string) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
     newSearchParams.set("brand", brand);
-    setSearchParams(newSearchParams);
-  };
-
-  const handleAccountChange = (account: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("accountUid", account);
-    setSearchParams(newSearchParams);
-  };
-
-  const handleArticlesChange = (options: MultiSelectOption[]) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    const filters = qsParse(newSearchParams.get("filters") || "");
-    const articles = options.map((option) => String(option.value));
-    filters["article"] = articles;
-    newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };
 
@@ -242,46 +194,7 @@ export const Filters: FC<FiltersProps> = ({
       <div className="flex flex-wrap justify-between">
         <div>
           <h2 className="mb-2 text-lg">Фильтры</h2>
-          <div className="flex flex-wrap items-center gap-2 ">
-            <Select
-              selectedOption={selectedAccount}
-              setSelectedOption={(option) => {
-                handleAccountChange(option.value as string);
-              }}
-              placeholder="Все аккаунты"
-              options={accountOptions}
-            />
-            <Select
-              selectedOption={{
-                value: params.brand || "",
-                label: params.brand || "",
-              }}
-              setSelectedOption={(option) => {
-                handleBrandChange(option.value as string);
-              }}
-              placeholder="Все бренды"
-              options={filterOptions.brands}
-            />
-
-            <Select
-              selectedOption={{
-                value: params.category || "",
-                label: params.category || "",
-              }}
-              setSelectedOption={(option) => {
-                handleCategoryChange(option.value as string);
-              }}
-              placeholder="Все категории"
-              options={filterOptions.categories}
-            />
-            <MultiSelect
-              placeholder="Все артикулы"
-              position="top-right"
-              options={articlesOptions || []}
-              selectedOptions={selectedArticles}
-              setSelectedOptions={handleArticlesChange}
-            />
-          </div>
+          <div className="flex flex-wrap items-center gap-2 "></div>
         </div>
       </div>
       {selectedFilters.length > 0 && (

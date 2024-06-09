@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import type { DateRange, SelectRangeEventHandler } from "react-day-picker";
+import { ru } from "date-fns/locale";
 
 import { cn } from "@/utils/utils";
 import { Button } from "./Button";
@@ -32,11 +33,18 @@ export function DatePickerWithRange({ className, date, onChangeDate }: Props) {
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(date.from, "LLL dd, y", {
+                    locale: ru,
+                  })}{" "}
+                  -{" "}
+                  {format(date.to, "LLL dd, y", {
+                    locale: ru,
+                  })}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(date.from, "LLL dd, y", {
+                  locale: ru,
+                })
               )
             ) : (
               <span>Выберите дату</span>
@@ -45,6 +53,7 @@ export function DatePickerWithRange({ className, date, onChangeDate }: Props) {
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
+            locale={ru}
             initialFocus
             mode="range"
             className="bg-white"

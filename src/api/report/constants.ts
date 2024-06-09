@@ -3,6 +3,7 @@ export const ENDPOINTS = {
   mainV2: "report/v2",
   week: "report/week",
   filterAggregation: "report/filter-aggregation",
+  pnl: "report/pnl",
   article: (id: number) => `report/article/${id}`,
   articleV2: (id: number) => `report/article/v2/${id}`,
 } as const;
@@ -14,4 +15,5 @@ export const QUERY_KEYS = {
   article: "article",
   articleV2: "articleV2",
   week: "week",
+  pnl: "pnl",
 } as const;

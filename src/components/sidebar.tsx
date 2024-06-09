@@ -11,6 +11,7 @@ import {
   HiViewGrid,
   HiCurrencyDollar,
   HiCalendar,
+  HiOutlinePresentationChartLine,
 } from "react-icons/hi";
 
 import { useSidebarContext } from "@/context/SidebarContext";
@@ -76,6 +77,18 @@ const ExampleSidebar: FC = function () {
                 >
                   По неделям
                 </Sidebar.Item>
+                <Sidebar.Item
+                  as={Link}
+                  to={ROUTES.pnl}
+                  icon={HiOutlinePresentationChartLine}
+                  className={
+                    ROUTES.week === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  ОПиУ
+                </Sidebar.Item>
 
                 <Sidebar.Item
                   as={Link}
@@ -100,6 +113,18 @@ const ExampleSidebar: FC = function () {
                   }
                 >
                   Прочие расходы
+                </Sidebar.Item>
+                <Sidebar.Item
+                  as={Link}
+                  to={ROUTES.otherDeductions}
+                  icon={HiCurrencyDollar}
+                  className={
+                    ROUTES.otherDeductions === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  Прочие удержания
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={Link}

@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "./constants";
 import type {
+  PnLRequest,
+  PnLResponse,
   ReportFilterAggregationResponse,
   ReportItemResponse,
   ReportRequest,
@@ -15,6 +17,7 @@ import {
   getArticleV2,
   getMainReport,
   getMainReportV2,
+  getPnLReport,
   getReportFilterAggregation,
   getWeekReport,
 } from "./api";
@@ -80,4 +83,14 @@ export const useWeekReport = (
     ...options,
     queryKey: [QUERY_KEYS.week, payload],
     queryFn: () => getWeekReport(payload),
+  });
+
+export const usePnLReport = (
+  payload: PnLRequest = {},
+  options: Partial<UseQueryOptions<PnLResponse, Error>> = {},
+) =>
+  useQuery({
+    ...options,
+    queryKey: [QUERY_KEYS.week, payload],
+    queryFn: () => getPnLReport(payload),
   });

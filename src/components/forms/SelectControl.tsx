@@ -2,10 +2,10 @@ import type { FC, RefAttributes } from "react";
 
 import { useFormContext } from "react-hook-form";
 import { ControlWrapper, type ControlWrapperProps } from "./ControlWrapper";
-import { Select, type SelectProps } from "../Select";
+import { Select, type SelectOption, type SelectProps } from "../Select";
 
 type InputControlProps = ControlWrapperProps &
-  SelectProps &
+  Omit<SelectProps, "setSelectedOption"> &
   RefAttributes<HTMLInputElement>;
 
 export const SelectControl: FC<InputControlProps> = ({
@@ -14,8 +14,12 @@ export const SelectControl: FC<InputControlProps> = ({
   label,
   ...selectProps
 }) => {
-  const { register } = useFormContext();
+  const { register, setValue, getValues } = useFormContext();
 
+  const setSelectedOption = (option: SelectOption) => {
+    setValue(name, option);
+  };
+  const value = getValues(name);
   return (
     <ControlWrapper
       name={name}
@@ -23,7 +27,12 @@ export const SelectControl: FC<InputControlProps> = ({
       label={label}
       withError={false}
     >
-      <Select {...selectProps} {...register(name)} />
+      <Select
+        {...selectProps}
+        {...register(name)}
+        selectedOption={value}
+        setSelectedOption={setSelectedOption}
+      />
     </ControlWrapper>
   );
 };

@@ -11,11 +11,12 @@ import { useUserProfile } from "@/api/user";
 import { DatepickerControl } from "@/components/forms/DatepickerControl";
 import { InputControl } from "@/components/forms/InputControl";
 import { SelectControl } from "@/components/forms/SelectControl";
-import { formatDateToString } from "@/helpers/date";
+import { DATE_FORMAT } from "@/helpers/date";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format, parse, parseISO } from "date-fns";
 import { Button, Modal } from "flowbite-react";
-import { useEffect, useMemo, useState } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -29,7 +30,7 @@ const formSchema = z.object({
     .transform((value) => parseFloat(value)),
   categoryId: z.number().min(1, "Необходимо выбрать категорию"),
   description: z.string().nonempty("Описание не может быть пустым"),
-  date: z.string().min(1, "Дата не может быть пустой"),
+  date: z.date(),
   accountId: z.number().min(1, "Необходимо выбрать аккаунт"),
 });
 
@@ -39,7 +40,7 @@ const defaultValues = {
   amount: undefined,
   categoryId: 0,
   description: "",
-  date: formatDateToString(new Date()),
+  date: new Date(),
   accountId: 0,
 };
 
@@ -69,20 +70,10 @@ export const CreateExpenseModal = ({
     mode: "onTouched",
   });
 
-  const { control, watch, setValue, reset, formState } = form;
-  const { isDirty } = formState;
+  const { watch, reset, formState } = form;
+  const { isDirty, isValid } = formState;
 
-  const watchedFields = watch();
-
-  const isFormFilled = useMemo(
-    () =>
-      Object.values(watchedFields).every(
-        (field) => field !== "" && field !== 0,
-      ),
-    [watchedFields],
-  );
-
-  const isButtonDisabled = isEdit ? !isDirty : !isFormFilled;
+  const isButtonDisabled = isEdit ? !isDirty : !isValid;
 
   const expensesCategoriesOptions =
     expensesCategoriesData?.map(({ id, name }) => ({
@@ -105,9 +96,18 @@ export const CreateExpenseModal = ({
     const data = form.getValues();
     try {
       if (isEdit && expense) {
-        await updateMutation.mutateAsync({ id: expense?.id, data });
+        await updateMutation.mutateAsync({
+          id: expense?.id,
+          data: {
+            ...data,
+            date: format(data.date, DATE_FORMAT.SERVER_DATE),
+          },
+        });
       } else {
-        await createMutation.mutateAsync(data);
+        await createMutation.mutateAsync({
+          ...data,
+          date: format(data.date, DATE_FORMAT.SERVER_DATE),
+        });
       }
       toast.success("Данные добавлены/обновлены");
     } catch {
@@ -119,8 +119,15 @@ export const CreateExpenseModal = ({
 
   useEffect(() => {
     if (expense) {
+      console.log("🚀 ~ useEffect ~ n:", {
+        ...expense,
+        date: parseISO(expense.date),
+      });
       setIsEdit(true);
-      reset(expense);
+      reset({
+        ...expense,
+        date: parseISO(expense.date),
+      });
     }
   }, [expense, form, reset]);
 
@@ -137,23 +144,11 @@ export const CreateExpenseModal = ({
               label="Сумма"
               type="number"
             />
-            <Controller
+            <SelectControl
+              label="Статья"
               name="categoryId"
-              control={control}
-              render={({ field: { value: fieldValue } }) => (
-                <SelectControl
-                  label="Статья"
-                  name="categoryId"
-                  placeholder="Статья расхода"
-                  selectedOption={expensesCategoriesOptions.find(
-                    ({ value }) => fieldValue === value,
-                  )}
-                  options={expensesCategoriesOptions}
-                  setSelectedOption={(option) =>
-                    setValue("categoryId", Number(option.value))
-                  }
-                />
-              )}
+              placeholder="Статья расхода"
+              options={expensesCategoriesOptions}
             />
             <InputControl
               required
@@ -164,29 +159,14 @@ export const CreateExpenseModal = ({
             <DatepickerControl
               name="date"
               label="Дата"
-              onSelectedDateChanged={(date) =>
-                setValue("date", formatDateToString(date))
-              }
               maxDate={new Date()}
               language="ru-RU"
             />
-            <Controller
+            <SelectControl
+              label="Аккаунт"
               name="accountId"
-              control={control}
-              render={({ field: { value: fieldValue } }) => (
-                <SelectControl
-                  label="Аккаунт"
-                  name="accountId"
-                  placeholder="Аккаунт"
-                  selectedOption={accountsOptions.find(
-                    ({ value }) => fieldValue === value,
-                  )}
-                  options={accountsOptions}
-                  setSelectedOption={(option) =>
-                    setValue("accountId", Number(option.value))
-                  }
-                />
-              )}
+              placeholder="Аккаунт"
+              options={accountsOptions}
             />
           </FormProvider>
         </form>

@@ -28,14 +28,14 @@ const UserListFilters: FC<UserListFiltersProps> = ({
     mode: "onChange",
     defaultValues: { search: searchValue },
   });
-  const { pagination } = userList;
+
   const {
     clearFilter,
     totalPages,
     onChangePage,
     onChangeSelect,
     onChangeSearchUser,
-  } = usePagination({ pagination, setSearchParam, searchParam });
+  } = usePagination({ setSearchParam, searchParam });
   const availableSearchLength = searchValue.length >= 3;
 
   const clearFilterHandler = async () => {

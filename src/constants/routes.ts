@@ -6,6 +6,7 @@ export const ROUTES = {
   resetPasswordByToken: "/reset-password-with-token/:token",
   home: "/",
   week: "/week",
+  pnl: "/pnl",
   authVk: "/auth/vk",
   authYandex: "/auth/yandex",
   unitTable: "/unit-table",
@@ -19,4 +20,5 @@ export const ROUTES = {
   userInfo: "/user-info",
   tasksQueue: "/task-queue",
   otherExpenses: "/other-expenses",
+  otherDeductions: "/other-deductions",
 } as const;

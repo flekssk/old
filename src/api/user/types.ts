@@ -7,10 +7,15 @@ export type UserProfileResponse = {
     reportTableSettings?: null;
   };
   onboardings: OnBoardings[];
-  accounts: Array<{ id: number; name: string }>;
+  accounts: Array<UserProfileAccount>;
   email: string;
   name: string;
   message?: string;
+};
+
+export type UserProfileAccount = {
+  id: number;
+  name: string;
 };
 
 export type OnBoardings = {
