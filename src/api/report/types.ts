@@ -149,6 +149,7 @@ export interface TopProduct {
   vendorCode: string;
   shareInTotalRevenue: number;
   profit: number;
+  image: string;
   // расчитывается как доля прибыли от всех продуктов
   profitShare: number;
 }
