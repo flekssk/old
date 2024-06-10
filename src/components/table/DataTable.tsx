@@ -28,6 +28,7 @@ import { ServerSuccess } from "../ServerSuccess";
 import { ServerError } from "../ServerError";
 import type { StoredGroupSettings } from "@/types/types";
 import { TableFilters } from "./TableFilters";
+import { useColumnSizingPersist } from "./usColumnSizingPersist";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -123,6 +124,7 @@ export function DataTable<TData, TValue>({
 
   const { getRowModel } = table;
 
+  useColumnSizingPersist(table, storedSettingsName);
   // getCellsBetweenId returns all cell Ids between two cell Id, and then setState for selectedCellIds
 
   const model = getRowModel();

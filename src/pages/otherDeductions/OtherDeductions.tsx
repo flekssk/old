@@ -18,7 +18,7 @@ import type {
   OtherDeduction,
   OtherDeductionListRequest,
 } from "@/api/otherDeduction/types";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { DATE_FORMAT } from "@/helpers/date";
 import { Select, type SelectOption } from "@/components/Select";
 import { usePagination } from "@/hooks/usePagination";

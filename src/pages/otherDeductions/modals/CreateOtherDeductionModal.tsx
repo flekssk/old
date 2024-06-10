@@ -2,15 +2,15 @@ import {
   useCreateOtherDeductionMutation,
   useUpdateOtherDeductionMutation,
 } from "@/api/otherDeduction";
-import { OtherDeduction } from "@/api/otherDeduction/types";
-import { UserProfileAccount } from "@/api/user/types";
-import { SelectOption } from "@/components/Select";
+import type { OtherDeduction } from "@/api/otherDeduction/types";
+import type { UserProfileAccount } from "@/api/user/types";
+
 import { DatepickerControl } from "@/components/forms/DatepickerControl";
 import { InputControl } from "@/components/forms/InputControl";
 import { SelectControl } from "@/components/forms/SelectControl";
 import { DATE_FORMAT } from "@/helpers/date";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, parse, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Button, Modal } from "flowbite-react";
 import { type FC, useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
