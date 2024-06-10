@@ -25,7 +25,7 @@
     "yarn": ">= 1"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.19",
+    "@headlessui/react": "^2.0.4",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.4",
     "@kurkle/color": "^0.3.2",
