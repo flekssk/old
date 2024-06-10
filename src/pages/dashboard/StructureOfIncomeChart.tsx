@@ -38,38 +38,47 @@ export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
       {
         title: "Реклама",
         value: (structure.advertising / total) * 100,
+        revenue: structure.advertising,
       },
       {
         title: "Налоги",
         value: (structure.tax / total) * 100,
+        revenue: structure.tax,
       },
       {
         title: "Комиссия",
         value: ((structure.commission || 0) / total) * 100,
+        revenue: structure.commission || 0,
       },
       {
         title: "Себестоимость",
         value: (structure.cost / total) * 100,
+        revenue: structure.cost,
       },
       {
         title: "Штрафы",
         value: (structure.fines / total) * 100,
+        revenue: structure.fines,
       },
       {
         title: "Логистика",
         value: (structure.logistics / total) * 100,
+        revenue: structure.logistics,
       },
       {
         title: "Хранения",
         value: (structure.storage / total) * 100,
+        revenue: structure.storage,
       },
       {
         title: "Прибыль",
         value: (structure.margin / total) * 100,
+        revenue: structure.margin,
       },
       {
         title: "Прочее",
         value: (structure.other / total) * 100,
+        revenue: structure.other,
       },
     ];
   }, [structure]);
@@ -129,8 +138,9 @@ export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
         },
       },
       y: {
-        formatter: function (value) {
-          return value.toFixed(2) + "%";
+        formatter: function (value, { seriesIndex }) {
+          const revenue = data[seriesIndex]?.revenue;
+          return `${value.toFixed(2)}% (${revenue?.toFixed(2)} руб)`;
         },
       },
     },
@@ -143,16 +153,20 @@ export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
     legend: {
       show: true,
       formatter: function (val, opts) {
+        const percentage =
+          opts.w.globals.series[opts.seriesIndex].toFixed(2) + "%";
+        const title = val;
         return (
+          '<div style="display: grid; grid-template-columns: 50px 1fr; align-items: center; margin-top: -20px;">' +
           '<span style="font-size: 14px; color: ' +
           opts.w.globals.colors[opts.seriesIndex] +
           ';">' +
-          opts.w.globals.series[opts.seriesIndex].toFixed(2) +
-          "%</span>" +
-          "  " +
-          '<span style="font-weight: 400; font-size: 12px;">' +
-          val +
-          "</span>"
+          percentage +
+          "</span>" +
+          '<span style="font-weight: 400; font-size: 12px; margin-left: 8px;">' +
+          title +
+          "</span>" +
+          "</div>"
         );
       },
       markers: {

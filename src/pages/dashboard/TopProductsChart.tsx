@@ -15,7 +15,6 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
 
   const options: ApexCharts.ApexOptions = {
     labels: renderData.map((item) => item.vendorCode),
-
     colors: ["#16BDCA", "#FDBA8C", "#1A56DB", "#D61F69", "#9061F9"],
     chart: {
       fontFamily: "Inter, sans-serif",
@@ -73,8 +72,14 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
     legend: {
       show: true,
       formatter: function (val, opts) {
+        const product = renderData[opts.seriesIndex];
         const title = val.length > 20 ? val.slice(0, 20) : val;
+        const imageUrl = product?.image;
         return (
+          "<div style='display: flex; align-items: center; gap: 2px; margin-top: -20px;'>" +
+          '<img src="' +
+          imageUrl +
+          '" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 4px;" />' +
           '<span style="font-size: 14px; color: ' +
           opts.w.globals.colors[opts.seriesIndex] +
           ';">' +
@@ -84,7 +89,8 @@ export const TopProductsChart: FC<TopProductsChartProps> = ({ data }) => {
           '<span style="font-weight: 400; font-size: 12px;">' +
           title +
           "..." +
-          "</span>"
+          "</span>" +
+          "</div>"
         );
       },
       markers: {
