@@ -236,6 +236,7 @@ const ProductAvailability: FC<ProductAvailabilityProps> = ({ stocks }) => {
             selectedOptions={selectedCategories}
             options={categoriesOptions || []}
             setSelectedOptions={handleCategoryChange}
+            multiple
           />
           <Toggle
             position="right"

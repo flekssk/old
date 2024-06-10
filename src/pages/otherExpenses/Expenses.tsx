@@ -132,6 +132,7 @@ export const Expenses = () => {
               options={expensesCategoriesOptions}
               selectedOptions={selectedExpensesCategories}
               setSelectedOptions={setSelectedExpensesCategories}
+              multiple
             />
             <Button color="light" onClick={handleResetFilters}>
               Сбросить

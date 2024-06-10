@@ -14,9 +14,17 @@ type Props = {
   className?: string;
   date?: DateRange;
   onChangeDate: SelectRangeEventHandler;
+  minDate?: Date;
+  maxDate?: Date;
 };
 
-export function DatePickerWithRange({ className, date, onChangeDate }: Props) {
+export function DatePickerWithRange({
+  className,
+  date,
+  onChangeDate,
+  minDate,
+  maxDate,
+}: Props) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -61,6 +69,11 @@ export function DatePickerWithRange({ className, date, onChangeDate }: Props) {
             selected={date}
             onSelect={onChangeDate}
             numberOfMonths={2}
+            disabled={(date) =>
+              (minDate && date < minDate) || (maxDate && date > maxDate)
+                ? true
+                : false
+            }
           />
         </PopoverContent>
       </Popover>

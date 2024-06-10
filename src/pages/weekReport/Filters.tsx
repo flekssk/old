@@ -280,6 +280,7 @@ export const Filters: FC<FiltersProps> = ({
               options={articlesOptions || []}
               selectedOptions={selectedArticles}
               setSelectedOptions={handleArticlesChange}
+              multiple
             />
           </div>
         </div>
