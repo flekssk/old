@@ -24,8 +24,6 @@ import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
 import { SaveGroupModal } from "./SaveGroupModal";
 import { useSaveSettingsMutation } from "@/api/user";
-import { ServerSuccess } from "../ServerSuccess";
-import { ServerError } from "../ServerError";
 import type { StoredGroupSettings } from "@/types/types";
 import { TableFilters } from "./TableFilters";
 import { useColumnSizingPersist } from "./usColumnSizingPersist";
@@ -203,7 +201,7 @@ export function DataTable<TData, TValue>({
                   <div
                     key={header.id}
                     className={cn(
-                      "relative shrink-0 grow-0 flex items-center",
+                      "relative shrink-0 grow-0 flex items-center !z-[-1]",
                       theme.table?.head?.cell.base,
                       {
                         "px-2 py-1": small,
@@ -248,7 +246,10 @@ export function DataTable<TData, TValue>({
               </React.Fragment>
             ))}
           </div>
-          <div className={cn(theme.table?.body?.base)} {...getBodyProps()}>
+          <div
+            className={(cn(theme.table?.body?.base), "min-h-52")}
+            {...getBodyProps()}
+          >
             {rows.map((row) => (
               <React.Fragment key={row.id}>
                 <div
@@ -323,11 +324,6 @@ export function DataTable<TData, TValue>({
             </span>
           </div>
         ) : null}
-      </div>
-      <div className="mt-1 w-full">
-        {/* @ts-expect-error TODO-mchuev: Types meessage */}
-        <ServerSuccess message={saveSettingsMutation.data?.meessage} />
-        <ServerError mutation={saveSettingsMutation} className="mt-3" />
       </div>
       <SaveGroupModal
         saveSettingsMutation={saveSettingsMutation}

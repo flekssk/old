@@ -7,6 +7,7 @@ import type { SelectOption } from "@/components/Select";
 import type { StoredGroupSettings } from "@/types/types";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 type SaveGroupModalProps = {
   groupSettingsName: string;
@@ -50,19 +51,24 @@ export const SaveGroupModal = ({
     const groupName = selectedGroup?.value as string;
     const currentSettings = storedSettingsQuery.data?.settings || {};
 
-    await saveSettingsMutation.mutateAsync({
-      name: groupSettingsName,
-      settings: {
-        ...currentSettings,
-        [groupName]: {
-          name: groupName,
-          rowsSelected: [
-            ...(currentSettings[groupName]?.rowsSelected ?? []),
-            ...rowsSelected,
-          ],
+    try {
+      await saveSettingsMutation.mutateAsync({
+        name: groupSettingsName,
+        settings: {
+          ...currentSettings,
+          [groupName]: {
+            name: groupName,
+            rowsSelected: [
+              ...(currentSettings[groupName]?.rowsSelected ?? []),
+              ...rowsSelected,
+            ],
+          },
         },
-      },
-    });
+      });
+      toast.success("Данные успешно обновлены");
+    } catch {
+      toast.error("Ошибка, запрос не выполнен");
+    }
 
     setSelectedGroup(undefined);
     storedSettingsQuery.refetch();
@@ -70,17 +76,22 @@ export const SaveGroupModal = ({
   };
 
   const handleSaveGroup = async () => {
-    await saveSettingsMutation.mutateAsync({
-      ...(storedSettingsQuery.data || {}),
-      name: groupSettingsName,
-      settings: {
-        ...(storedSettingsQuery.data?.settings || {}),
-        [groupName]: {
-          name: groupName || (selectedGroup?.value as string),
-          rowsSelected,
+    try {
+      await saveSettingsMutation.mutateAsync({
+        ...(storedSettingsQuery.data || {}),
+        name: groupSettingsName,
+        settings: {
+          ...(storedSettingsQuery.data?.settings || {}),
+          [groupName]: {
+            name: groupName || (selectedGroup?.value as string),
+            rowsSelected,
+          },
         },
-      },
-    });
+      });
+      toast.success("Данные успешно сохранены");
+    } catch {
+      toast.error("Ошибка, запрос не выполнен");
+    }
 
     setGroupName("");
     storedSettingsQuery.refetch();
