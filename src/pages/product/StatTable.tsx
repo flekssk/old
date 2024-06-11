@@ -40,6 +40,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
       columnHelper.accessor("image", {
         id: "photo",
         header: "Фото",
+        size: 50,
         cell: () => {
           return image ? (
             <div>

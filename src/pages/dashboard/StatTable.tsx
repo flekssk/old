@@ -58,6 +58,7 @@ export const StatTable: FC<StatTableProps> = ({
       columnHelper.accessor("image", {
         id: "photo",
         header: "Фото",
+        size: 50,
         cell: (row) => {
           const img = row.getValue() ? (
             <img className="w-full" src={row.getValue()} alt="img" />

@@ -148,6 +148,7 @@ export function DataTable<TData, TValue>({
     if (groupSettings) {
       updatedColumns.unshift({
         id: "select",
+        size: 50,
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllRowsSelected()}
@@ -161,7 +162,6 @@ export function DataTable<TData, TValue>({
             onChange={row.getToggleSelectedHandler()}
           />
         ),
-        size: 65,
       });
     }
     setColumns(updatedColumns);
