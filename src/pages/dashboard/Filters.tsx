@@ -3,18 +3,12 @@
 import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
-import { DATE_FORMAT } from "@/helpers/date";
+import { DATE_FORMAT, getWeeksBetweenDates } from "@/helpers/date";
 import { formatDate, parse } from "date-fns";
-import { Datepicker, Badge, Button } from "flowbite-react";
-import { type FC, useMemo } from "react";
+import { Badge, Button } from "flowbite-react";
+import { type FC, useMemo, useState } from "react";
 import type { ReportRequest } from "@/api/report/types";
-import {
-  dateFilters,
-  getLabelDateFilter,
-  getValueDateFilter,
-  isNumberFilter,
-  isTextFilter,
-} from "@/utils/dashboard";
+import { isNumberFilter, isTextFilter } from "@/utils/dashboard";
 import { REPORT_TABLE_COLUMNS_NAMES } from "@/constants/constants";
 import { MdClose } from "react-icons/md";
 import { parse as qsParse, stringify } from "qs";
@@ -22,6 +16,8 @@ import { useSearchParams } from "react-router-dom";
 import type { MultiSelectOption } from "@/components/MultiSelect";
 import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
+import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
+import type { DateRange } from "react-day-picker";
 
 type FiltersProps = {
   params: ReportRequest;
@@ -36,6 +32,9 @@ export const Filters: FC<FiltersProps> = ({
 }) => {
   const reportFilterAggregationRequest = useReportFilterAggregation();
   const [searchParams] = useSearchParams();
+  const [selectedOptions, setSelectedOptions] = useState<
+    MultiSelectOption | undefined
+  >(undefined);
 
   const articlesOptions = useMemo(() => {
     if (!articles) return [];
@@ -59,13 +58,6 @@ export const Filters: FC<FiltersProps> = ({
       return foundArticle ? [foundArticle] : [];
     });
   }, [params, articlesOptions]);
-
-  const dateFilterOptions = useMemo(() => {
-    return dateFilters.map((filter) => ({
-      value: filter.value,
-      label: filter.text,
-    }));
-  }, []);
 
   const selectedFilters = useMemo(() => {
     const result: { keyForDelete: string; label: string; value?: string }[] =
@@ -159,6 +151,29 @@ export const Filters: FC<FiltersProps> = ({
     return result;
   }, [reportFilterAggregationRequest.data]);
 
+  const optionsForDateFilter = useMemo(() => {
+    const dates = getWeeksBetweenDates(
+      reportFilterAggregationRequest.data?.date?.minDate,
+      reportFilterAggregationRequest.data?.date?.maxDate,
+    );
+
+    const options = dates.map((value) => ({
+      label: `${value.weekNumber} неделя (${value.weekStart} - ${value.weekEnd})`,
+      value: {
+        from: parse(value.weekStart, "dd.MM.yyyy", new Date()),
+        to: parse(value.weekEnd, "dd.MM.yyyy", new Date()),
+      },
+    }));
+
+    return [
+      { label: "Произвольный период", value: "customPeriod" },
+      ...options,
+    ];
+  }, [
+    reportFilterAggregationRequest.data?.date?.minDate,
+    reportFilterAggregationRequest.data?.date?.maxDate,
+  ]);
+
   const minDate = reportFilterAggregationRequest.data?.date?.minDate
     ? parse(
         reportFilterAggregationRequest.data?.date?.minDate,
@@ -175,22 +190,26 @@ export const Filters: FC<FiltersProps> = ({
       )
     : new Date();
 
-  const handleDateFilterChange = (value: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    if (value === "custom") {
-      newSearchParams.delete("dateFrom");
-      newSearchParams.delete("dateTo");
-    } else {
+  const handleDateFilterChange = (option: MultiSelectOption) => {
+    if (
+      typeof option.value === "object" &&
+      "from" in option.value &&
+      "to" in option.value
+    ) {
+      const newSearchParams = new URLSearchParams(params as URLSearchParams);
+
       newSearchParams.set(
         "dateFrom",
-        dateFilters.find((item) => item.value === value)?.dateFrom as string,
+        formatDate(option.value.from as Date, DATE_FORMAT.SERVER_DATE),
       );
       newSearchParams.set(
         "dateTo",
-        dateFilters.find((item) => item.value === value)?.dateTo as string,
+        formatDate(option.value.to as Date, DATE_FORMAT.SERVER_DATE),
       );
+
+      setSelectedOptions(option);
+      setSearchParams(newSearchParams);
     }
-    setSearchParams(newSearchParams);
   };
 
   const handleCategoryChange = (category: string) => {
@@ -255,78 +274,45 @@ export const Filters: FC<FiltersProps> = ({
     setSearchParams(newSearchParams);
   };
 
+  const handleChangeDates = (range?: DateRange) => {
+    setSelectedOptions(optionsForDateFilter[0]);
+    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    newSearchParams.set(
+      "dateFrom",
+      formatDate(range?.from as Date, DATE_FORMAT.SERVER_DATE),
+    );
+    newSearchParams.set(
+      "dateTo",
+      formatDate(range?.to as Date, DATE_FORMAT.SERVER_DATE),
+    );
+    setSearchParams(newSearchParams);
+  };
+
   return (
     <div>
       <div className="flex flex-wrap justify-between">
         <div>
           <h2 className="mb-2 text-lg">Период отчета</h2>
           <div className="flex items-center gap-2">
-            <Select
-              selectedOption={{
-                value: getValueDateFilter(params) || "",
-                label: getLabelDateFilter(params) || "",
-              }}
-              options={dateFilterOptions}
-              setSelectedOption={(option) => {
-                handleDateFilterChange(option.value as string);
-              }}
+            <MultiSelect
               placeholder="Выберите период"
+              options={optionsForDateFilter}
+              selectedOptions={selectedOptions}
+              setSelectedOptions={handleDateFilterChange}
             />
-
-            {getValueDateFilter(params) === "custom" ? (
-              <>
-                <Datepicker
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  language="ru"
-                  weekStart={1}
-                  defaultDate={
-                    params.dateFrom
-                      ? parse(
-                          params.dateFrom,
-                          DATE_FORMAT.SERVER_DATE,
-                          new Date(),
-                        )
-                      : undefined
-                  }
-                  onSelectedDateChanged={(date) => {
-                    const newSearchParams = new URLSearchParams(
-                      params as URLSearchParams,
-                    );
-                    newSearchParams.set(
-                      "dateFrom",
-                      formatDate(date, DATE_FORMAT.SERVER_DATE),
-                    );
-                    setSearchParams(newSearchParams);
-                  }}
-                />
-                <Datepicker
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  language="ru"
-                  weekStart={1}
-                  defaultDate={
-                    params.dateTo
-                      ? parse(
-                          params.dateTo,
-                          DATE_FORMAT.SERVER_DATE,
-                          new Date(),
-                        )
-                      : undefined
-                  }
-                  onSelectedDateChanged={(date) => {
-                    const newSearchParams = new URLSearchParams(
-                      params as URLSearchParams,
-                    );
-                    newSearchParams.set(
-                      "dateTo",
-                      formatDate(date, DATE_FORMAT.SERVER_DATE),
-                    );
-                    setSearchParams(newSearchParams);
-                  }}
-                />
-              </>
-            ) : null}
+            <DatePickerWithRange
+              minDate={minDate}
+              maxDate={maxDate}
+              date={{
+                from: params.dateFrom
+                  ? parse(params.dateFrom, DATE_FORMAT.SERVER_DATE, new Date())
+                  : undefined,
+                to: params.dateTo
+                  ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date())
+                  : undefined,
+              }}
+              onChangeDate={handleChangeDates}
+            />
           </div>
         </div>
         <div>
@@ -361,6 +347,7 @@ export const Filters: FC<FiltersProps> = ({
               options={articlesOptions || []}
               selectedOptions={selectedArticles}
               setSelectedOptions={handleArticlesChange}
+              multiple
             />
           </div>
         </div>

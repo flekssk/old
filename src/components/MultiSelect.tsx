@@ -1,32 +1,48 @@
 import { Fragment, useMemo, useState } from "react";
-import { Combobox, Transition } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+  Transition,
+} from "@headlessui/react";
 import { HiChevronDown, HiCheck, HiChevronUp } from "react-icons/hi";
-import { cn } from "@/utils/utils";
+import type { DateRange } from "react-day-picker";
+import type { AnchorProps } from "@headlessui/react/dist/internal/floating";
 
 export type MultiSelectOption = {
   label: string;
-  value: string | number;
+  value: string | number | DateRange;
   searchValues?: string[];
 };
 
-type MultiSelectProps = {
+type MultiSelectProps<T> = {
   placeholder: string;
   options: MultiSelectOption[];
-  selectedOptions?: MultiSelectOption[];
+  selectedOptions?: T;
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  setSelectedOptions: (options: MultiSelectOption[]) => void;
+  multiple?: boolean;
+  anchor?: AnchorProps;
+  setSelectedOptions: (options: T) => void;
 };
 
-const getDisplayValues = (options: MultiSelectOption[]) =>
-  options.map((option) => option.label).join(", ");
+const getDisplayValues = (options: MultiSelectOption | MultiSelectOption[]) => {
+  if (Array.isArray(options)) {
+    return options?.map((option) => option.label).join(", ");
+  }
 
-export const MultiSelect = ({
+  return options.label;
+};
+
+export function MultiSelect<T extends MultiSelectOption | MultiSelectOption[]>({
   placeholder,
   options,
   selectedOptions,
-  position,
+  multiple = false,
+  anchor = "bottom",
   setSelectedOptions,
-}: MultiSelectProps) => {
+}: MultiSelectProps<T>) {
   const [query, setQuery] = useState("");
 
   const optionsForSearch = useMemo(() => {
@@ -55,19 +71,23 @@ export const MultiSelect = ({
         );
 
   return (
-    <Combobox value={selectedOptions} onChange={setSelectedOptions} multiple>
+    <Combobox
+      value={selectedOptions}
+      onChange={setSelectedOptions}
+      multiple={multiple}
+    >
       {({ open }) => (
         <div className="relative">
           <div>
-            <Combobox.Input
+            <ComboboxInput
               className="rounded-lg border border-gray-200 py-2.5 pl-3 pr-10 text-sm font-medium text-gray-900"
               placeholder={placeholder}
               displayValue={getDisplayValues}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-4">
+            <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-4">
               {open ? <HiChevronUp /> : <HiChevronDown />}
-            </Combobox.Button>
+            </ComboboxButton>
           </div>
           <Transition
             as={Fragment}
@@ -76,16 +96,9 @@ export const MultiSelect = ({
             leaveTo="opacity-0"
             afterLeave={() => setQuery("")}
           >
-            <Combobox.Options
-              className={cn(
-                "z-50 absolute max-h-screen overflow-y-auto top-full translate-y-2 bg-white divide-y divide-gray-100 rounded-lg shadow min-w-full dark:bg-gray-700",
-                {
-                  "left-0": position === "top-left",
-                  "right-0": position === "top-right",
-                  "left-0 bottom-full top-auto": position === "bottom-left",
-                  "right-0 bottom-full top-auto": position === "bottom-right",
-                },
-              )}
+            <ComboboxOptions
+              className="z-10 mt-1 rounded-lg bg-white shadow empty:hidden dark:bg-gray-700"
+              anchor={anchor}
             >
               {filteredOptions.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
@@ -93,14 +106,17 @@ export const MultiSelect = ({
                 </div>
               ) : (
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                  {filteredOptions.map((option) => {
-                    const isSelected = selectedOptions?.some(
-                      (selectedOption) => selectedOption.value === option.value,
-                    );
+                  {filteredOptions.map((option, index) => {
+                    const isSelected = Array.isArray(selectedOptions)
+                      ? selectedOptions?.some(
+                          (selectedOption) =>
+                            selectedOption.value === option.value,
+                        )
+                      : selectedOptions?.value === option.value;
 
                     return (
-                      <Combobox.Option
-                        key={option.value}
+                      <ComboboxOption
+                        key={index}
                         className={({ active }) =>
                           `block px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${active ? "text-bold" : ""}`
                         }
@@ -127,15 +143,15 @@ export const MultiSelect = ({
                             </span>
                           </div>
                         )}
-                      </Combobox.Option>
+                      </ComboboxOption>
                     );
                   })}
                 </ul>
               )}
-            </Combobox.Options>
+            </ComboboxOptions>
           </Transition>
         </div>
       )}
     </Combobox>
   );
-};
+}
