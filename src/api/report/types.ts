@@ -334,7 +334,19 @@ export interface ReportItemResponse {
   revenueStructure: RevenueStructure;
 }
 
+type Article = {
+  brand: string;
+  category: string;
+  id: number;
+  nmId: string;
+  nmUuid: string;
+  photos: number;
+  title: string;
+  vendorCode: string;
+};
+
 export type ReportFilterAggregationResponse = {
+  articles: Article[];
   date: { minDate: string; maxDate: string } | null;
   brands: string[];
   categories: string[];
