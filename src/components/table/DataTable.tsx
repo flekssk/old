@@ -26,7 +26,9 @@ import { SaveGroupModal } from "./SaveGroupModal";
 import { useSaveSettingsMutation } from "@/api/user";
 import type { StoredGroupSettings } from "@/types/types";
 import { TableFilters } from "./TableFilters";
-import { useColumnSizingPersist } from "./usColumnSizingPersist";
+import { useColumnSizingPersist } from "./useColumnSizingPersist";
+import { TableSettings } from "./TableSettings";
+import { useColumnPinningPersist } from "./useColumnPinningPersist";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -70,7 +72,7 @@ export function DataTable<TData, TValue>({
   resizeColumns,
   columnSettings,
   groupSettings,
-  columnPinning,
+  columnPinning: initialColumnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
   small,
@@ -82,6 +84,10 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>(
+    initialColumnPinning ?? { left: [], right: [] },
+  );
+  const [columnOrder, setColumnOrder] = React.useState<string[]>([]);
   const [isOpenGroupSettingsModal, setIsOpenGroupSettingsModal] =
     React.useState(false);
   const [columnVisibility, setColumnVisibility] =
@@ -91,6 +97,7 @@ export function DataTable<TData, TValue>({
         return acc;
       }, {} as VisibilityState);
     });
+  const [isOpenSettingsDrawer, setIsOpenSettingsDrawer] = React.useState(false);
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const saveSettingsMutation =
@@ -108,11 +115,14 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onColumnOrderChange: setColumnOrder,
+    onColumnPinningChange: setColumnPinning,
     state: {
       columnPinning: columnPinning ?? {
         left: [],
         right: [],
       },
+      columnOrder,
       sorting,
       columnFilters,
       columnVisibility,
@@ -122,6 +132,7 @@ export function DataTable<TData, TValue>({
 
   const { getRowModel } = table;
 
+  useColumnPinningPersist(table, storedSettingsName);
   useColumnSizingPersist(table, storedSettingsName);
   // getCellsBetweenId returns all cell Ids between two cell Id, and then setState for selectedCellIds
 
@@ -165,6 +176,17 @@ export function DataTable<TData, TValue>({
     setColumns(updatedColumns);
   }, [initialColumns, groupSettings]);
 
+  React.useEffect(() => {
+    const ordering = localStorage.getItem(`${storedSettingsName}-ordering`);
+    if (ordering) {
+      setColumnOrder(JSON.parse(ordering));
+    } else {
+      const filterColumns = columns.filter(({ id }) => id !== "select");
+      const orderColumns = filterColumns.map((col) => col.id as string);
+      setColumnOrder(orderColumns);
+    }
+  }, [columns]);
+
   return (
     <div className={cn("flex flex-col", wrapperClassName)}>
       <div className="flex shrink-0 items-center justify-end gap-2 pb-2">
@@ -181,6 +203,11 @@ export function DataTable<TData, TValue>({
               visibilityState={columnVisibility}
             />
           )}
+        </div>
+        <div>
+          <Button onClick={() => setIsOpenSettingsDrawer(true)}>
+            Настройки
+          </Button>
         </div>
       </div>
       <div className="overflow-auto">
@@ -254,7 +281,7 @@ export function DataTable<TData, TValue>({
               <React.Fragment key={row.id}>
                 <div
                   className={cn(
-                    " relative flex border-b",
+                    " relative flex border-b bg-white",
                     theme.table?.row?.base,
                     theme.table?.row?.striped,
                   )}
@@ -331,6 +358,16 @@ export function DataTable<TData, TValue>({
         rowsSelected={rowsSelected}
         isOpen={isOpenGroupSettingsModal}
         onClose={() => setIsOpenGroupSettingsModal(false)}
+      />
+      <TableSettings
+        tableName={storedSettingsName}
+        isOpen={isOpenSettingsDrawer}
+        columns={columns}
+        columnOrder={columnOrder}
+        columnPinning={columnPinning}
+        onColumnOrderChange={setColumnOrder}
+        onColumnPinningChange={setColumnPinning}
+        onClose={() => setIsOpenSettingsDrawer(false)}
       />
     </div>
   );
