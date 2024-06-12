@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { type FC, useEffect, useMemo } from "react";
+import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { StatsProduct } from "./StatsProduct";
@@ -71,9 +71,6 @@ const Product: FC = function () {
     return { params: result, prevParams };
   }, [searchParams]);
 
-  useEffect(() => {
-    setSearchParams(params as string);
-  }, [params]);
   //const mainReportRequest = useMainReport(params);
 
   const articleRequest = useArticleV2Report(+entityId, params, {
