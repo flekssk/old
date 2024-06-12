@@ -45,11 +45,7 @@ const UserDescription: FC<UserDescriptionProps> = ({ id }) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const { getRowModel } = table;
 
-  const model = getRowModel();
-
-  const rows = model.rows;
   return (
     <div className="m-auto w-full border">
       <table className="w-full border">
@@ -84,7 +80,7 @@ const UserDescription: FC<UserDescriptionProps> = ({ id }) => {
       </table>
       <div className="m-3 text-2xl">Аккаунты :</div>
       {data.length ? (
-        <TableList table={table} rows={rows} />
+        <TableList table={table} />
       ) : (
         <div className={"w-full text-center"}>Нет аккаунтов</div>
       )}

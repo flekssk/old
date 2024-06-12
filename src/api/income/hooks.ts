@@ -3,9 +3,19 @@ import type {
   UseQueryOptions,
 } from "@tanstack/react-query";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getIncomeList, incomeCostSetBatch, incomeSync } from "./api";
+import {
+  getIncomeList,
+  incomeCost,
+  incomeCostSetBatch,
+  incomeSync,
+} from "./api";
 import { QUERY_KEYS } from "./constants";
-import type { IncomeListRequest, IncomeListResponse } from "./types";
+import type {
+  IncomeCostRequest,
+  IncomeCostResponse,
+  IncomeListRequest,
+  IncomeListResponse,
+} from "./types";
 import { createCustomMutation } from "../helper";
 
 export const useIncomeList = (
@@ -38,3 +48,13 @@ export const useInfinityIncomeList = (
 export const useIncomeSyncMutation = createCustomMutation(incomeSync);
 export const useIncomeCostSetBatchMutation =
   createCustomMutation(incomeCostSetBatch);
+
+export const useIncomeCost = (
+  payload: IncomeCostRequest,
+  options: Partial<UseQueryOptions<IncomeCostResponse, Error>> = {},
+) =>
+  useQuery({
+    ...options,
+    queryKey: [QUERY_KEYS.incomeCost, payload],
+    queryFn: () => incomeCost(payload),
+  });

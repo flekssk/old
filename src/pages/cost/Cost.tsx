@@ -1,27 +1,72 @@
 import NavbarSidebarLayout from "@/layouts/navbar-sidebar";
-import type { TabsRef } from "flowbite-react";
-import { Breadcrumb, Tabs } from "flowbite-react";
-import { useRef, type FC, useState } from "react";
+import { Breadcrumb, Button, Card } from "flowbite-react";
+import { useEffect, useMemo, useState, type FC } from "react";
 import { HiHome } from "react-icons/hi";
-import { CostByArticle } from "./CostByArticle";
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
-
-const TABS = {
-  byArticle: 0,
-  byIncome: 1,
-} as const;
-
-type TabsType = typeof TABS;
-type TabsState = TabsType[keyof TabsType];
-
-export const TABS_TITLES = {
-  [TABS.byArticle]: "По артикулам",
-  [TABS.byIncome]: "По поставкам",
-} as const;
+import { useArticleList } from "@/api/wb";
+import { usePagination } from "@/hooks/usePagination";
+import { useSearchParams } from "react-router-dom";
+import { CostTable } from "./CostTable";
+import { useIncomeCost } from "@/api/income";
+import type { ArticleWithCost } from "./type";
+import { Pagination } from "@/components/Pagination";
+import { useCostExportMutation } from "./useCostExport";
 
 export const Cost: FC = () => {
-  const tabsRef = useRef<TabsRef>(null);
-  const [activeTab, setActiveTab] = useState<TabsState>(TABS.byArticle);
+  const [searchParam, setSearchParam] = useSearchParams();
+  const [localPagination, setLocalPagination] = useState<{
+    page: number;
+    limit: number;
+  }>({
+    page: 1,
+    limit: 20,
+  });
+
+  const articlesRequest = useArticleList({
+    page: localPagination.page,
+    limit: localPagination.limit,
+  });
+
+  const pagination = usePagination({
+    searchParam,
+    setSearchParam,
+    total: articlesRequest.data?.pagination.total,
+  });
+
+  const exportMutation = useCostExportMutation();
+
+  useEffect(() => {
+    setLocalPagination({
+      page: pagination.currentPage,
+      limit: pagination.limit,
+    });
+  }, [pagination.currentPage, pagination.limit]);
+
+  const nmIds = (
+    articlesRequest.data?.items?.map((article) => article.nmId) ?? []
+  ).join(",");
+
+  const costRequest = useIncomeCost(
+    {
+      nmIds,
+    },
+    {
+      enabled: !!nmIds.length,
+    },
+  );
+
+  const articlesWithCost = useMemo<ArticleWithCost[]>(() => {
+    return (
+      articlesRequest.data?.items?.map((article) => ({
+        ...article,
+        cost: costRequest.data?.items?.find(
+          (cost) => cost.nm_id.toString() === article.nmId.toString(),
+        ),
+      })) ?? []
+    );
+  }, [articlesRequest.data, costRequest.data]);
+
+  const loading = costRequest.isLoading || articlesRequest.isLoading;
 
   return (
     <NavbarSidebarLayout>
@@ -36,21 +81,27 @@ export const Cost: FC = () => {
               </Breadcrumb.Item>
               <Breadcrumb.Item>Себестоимость</Breadcrumb.Item>
             </Breadcrumb>
-            <Tabs
-              aria-label="Tabs with underline"
-              style="underline"
-              ref={tabsRef}
-              onActiveTabChange={(tab: number) =>
-                setActiveTab(tab as TabsState)
-              }
-            >
-              <Tabs.Item title={TABS_TITLES[TABS.byArticle]}>
-                {activeTab === TABS.byArticle ? <CostByArticle /> : null}
-              </Tabs.Item>
-              <Tabs.Item title={TABS_TITLES[TABS.byIncome]}></Tabs.Item>
-            </Tabs>
           </div>
         </div>
+        <Card>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2"></div>
+            <div className="flex items-center gap-2">
+              <Button
+                isProcessing={exportMutation.isPending}
+                onClick={() => exportMutation.mutateAsync(undefined)}
+              >
+                Экспорт
+              </Button>
+            </div>
+          </div>
+          <CostTable
+            articles={articlesWithCost ?? []}
+            refresh={costRequest.refetch}
+          />
+
+          <Pagination {...pagination} showLimitSelector={true} />
+        </Card>
       </ProfileSubscriptionInfo>
     </NavbarSidebarLayout>
   );

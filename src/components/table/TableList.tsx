@@ -4,15 +4,21 @@ import type { Row, Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import classNames from "classnames";
 
-type TableListProps<TableData, Rows> = {
+type TableListProps<TableData> = {
   table: Table<TableData>;
-  rows: Row<Rows>[];
+  emptyMessage?: string;
+  loading?: boolean;
+  loadingRows?: number;
 };
 
-const TableList = <TableData, Rows>({
+const TableList = <TableData extends object>({
   table,
-  rows,
-}: TableListProps<TableData, Rows>) => {
+  emptyMessage = "Нет данных для отображения",
+  loading = false,
+  loadingRows = 10,
+}: TableListProps<TableData>) => {
+  const loadingItems = Array.from({ length: loadingRows });
+  const rows = table.getCoreRowModel().rows;
   return (
     <TableFlowbite striped>
       <TableFlowbite.Head>
@@ -53,33 +59,64 @@ const TableList = <TableData, Rows>({
         ))}
       </TableFlowbite.Head>
       <TableFlowbite.Body>
-        {rows.map((row) => (
-          <React.Fragment key={row.id}>
-            <TableFlowbite.Row className="border-b">
-              {row.getVisibleCells().map((cell) => {
-                return (
+        {loading ? (
+          <>
+            {loadingItems.map((_, index) => (
+              <TableFlowbite.Row key={index} className="border-b">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <TableFlowbite.Cell
-                    style={{ width: cell.column.getSize() }}
-                    key={cell.id}
+                    key={headerGroup.id}
+                    colSpan={headerGroup.headers.length}
                   >
-                    <span
-                      {...{
-                        className: classNames("overflow-hidden text-ellipsis", {
-                          "text-[#1890FF]": cell.column.id === "vendorCode",
-                        }),
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </span>
+                    <div className="h-4 w-20 animate-pulse bg-gray-200 dark:bg-gray-700"></div>
                   </TableFlowbite.Cell>
-                );
-              })}
-            </TableFlowbite.Row>
-          </React.Fragment>
-        ))}
+                ))}
+              </TableFlowbite.Row>
+            ))}
+          </>
+        ) : (
+          <>
+            {rows.length ? (
+              rows.map((row) => (
+                <React.Fragment key={row.id}>
+                  <TableFlowbite.Row className="border-b">
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableFlowbite.Cell
+                          style={{ width: cell.column.getSize() }}
+                          key={cell.id}
+                        >
+                          <span
+                            {...{
+                              className: classNames(
+                                "overflow-hidden text-ellipsis",
+                                {
+                                  "text-[#1890FF]":
+                                    cell.column.id === "vendorCode",
+                                },
+                              ),
+                            }}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </span>
+                        </TableFlowbite.Cell>
+                      );
+                    })}
+                  </TableFlowbite.Row>
+                </React.Fragment>
+              ))
+            ) : (
+              <TableFlowbite.Row className="border-b">
+                <TableFlowbite.Cell colSpan={table.getHeaderGroups().length}>
+                  {emptyMessage}
+                </TableFlowbite.Cell>
+              </TableFlowbite.Row>
+            )}
+          </>
+        )}
       </TableFlowbite.Body>
     </TableFlowbite>
   );

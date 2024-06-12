@@ -6,6 +6,8 @@ import type {
   CreateExpenseRequest,
   ExpenseCategoriesResponse,
   ExpenseListResponse,
+  UpdateExpenseCategoryRequest,
+  UpdateExpenseCategoryResponse,
 } from "./types";
 
 export const getExpenseCategories = (): Promise<ExpenseCategoriesResponse> =>
@@ -18,6 +20,16 @@ export const createExpenseCategory = (
 ): Promise<CreateExpenseCategoryResponse> =>
   api
     .post<CreateExpenseCategoryResponse>(ENDPOINTS.expenseCategories, data)
+    .then((res) => res.data);
+
+export const updateExpenseCategory = (
+  data: UpdateExpenseCategoryRequest,
+): Promise<UpdateExpenseCategoryResponse> =>
+  api
+    .put<UpdateExpenseCategoryResponse>(
+      `${ENDPOINTS.expenseCategories}/${data.id}`,
+      data,
+    )
     .then((res) => res.data);
 
 export const getExpensesList = (): Promise<ExpenseListResponse> =>

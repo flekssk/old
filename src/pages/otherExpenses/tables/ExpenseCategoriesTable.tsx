@@ -10,9 +10,15 @@ import { HiOutlinePencil } from "react-icons/hi";
 
 type Props = {
   data: Array<ExpenseCategory>;
+  loading?: boolean;
+  onOpenEditModal: (expenseCategory: ExpenseCategory) => void;
 };
 
-export const ExpenseCategoriesTable = ({ data }: Props) => {
+export const ExpenseCategoriesTable = ({
+  data,
+  loading,
+  onOpenEditModal,
+}: Props) => {
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<ExpenseCategory>();
 
@@ -22,9 +28,13 @@ export const ExpenseCategoriesTable = ({ data }: Props) => {
       }),
       columnHelper.accessor("id", {
         header: "Действия",
-        cell: () => (
+        cell: (cell) => (
           <div className="flex gap-2">
-            <HiOutlinePencil size="20" style={{ cursor: "pointer" }} />
+            <HiOutlinePencil
+              size="20"
+              style={{ cursor: "pointer" }}
+              onClick={() => onOpenEditModal(cell.row.original)}
+            />
           </div>
         ),
       }),
@@ -37,9 +47,5 @@ export const ExpenseCategoriesTable = ({ data }: Props) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const { getRowModel } = table;
-  const model = getRowModel();
-  const rows = model.rows;
-
-  return <TableList table={table} rows={rows} />;
+  return <TableList table={table} loading={loading} />;
 };

@@ -35,8 +35,8 @@ export const usePagination = ({
     changeSearchHandler("page", value.toString());
   };
 
-  const onChangeSelect = (value: string) => {
-    changeSearchHandler("limit", value);
+  const onChangeSelect = (value: number) => {
+    changeSearchHandler("limit", value.toString());
   };
 
   const onChangeSearchUser = (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +56,7 @@ export const usePagination = ({
     clearFilter,
     currentPage: page,
     onPageChange: onChangePage,
+    onPerPageChange: onChangeSelect,
     page,
     limit,
     total,

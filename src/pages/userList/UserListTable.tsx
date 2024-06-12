@@ -89,10 +89,9 @@ const UserListTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const { getRowModel } = table;
+
   const noUsers = userList?.items.length === 0;
-  const model = getRowModel();
-  const rows = model.rows;
+
   return (
     <div className="m-3">
       {userList ? (
@@ -109,7 +108,7 @@ const UserListTable = () => {
               Пользователи не найдены
             </span>
           ) : (
-            <TableList table={table} rows={rows} />
+            <TableList table={table} />
           )}
         </UserListFilters>
       ) : (

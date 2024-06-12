@@ -1,11 +1,17 @@
 import type { OtherDeduction } from "@/api/otherDeduction/types";
 import type { UserProfileAccount } from "@/api/user/types";
 import { DataTable } from "@/components/table/DataTable";
+import TableList from "@/components/table/TableList";
 import { formatCurrency } from "@/helpers/common";
 import { DATE_FORMAT } from "@/helpers/date";
 import type { ColumnDef } from "@tanstack/react-table";
-import { createColumnHelper } from "@tanstack/react-table";
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
+import { Table } from "flowbite-react";
 import { useMemo } from "react";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 
@@ -88,13 +94,11 @@ export const OtherDeductionTable = ({
     ];
   }, [accounts]);
 
-  return (
-    <DataTable
-      className="w-full"
-      cellRangeSelection={false}
-      loading={loading}
-      columns={columns}
-      data={data || []}
-    />
-  );
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return <TableList table={table} loading={loading} />;
 };

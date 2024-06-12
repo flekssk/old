@@ -96,10 +96,6 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const { getRowModel } = table;
-
-  const model = getRowModel();
-  const rows = model.rows;
   return (
     <div>
       <div className="flex justify-end">
@@ -107,7 +103,7 @@ const SubscribeTable: FC<SubscribeTable> = ({ items }) => {
           Добавить
         </Button>
       </div>
-      <TableList table={table} rows={rows} />
+      <TableList table={table} />
       <UniverseModalWindow isActive={isEditActive} setActive={setIsEditActive}>
         <EditForm
           key={editableData?.third_party_id}

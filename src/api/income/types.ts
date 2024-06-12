@@ -1,10 +1,10 @@
 import type { Pagination } from "../types";
 
 export type BatchIncome = {
-  incomeId: string;
-  nmId: string;
-  barcode: string;
+  nm_id: string;
   cost: number;
+  fulfillment: number;
+  date_from?: string;
 };
 
 export type Income = {
@@ -33,9 +33,42 @@ export type IncomeSyncResponse = {
 };
 
 export type IncomeCostSetBatchRequest = {
-  incomes: BatchIncome[];
+  costs: BatchIncome[];
 };
 
 export type IncomeCostSetBatchResponse = {
   message: string;
+};
+
+export type IncomeCostRequest = {
+  nmIds: string;
+  dateFrom?: string;
+};
+
+export type IncomeCostItem = {
+  nm_id: string;
+  date_from: string;
+  cost: number;
+  fulfillment: number;
+};
+
+export type IncomeCostResponse = {
+  items: IncomeCostItem[];
+};
+
+export type IncomeDiagramRequest = {
+  nmIds: string;
+  dateFrom?: string;
+  xls?: boolean;
+};
+
+export type IncomeDiagramItem = {
+  nm_id: string;
+  date_from: string;
+  cost: number;
+  fulfillment: number;
+};
+
+export type IncomeDiagramResponse = {
+  items: IncomeDiagramItem[];
 };

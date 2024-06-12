@@ -10,6 +10,7 @@ import {
   deleteExpense,
   getExpenseCategories,
   getExpensesList,
+  updateExpenseCategory,
 } from "./api";
 import { createCustomMutation } from "../helper";
 
@@ -24,6 +25,10 @@ export const useExpenseCategories = (
 
 export const useCreateExpenseCategoryMutation = createCustomMutation(
   createExpenseCategory,
+);
+
+export const useUpdateExpenseCategoryMutation = createCustomMutation(
+  updateExpenseCategory,
 );
 
 export const useExpensesList = (
