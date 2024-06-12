@@ -294,6 +294,7 @@ export const StatTable: FC<StatTableProps> = ({
         enableColumnFilter: true,
       }),
       columnHelper.accessor("rejectionsAndReturns", {
+        id: "rejectionsAndReturns",
         header: "Количество отказов+ возвраты",
         meta: {
           positiveIfGrow: false,
