@@ -47,7 +47,7 @@ const ForgotPasswordPage: FC = function () {
           className="mr-3 h-10"
         />
         <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-          TrueStat
+          TrueStats
         </span>
       </a>
       <Card className="w-full lg:max-w-[640px] lg:[&>*]:w-full lg:[&>*]:p-16">

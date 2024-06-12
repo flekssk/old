@@ -57,7 +57,7 @@ const SignInPage: FC = function () {
                 src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
                 alt="logo"
               />
-              TrueStat
+              TrueStats
             </a>
 
             <h1 className="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">

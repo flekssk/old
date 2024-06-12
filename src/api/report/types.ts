@@ -215,7 +215,7 @@ export interface ReportResponse {
 
 export type NumberFilter = { min: number; max: number };
 export type ArticleFilter = number[];
-export type TextFilter = { value: string };
+export type TextFilter = string[];
 export type Filters = Record<string, NumberFilter | ArticleFilter | TextFilter>;
 export interface ReportRequest {
   dateFrom?: string;
@@ -227,6 +227,8 @@ export interface ReportRequest {
   orderBy?: { field: string; direction: string };
   limit?: number;
   page?: number;
+  xls?: boolean;
+  columns?: string[];
 }
 
 export interface WeekReportRequest {

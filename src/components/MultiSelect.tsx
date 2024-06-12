@@ -75,6 +75,7 @@ export function MultiSelect<T extends MultiSelectOption | MultiSelectOption[]>({
       value={selectedOptions}
       onChange={setSelectedOptions}
       multiple={multiple}
+      immediate
     >
       {({ open }) => (
         <div className="relative">

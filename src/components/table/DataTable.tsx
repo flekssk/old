@@ -42,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   columnPinning?: ColumnPinningState;
   loading?: boolean;
   small?: boolean;
+  onExport?: (visibleColumns: string[]) => Promise<void>;
 }
 
 const getCommonPinningStyles = (
@@ -73,6 +74,7 @@ export function DataTable<TData, TValue>({
   columnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
+  onExport,
   small,
 }: DataTableProps<TData, TValue>) {
   const [visibleFilterColumn, setVisibleFilterColumn] =
@@ -95,6 +97,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const saveSettingsMutation =
     useSaveSettingsMutation<Record<string, StoredGroupSettings>>();
+  const [exportLoading, setExportLoading] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -165,6 +168,20 @@ export function DataTable<TData, TValue>({
     setColumns(updatedColumns);
   }, [initialColumns, groupSettings]);
 
+  const hadleExport = async () => {
+    const visibleColumns = table
+      .getHeaderGroups()
+      .reduce((acc, headerGroup) => {
+        headerGroup.headers.forEach((header) => {
+          acc.push(header.id);
+        });
+        return acc;
+      }, [] as string[]);
+    setExportLoading(true);
+    await onExport?.(visibleColumns);
+    setExportLoading(false);
+  };
+
   return (
     <div className={cn("flex flex-col", wrapperClassName)}>
       <div className="flex shrink-0 items-center justify-end gap-2 pb-2">
@@ -182,6 +199,14 @@ export function DataTable<TData, TValue>({
             />
           )}
         </div>
+
+        {onExport ? (
+          <div>
+            <Button onClick={hadleExport} isProcessing={exportLoading}>
+              Экспорт
+            </Button>
+          </div>
+        ) : null}
       </div>
       <div className="overflow-auto">
         <div
@@ -201,7 +226,7 @@ export function DataTable<TData, TValue>({
                   <div
                     key={header.id}
                     className={cn(
-                      "relative shrink-0 grow-0 flex items-center !z-[-1]",
+                      "relative shrink-0 grow-0 flex items-center",
                       theme.table?.head?.cell.base,
                       {
                         "px-2 py-1": small,

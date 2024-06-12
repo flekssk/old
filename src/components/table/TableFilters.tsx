@@ -18,10 +18,10 @@ type ColumnSort = {
 
 type NumberFilter = { min?: number; max?: number };
 
-type TextFilter = { value: string[] };
+type SelectFilter = string[];
 
 type ColumnFilters = {
-  [columnId: string]: NumberFilter | TextFilter;
+  [columnId: string]: NumberFilter | SelectFilter;
 };
 
 type TableFiltersProps = {
@@ -148,10 +148,9 @@ export const TableFilters = ({
         : [...acc, option];
     }, []);
 
-    updatedFilters[columnId] = {
-      ...updatedFilters[columnId],
-      value: uniqueOptions.map(({ value }) => value) as string[],
-    };
+    updatedFilters[columnId] = uniqueOptions.map(
+      ({ value }) => value,
+    ) as string[];
 
     searchParams.set("filters", stringify(updatedFilters));
     setSearchParams(searchParams);
@@ -224,8 +223,8 @@ export const TableFilters = ({
     }
 
     if (filterType === "string") {
-      const textFilters = columnFilters as TextFilter;
-      const selectedOptions = textFilters?.value.map((value) => ({
+      const textFilters = columnFilters as SelectFilter;
+      const selectedOptions = textFilters?.map((value) => ({
         label: value,
         value,
       }));

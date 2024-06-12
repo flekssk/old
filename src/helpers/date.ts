@@ -66,5 +66,5 @@ export const getWeeksBetweenDates = (
     current = addDays(current, 7);
   }
 
-  return weeks;
+  return weeks.sort((a, b) => (a.weekNumber < b.weekNumber ? 1 : -1));
 };

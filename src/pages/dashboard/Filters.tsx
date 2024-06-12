@@ -110,11 +110,11 @@ export const Filters: FC<FiltersProps> = ({
         }
 
         if (filter && isTextFilter(filter)) {
-          if (filter.value !== undefined) {
+          if (filter !== undefined) {
             result.push({
               keyForDelete: `filters.${key}`,
               label: `${REPORT_TABLE_COLUMNS_NAMES[key]}`,
-              value: filter.value,
+              value: filter.join(", "),
             });
           }
         }
@@ -226,11 +226,12 @@ export const Filters: FC<FiltersProps> = ({
 
   const handleArticlesChange = (selectedOptions: MultiSelectOption[]) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    const filters = qsParse(newSearchParams.get("filters") || "");
-    const filterArticles = selectedOptions.map((option) =>
+
+    const filters = { ...params.filters };
+
+    filters["article"] = selectedOptions.map((option) =>
       String(option.value),
-    );
-    filters["article"] = filterArticles;
+    ) as string[];
     newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };
