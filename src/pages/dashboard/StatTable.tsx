@@ -439,10 +439,12 @@ export const StatTable: FC<StatTableProps> = ({
         resizeColumns
         columnSettings
         groupSettings
+        orderSettings
         small
         wrapperClassName="max-h-statTable"
         groupSettingsName="main-report-user-groups"
         storedSettingsName="main-report-table"
+        orderColumnsSettingsName="main-report-table-order"
         columns={columns}
         data={data}
         columnPinning={{

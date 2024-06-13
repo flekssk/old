@@ -29,6 +29,7 @@ import { TableFilters } from "./TableFilters";
 import { useColumnSizingPersist } from "./useColumnSizingPersist";
 import { TableSettings } from "./TableSettings";
 import { useColumnPinningPersist } from "./useColumnPinningPersist";
+import { OrderSettings } from "./OrderSettings";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,8 +40,10 @@ interface DataTableProps<TData, TValue> {
   resizeColumns?: boolean;
   columnSettings?: boolean;
   groupSettings?: boolean;
+  orderSettings?: boolean;
   groupSettingsName?: string;
   storedSettingsName?: string;
+  orderColumnsSettingsName?: string;
   columnPinning?: ColumnPinningState;
   loading?: boolean;
   small?: boolean;
@@ -73,9 +76,11 @@ export function DataTable<TData, TValue>({
   resizeColumns,
   columnSettings,
   groupSettings,
+  orderSettings,
   columnPinning: initialColumnPinning,
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
+  orderColumnsSettingsName = "default-order-settings",
   onExport,
   small,
 }: DataTableProps<TData, TValue>) {
@@ -135,7 +140,7 @@ export function DataTable<TData, TValue>({
 
   const { getRowModel } = table;
 
-  useColumnPinningPersist(table, storedSettingsName);
+  useColumnPinningPersist(table, orderColumnsSettingsName);
   useColumnSizingPersist(table, storedSettingsName);
   // getCellsBetweenId returns all cell Ids between two cell Id, and then setState for selectedCellIds
 
@@ -193,7 +198,9 @@ export function DataTable<TData, TValue>({
     setExportLoading(false);
   };
   React.useEffect(() => {
-    const ordering = localStorage.getItem(`${storedSettingsName}-ordering`);
+    const ordering = localStorage.getItem(
+      `${orderColumnsSettingsName}-ordering`,
+    );
     if (ordering) {
       setColumnOrder(JSON.parse(ordering));
     } else {
@@ -206,6 +213,15 @@ export function DataTable<TData, TValue>({
   return (
     <div className={cn("flex flex-col", wrapperClassName)}>
       <div className="flex shrink-0 items-center justify-end gap-2 pb-2">
+        <div>
+          {orderSettings && (
+            <OrderSettings
+              columns={columns}
+              orderSettingsName={orderColumnsSettingsName}
+              table={table}
+            />
+          )}
+        </div>
         <div>
           {groupSettings && (
             <GroupSettings groupSettingsName={groupSettingsName} />
@@ -229,9 +245,11 @@ export function DataTable<TData, TValue>({
           </div>
         ) : null}
         <div>
-          <Button onClick={() => setIsOpenSettingsDrawer(true)}>
-            Настройки
-          </Button>
+          {orderSettings && (
+            <Button onClick={() => setIsOpenSettingsDrawer(true)}>
+              Настройки
+            </Button>
+          )}
         </div>
       </div>
       <div className="overflow-auto">
@@ -384,7 +402,7 @@ export function DataTable<TData, TValue>({
         onClose={() => setIsOpenGroupSettingsModal(false)}
       />
       <TableSettings
-        tableName={storedSettingsName}
+        orderColumnsSettingsName={orderColumnsSettingsName}
         isOpen={isOpenSettingsDrawer}
         columns={columns}
         columnOrder={columnOrder}
