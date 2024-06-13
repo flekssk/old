@@ -347,7 +347,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div
-        className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex shrink-0 items-center p-4`}
+        className={`${isEmptyRowSelection ? "justify-end" : "justify-between"} flex shrink-0 items-center p-2`}
       >
         {groupSettings && !isEmptyRowSelection && (
           <div>
@@ -360,7 +360,7 @@ export function DataTable<TData, TValue>({
           </div>
         )}
         {cellRangeSelection ? (
-          <div className="flex justify-end gap-2 p-4">
+          <div className="flex justify-end gap-2">
             <span>
               <span className="font-bold">Количество:</span>{" "}
               {displayNumber(calculatedCellValues.count)}{" "}

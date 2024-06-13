@@ -19,6 +19,7 @@ import { ServerSuccess } from "@/components/ServerSuccess";
 import { ServerError } from "@/components/ServerError";
 import { useSearchParams } from "react-router-dom";
 import { Subscriptions } from "./Subscriptions";
+import { TaxManagement } from "./TaxManagement";
 
 const formSchema = z.object({
   taxationTypeId: z.object({
@@ -115,52 +116,9 @@ export const Settings: FC = () => {
             }
           >
             <Tabs.Item title={TABS_TITLES[TABS.profile]}>
-              <form
-                className="flex flex-col gap-3"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <div className="flex flex-col gap-5">
-                  <p>Выбор налоговой ставки</p>
-                  <Controller
-                    name="taxationTypeId"
-                    control={control}
-                    render={({ field: { value } }) => (
-                      <Select
-                        selectedOption={{
-                          value: value?.id || taxation?.id || "",
-                          label: value?.title || taxation?.title || "",
-                        }}
-                        options={
-                          reportTaxationRequest?.data?.map((el) => ({
-                            value: el.id,
-                            label: el.title,
-                          })) || []
-                        }
-                        setSelectedOption={(option) => {
-                          const { value, label } = option;
-                          setValue("taxationTypeId", {
-                            id: +value,
-                            title: label,
-                          });
-                        }}
-                        placeholder="Выбор налоговой ставки"
-                      />
-                    )}
-                  />
-                  <div>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      isProcessing={isLoading}
-                      disabled={isLoading}
-                    >
-                      Сохранить
-                    </Button>
-                  </div>
-                </div>
-              </form>
-              <ServerSuccess message={resetTaxationMutation.data?.message} />
-              <ServerError mutation={resetTaxationMutation} className="mt-3" />
+              {userProfile?.data && (
+                <TaxManagement profile={userProfile.data} />
+              )}
             </Tabs.Item>
             <Tabs.Item title={TABS_TITLES[TABS.apiKeys]}>
               {activeTab === TABS.apiKeys ? <ApiKeys /> : null}
