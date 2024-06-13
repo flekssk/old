@@ -5,7 +5,7 @@ import type {
 } from "@/api/account/types";
 import { useReportTaxation } from "@/api/user";
 import type { UserProfileResponse } from "@/api/user/types";
-import { SelectOption } from "@/components/Select";
+import type { SelectOption } from "@/components/Select";
 import { SelectControl } from "@/components/forms/SelectControl";
 import TableList from "@/components/table/TableList";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,7 +65,7 @@ function convertFomDataToMutationPayload(
       converFormNameToAccountTaxFields(formName);
     if (data[formName]) {
       result.push({
-        taxTypeId: data[formName]!.value,
+        taxTypeId: (data[formName] as { value: number }).value,
         year,
         quarter,
         accountId,
@@ -164,9 +164,12 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
           item.year,
           item.quarter,
         );
-        result[formName] = item[account.id]
-          ? optionsMap[item[account.id]]
-          : null;
+        const id = item[account.id] as number;
+        result[formName] = optionsMap[id]
+          ? (optionsMap[id as number] as { value: number })
+          : {
+              value: 0,
+            };
       });
     });
 
