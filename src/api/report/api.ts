@@ -13,10 +13,15 @@ import type {
 
 export const getMainReportV2 = (
   payload: ReportRequest = {},
-): Promise<ReportResponse> =>
-  api.post<ReportResponse>(ENDPOINTS.mainV2, payload).then((res) => {
+): Promise<ReportResponse> => {
+  let endpoint = ENDPOINTS.mainV2;
+  if (payload.xls) {
+    endpoint += "?xls=true";
+  }
+  return api.post<ReportResponse>(endpoint, payload).then((res) => {
     return res.data;
   });
+};
 
 export const getMainReport = (
   payload: ReportRequest = {},

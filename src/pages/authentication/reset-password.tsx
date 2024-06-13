@@ -51,7 +51,7 @@ const ResetPasswordPage: FC = function () {
           className="mr-3 h-10"
         />
         <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-          TrueStat
+          TrueStats
         </span>
       </a>
       <Card

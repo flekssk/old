@@ -37,7 +37,7 @@ const ExampleNavbar: FC = function () {
                 className="mr-3 h-6 sm:h-8"
               />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                TrueStat
+                TrueStats
               </span>
             </Navbar.Brand>
           </div>

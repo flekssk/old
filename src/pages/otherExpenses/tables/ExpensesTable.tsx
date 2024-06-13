@@ -16,10 +16,12 @@ type Props = {
   data: Array<Expense>;
   onOpenDeleteModal: (id: number) => void;
   onOpenEditModal: (id: number) => void;
+  loading?: boolean;
 };
 
 export const ExpensesTable = ({
   data,
+  loading,
   onOpenDeleteModal,
   onOpenEditModal,
 }: Props) => {
@@ -87,9 +89,5 @@ export const ExpensesTable = ({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const { getRowModel } = table;
-  const model = getRowModel();
-  const rows = model.rows;
-
-  return <TableList table={table} rows={rows} />;
+  return <TableList table={table} loading={loading} />;
 };

@@ -127,9 +127,7 @@ const TaskQueueTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const { getRowModel } = table;
-  const model = getRowModel();
-  const rows = model.rows;
+
   return (
     <div>
       <div className="flex w-full justify-end">
@@ -143,7 +141,7 @@ const TaskQueueTable = () => {
           selectValue={selectValue}
           pageValue={pageValue}
         >
-          <TableList table={table} rows={rows} />
+          <TableList table={table} />
         </TaskQueueFilter>
       ) : (
         <div>Loading ...</div>

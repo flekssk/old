@@ -52,20 +52,18 @@ export const ApiKeys: FC = function () {
     setDisableCreate(true);
   };
 
-  const handlePdfClick = () => {
-    window.open("/token-geneartion.pdf", "_blank");
-  };
-
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-xl font-bold dark:text-white">API ключи</h3>
-        <button
+        <a
           className="cursor-pointer text-blue-600 hover:text-blue-800"
-          onClick={handlePdfClick}
+          href="https://disk.yandex.com/d/-4HDLeo-MJT31Q"
+          target="_blank"
+          rel="noreferrer"
         >
           Инструкция по созданию API ключей
-        </button>
+        </a>
       </div>
       <div className="flex justify-start">
         <Button disabled={disableCreate} color="blue" onClick={onCreate}>

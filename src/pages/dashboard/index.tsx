@@ -26,6 +26,7 @@ import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "./MainChartNew";
 import { Accordion } from "@/components/Accordion";
+import { getMainReportV2 } from "@/api/report/api";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -122,6 +123,17 @@ const DashboardPage: FC = function () {
     placeholderData: (previousData) => previousData,
   });
 
+  const onExport = async (visibleColumns: string[]) => {
+    const res = await getMainReportV2({
+      ...params,
+      page: 1,
+      limit: mainReportRequest.data?.pagination.total,
+      xls: true,
+      columns: visibleColumns,
+    });
+    console.log("🚀 ~ onExport ~ res:", res);
+  };
+
   const prevMainReportRequest = useMainReportV2(prevParams, {
     enabled: !!reportFilterAggregatedRequest.data,
   });
@@ -193,6 +205,7 @@ const DashboardPage: FC = function () {
           </div>
           {mainReportRequest.data?.byProduct && (
             <StatTable
+              onExport={onExport}
               redirectFilters={filtersForRedirect}
               pagination={mainReportRequest.data?.pagination}
               items={mainReportRequest.data?.byProduct}

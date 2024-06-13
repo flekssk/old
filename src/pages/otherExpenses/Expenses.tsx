@@ -37,7 +37,6 @@ export const Expenses = () => {
   const expenseCategories = useExpenseCategories();
 
   const isLoading = expensesList.isLoading;
-  const isExpensesAvailable = expensesList.data?.items.length;
 
   const expensesCategoriesOptions = useMemo(() => {
     if (!expenseCategories.data) return [];
@@ -143,15 +142,11 @@ export const Expenses = () => {
           </Button>
         </div>
         <div>
-          {isExpensesAvailable ? (
-            <ExpensesTable
-              data={filteredExpensesData}
-              onOpenDeleteModal={handleOpenDeleteModal}
-              onOpenEditModal={handleOpenEditModal}
-            />
-          ) : (
-            <div>Данных нет</div>
-          )}
+          <ExpensesTable
+            data={filteredExpensesData}
+            onOpenDeleteModal={handleOpenDeleteModal}
+            onOpenEditModal={handleOpenEditModal}
+          />
         </div>
       </Card>
       <CreateExpenseModal

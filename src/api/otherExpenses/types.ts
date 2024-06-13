@@ -7,7 +7,11 @@ export type ExpenseCategoriesResponse = Array<ExpenseCategory>;
 
 export type CreateExpenseCategoryRequest = { name: string };
 
+export type UpdateExpenseCategoryRequest = { name: string; id: number };
+
 export type CreateExpenseCategoryResponse = ExpenseCategory;
+
+export type UpdateExpenseCategoryResponse = ExpenseCategory;
 
 export type Expense = {
   id: number;

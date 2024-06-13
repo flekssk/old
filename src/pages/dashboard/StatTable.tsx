@@ -21,6 +21,7 @@ export type StatTableProps = {
   pagination: PaginationType;
   prevItems?: ProductReportItem[];
   redirectFilters?: string;
+  onExport?: (visibleColumns: string[]) => Promise<void>;
 };
 
 export const StatTable: FC<StatTableProps> = ({
@@ -28,12 +29,13 @@ export const StatTable: FC<StatTableProps> = ({
   pagination,
   prevItems,
   redirectFilters,
+  onExport,
 }) => {
   const [searchParam, setSearchParam] = useSearchParams();
   const pageValue = searchParam.get("page") || "1";
 
   const { totalPages, onChangePage, onChangeSelect } = usePagination({
-    pagination,
+    total: pagination.total,
     setSearchParam,
     searchParam,
   });
@@ -58,6 +60,7 @@ export const StatTable: FC<StatTableProps> = ({
       columnHelper.accessor("image", {
         id: "photo",
         header: "Фото",
+        size: 50,
         cell: (row) => {
           const img = row.getValue() ? (
             <img className="w-full" src={row.getValue()} alt="img" />
@@ -95,7 +98,7 @@ export const StatTable: FC<StatTableProps> = ({
             {cell.getValue()}
           </Link>
         ),
-        enableSorting: true,
+        enableSorting: false,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("brand", {
@@ -104,7 +107,7 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           filterType: "string",
         },
-        enableSorting: true,
+        enableSorting: false,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("category", {
@@ -113,7 +116,7 @@ export const StatTable: FC<StatTableProps> = ({
         meta: {
           filterType: "string",
         },
-        enableSorting: true,
+        enableSorting: false,
         enableColumnFilter: true,
       }),
       columnHelper.accessor("article", {
@@ -432,6 +435,7 @@ export const StatTable: FC<StatTableProps> = ({
   return (
     <Card>
       <DataTable
+        onExport={onExport}
         resizeColumns
         columnSettings
         groupSettings
@@ -463,9 +467,7 @@ export const StatTable: FC<StatTableProps> = ({
             <Select
               placeholder="Отображать по"
               options={SIZES_ROWS_FOR_REPORT_TABLE}
-              setSelectedOption={(option) =>
-                onChangeSelect(String(option.value))
-              }
+              setSelectedOption={(option) => onChangeSelect(+option.value)}
             />
           </div>
         </div>

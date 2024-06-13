@@ -24,8 +24,6 @@ import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
 import { SaveGroupModal } from "./SaveGroupModal";
 import { useSaveSettingsMutation } from "@/api/user";
-import { ServerSuccess } from "../ServerSuccess";
-import { ServerError } from "../ServerError";
 import type { StoredGroupSettings } from "@/types/types";
 import { TableFilters } from "./TableFilters";
 import { useColumnSizingPersist } from "./useColumnSizingPersist";
@@ -49,6 +47,7 @@ interface DataTableProps<TData, TValue> {
   columnPinning?: ColumnPinningState;
   loading?: boolean;
   small?: boolean;
+  onExport?: (visibleColumns: string[]) => Promise<void>;
 }
 
 const getCommonPinningStyles = (
@@ -82,6 +81,7 @@ export function DataTable<TData, TValue>({
   groupSettingsName = "default-group-settings",
   storedSettingsName = "default-data-table-settings",
   orderColumnsSettingsName = "default-order-settings",
+  onExport,
   small,
 }: DataTableProps<TData, TValue>) {
   const [visibleFilterColumn, setVisibleFilterColumn] =
@@ -109,6 +109,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const saveSettingsMutation =
     useSaveSettingsMutation<Record<string, StoredGroupSettings>>();
+  const [exportLoading, setExportLoading] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -164,6 +165,7 @@ export function DataTable<TData, TValue>({
     if (groupSettings) {
       updatedColumns.unshift({
         id: "select",
+        size: 50,
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllRowsSelected()}
@@ -177,12 +179,24 @@ export function DataTable<TData, TValue>({
             onChange={row.getToggleSelectedHandler()}
           />
         ),
-        size: 65,
       });
     }
     setColumns(updatedColumns);
   }, [initialColumns, groupSettings]);
 
+  const hadleExport = async () => {
+    const visibleColumns = table
+      .getHeaderGroups()
+      .reduce((acc, headerGroup) => {
+        headerGroup.headers.forEach((header) => {
+          acc.push(header.id);
+        });
+        return acc;
+      }, [] as string[]);
+    setExportLoading(true);
+    await onExport?.(visibleColumns);
+    setExportLoading(false);
+  };
   React.useEffect(() => {
     const ordering = localStorage.getItem(
       `${orderColumnsSettingsName}-ordering`,
@@ -222,6 +236,14 @@ export function DataTable<TData, TValue>({
             />
           )}
         </div>
+
+        {onExport ? (
+          <div>
+            <Button onClick={hadleExport} isProcessing={exportLoading}>
+              Экспорт
+            </Button>
+          </div>
+        ) : null}
         <div>
           {orderSettings && (
             <Button onClick={() => setIsOpenSettingsDrawer(true)}>
@@ -293,7 +315,10 @@ export function DataTable<TData, TValue>({
               </React.Fragment>
             ))}
           </div>
-          <div className={cn(theme.table?.body?.base)} {...getBodyProps()}>
+          <div
+            className={(cn(theme.table?.body?.base), "min-h-52")}
+            {...getBodyProps()}
+          >
             {rows.map((row) => (
               <React.Fragment key={row.id}>
                 <div
@@ -368,11 +393,6 @@ export function DataTable<TData, TValue>({
             </span>
           </div>
         ) : null}
-      </div>
-      <div className="mt-1 w-full">
-        {/* @ts-expect-error TODO-mchuev: Types meessage */}
-        <ServerSuccess message={saveSettingsMutation.data?.meessage} />
-        <ServerError mutation={saveSettingsMutation} className="mt-3" />
       </div>
       <SaveGroupModal
         saveSettingsMutation={saveSettingsMutation}

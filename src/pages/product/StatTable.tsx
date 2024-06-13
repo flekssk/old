@@ -40,6 +40,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
       columnHelper.accessor("image", {
         id: "photo",
         header: "Фото",
+        size: 50,
         cell: () => {
           return image ? (
             <div>
@@ -240,15 +241,6 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
         },
         cell: DiffNumberCell,
       }),
-
-      // columnHelper.accessor("shareInTotalProfit", {
-      //   id: "shareInTotalProfit",
-      //   header: "Доля в общей прибыли",
-      //   meta: {
-      //     suffix: "%",
-      //   },
-      //   cell: DiffNumberCell,
-      // }),
 
       columnHelper.accessor("advertisingExpense", {
         id: "advertisingExpenses",

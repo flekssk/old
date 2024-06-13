@@ -3,7 +3,7 @@ import { Button, TextInput } from "flowbite-react";
 import { useState } from "react";
 import type { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { MdPushPin } from "react-icons/md";
+import { MdPushPin, MdDragHandle } from "react-icons/md";
 import Drawer from "../Drawer";
 import { SaveOrderSettingsModal } from "./SaveOrderSettingsModal";
 
@@ -105,39 +105,46 @@ export function TableSettings<TData, TValue>({
           <Droppable droppableId="columns">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {filteredColumns?.map((colId, index) => (
-                  <Draggable key={colId} draggableId={colId} index={index}>
-                    {(provided) => {
-                      const column = columns?.find((col) => col.id === colId);
-                      const columnName = column?.header as string;
-                      const isColumnPinned = columnPinning?.left?.find(
-                        (value) => value === colId,
-                      );
-
-                      return (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="flex items-center gap-2"
-                        >
-                          <div>
-                            <MdPushPin
-                              style={{
-                                cursor: "pointer",
-                                color: isColumnPinned ? "black" : "gray",
-                              }}
-                              onClick={() => handlePinningChange(colId)}
-                            />
+                {filteredColumns?.map((colId, index) => {
+                  const column = columns?.find((col) => col.id === colId);
+                  const columnName = column?.header as string;
+                  const isColumnPinned = columnPinning?.left?.find(
+                    (value) => value === colId,
+                  );
+                  return (
+                    <Draggable
+                      key={colId}
+                      draggableId={colId}
+                      index={index}
+                      isDragDisabled={!!isColumnPinned}
+                    >
+                      {(provided) => {
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="flex items-center gap-2"
+                          >
+                            <div>
+                              <MdPushPin
+                                style={{
+                                  cursor: "pointer",
+                                  color: isColumnPinned ? "black" : "#999",
+                                }}
+                                onClick={() => handlePinningChange(colId)}
+                              />
+                            </div>
+                            <div>
+                              <MdDragHandle />
+                            </div>
+                            <div className=" rounded  p-2">{columnName}</div>
                           </div>
-                          <div className="m-2 rounded bg-gray-200 p-2">
-                            {columnName}
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </Draggable>
-                ))}
+                        );
+                      }}
+                    </Draggable>
+                  );
+                })}
                 {provided.placeholder}
               </div>
             )}

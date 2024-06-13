@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SetStateAction } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Column } from "@tanstack/react-table";
 import { Popover, TextInput, Button } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
 import { HiSortDescending, HiSortAscending, HiFilter } from "react-icons/hi";
 
 import { parse, stringify } from "qs";
+import type { MultiSelectOption } from "../MultiSelect";
+import { MultiSelect } from "../MultiSelect";
+import { useReportFilterAggregation } from "@/api/report";
 
 type ColumnSort = {
   field?: string;
@@ -15,10 +18,10 @@ type ColumnSort = {
 
 type NumberFilter = { min?: number; max?: number };
 
-type TextFilter = { value: string };
+type SelectFilter = string[];
 
 type ColumnFilters = {
-  [columnId: string]: NumberFilter | TextFilter;
+  [columnId: string]: NumberFilter | SelectFilter;
 };
 
 type TableFiltersProps = {
@@ -27,11 +30,19 @@ type TableFiltersProps = {
   visibleFilterColumn?: string;
 };
 
+type FilterOptions = {
+  brand: MultiSelectOption[];
+  category: MultiSelectOption[];
+  vendorCode: MultiSelectOption[];
+  article: MultiSelectOption[];
+};
+
 export const TableFilters = ({
   column,
   setVisibleFilterColumn,
   visibleFilterColumn,
 }: TableFiltersProps) => {
+  const reportFilterAggregationRequest = useReportFilterAggregation();
   const [filterValues, setFilterValues] = useState<ColumnFilters>({});
   const [sort, setSort] = useState<ColumnSort>({});
   const [searchParams, setSearchParams] = useSearchParams();
@@ -45,6 +56,47 @@ export const TableFilters = ({
     filterValues,
     column.id,
   );
+
+  const filterOptions = useMemo(() => {
+    const result: FilterOptions = {
+      brand: [],
+      category: [],
+      vendorCode: [],
+      article: [],
+    };
+
+    if (reportFilterAggregationRequest.data) {
+      result.brand = reportFilterAggregationRequest.data.brands.map(
+        (brand) => ({
+          value: brand,
+          label: brand,
+        }),
+      );
+
+      result.category = reportFilterAggregationRequest.data.categories.map(
+        (category) => ({
+          value: category,
+          label: category,
+        }),
+      );
+
+      result.vendorCode = reportFilterAggregationRequest.data.articles.map(
+        ({ vendorCode }) => ({
+          value: vendorCode,
+          label: vendorCode,
+        }),
+      );
+
+      result.article = reportFilterAggregationRequest.data.articles.map(
+        ({ nmId }) => ({
+          value: nmId,
+          label: nmId,
+        }),
+      );
+    }
+
+    return result;
+  }, [reportFilterAggregationRequest.data]);
 
   const handleChangeColumnSort = (field: string, direction: string) => {
     if (field === sort.field && direction === sort.direction) {
@@ -82,15 +134,26 @@ export const TableFilters = ({
     setFilterValues(updatedFilters);
   };
 
-  const handleChangeTextFilter = (value: string, columnId: string) => {
+  const handleChangeFilter = (
+    options: MultiSelectOption[],
+    columnId: string,
+  ) => {
+    const searchParams = new URLSearchParams();
     const updatedFilters = { ...filterValues };
 
-    updatedFilters[columnId] = {
-      ...updatedFilters[columnId],
-      value,
-    };
+    const uniqueOptions = options.reduce<MultiSelectOption[]>((acc, option) => {
+      const exists = acc.find((o) => o.value === option.value);
+      return exists
+        ? acc.filter((o) => o.value !== option.value)
+        : [...acc, option];
+    }, []);
 
-    setFilterValues(updatedFilters);
+    updatedFilters[columnId] = uniqueOptions.map(
+      ({ value }) => value,
+    ) as string[];
+
+    searchParams.set("filters", stringify(updatedFilters));
+    setSearchParams(searchParams);
   };
 
   const updateSearchParams = () => {
@@ -160,25 +223,23 @@ export const TableFilters = ({
     }
 
     if (filterType === "string") {
-      const textFilter = columnFilters as TextFilter;
+      const textFilters = columnFilters as SelectFilter;
+      const selectedOptions = textFilters?.map((value) => ({
+        label: value,
+        value,
+      }));
 
       return (
-        <div className="flex w-64 flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
-          <div>
-            <TextInput
-              type="text"
-              placeholder="Фильтр"
-              value={textFilter?.value || ""}
-              onChange={(e) =>
-                handleChangeTextFilter(e.target.value, column.id)
-              }
-            />
-          </div>
-          <div>
-            <Button size="xs" className="w-full" onClick={updateSearchParams}>
-              Применить
-            </Button>
-          </div>
+        <div className="flex flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
+          <MultiSelect
+            placeholder="Выберите"
+            options={filterOptions[column.id as keyof FilterOptions]}
+            selectedOptions={selectedOptions}
+            setSelectedOptions={(options) =>
+              handleChangeFilter(options, column.id)
+            }
+            multiple
+          />
         </div>
       );
     }
@@ -194,7 +255,7 @@ export const TableFilters = ({
             aria-labelledby="area-popover"
             open={visibleFilterColumn === column.id}
             placement="bottom"
-            className="!top-10 z-30 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
+            className="!top-[45px] z-30 rounded-lg border-2 border-gray-300 bg-white shadow-2xl"
             arrow={false}
             content={renderTableFilters()}
             onOpenChange={(isOpen) => handleOpenPopover(isOpen)}

@@ -68,7 +68,7 @@ const SignUpPage: FC = function () {
               src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
               className="mr-2 h-8 w-8"
             />
-            TrueStat
+            TrueStats
           </a>
           <h1 className="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
             Создать аккаунт
@@ -193,8 +193,8 @@ const SignUpPage: FC = function () {
                       htmlFor="terms"
                       className="text-gray-500 dark:text-gray-300"
                     >
-                      Регистрируясь, вы создаете учетную запись TrueStat и
-                      соглашаетесь с условиями TrueStat.&nbsp;
+                      Регистрируясь, вы создаете учетную запись TrueStats и
+                      соглашаетесь с условиями TrueStats.&nbsp;
                       <a
                         className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                         href="#"

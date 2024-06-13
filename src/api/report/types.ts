@@ -215,7 +215,7 @@ export interface ReportResponse {
 
 export type NumberFilter = { min: number; max: number };
 export type ArticleFilter = number[];
-export type TextFilter = { value: string };
+export type TextFilter = string[];
 export type Filters = Record<string, NumberFilter | ArticleFilter | TextFilter>;
 export interface ReportRequest {
   dateFrom?: string;
@@ -227,6 +227,8 @@ export interface ReportRequest {
   orderBy?: { field: string; direction: string };
   limit?: number;
   page?: number;
+  xls?: boolean;
+  columns?: string[];
 }
 
 export interface WeekReportRequest {
@@ -334,7 +336,19 @@ export interface ReportItemResponse {
   revenueStructure: RevenueStructure;
 }
 
+type Article = {
+  brand: string;
+  category: string;
+  id: number;
+  nmId: string;
+  nmUuid: string;
+  photos: number;
+  title: string;
+  vendorCode: string;
+};
+
 export type ReportFilterAggregationResponse = {
+  articles: Article[];
   date: { minDate: string; maxDate: string } | null;
   brands: string[];
   categories: string[];

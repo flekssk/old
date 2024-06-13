@@ -75,6 +75,7 @@ export function MultiSelect<T extends MultiSelectOption | MultiSelectOption[]>({
       value={selectedOptions}
       onChange={setSelectedOptions}
       multiple={multiple}
+      immediate
     >
       {({ open }) => (
         <div className="relative">
@@ -97,7 +98,7 @@ export function MultiSelect<T extends MultiSelectOption | MultiSelectOption[]>({
             afterLeave={() => setQuery("")}
           >
             <ComboboxOptions
-              className="mt-1 rounded-lg bg-white shadow empty:hidden dark:bg-gray-700"
+              className="z-10 mt-1 rounded-lg bg-white shadow empty:hidden dark:bg-gray-700"
               anchor={anchor}
             >
               {filteredOptions.length === 0 && query !== "" ? (
