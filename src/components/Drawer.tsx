@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect } from "react";
 import { MdClose } from "react-icons/md";
 
@@ -40,9 +41,23 @@ const Drawer: React.FC<DrawerProps> = ({
             : "-translate-x-full"
       }`}
     >
+      {isOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50"
+          onClick={onClose}
+        />
+      )}
+
       <div
         // eslint-disable-next-line tailwindcss/no-custom-classname
-        className={`fixed top-0 ${position}-0 h-full w-80 overflow-auto bg-white shadow-lg`}
+        className={`fixed top-0 ${position}-0 h-full w-80 overflow-auto bg-white shadow-lg transition-transform duration-300 ${
+          isOpen
+            ? "translate-x-0"
+            : position === "right"
+              ? "translate-x-full"
+              : "-translate-x-full"
+        }`}
       >
         <div className="flex items-center justify-between border-b p-4">
           {title && <h2 className="text-lg font-semibold">{title}</h2>}
