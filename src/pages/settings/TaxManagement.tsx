@@ -108,7 +108,8 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
     );
     const lastExistItemsByAccountId: Record<string, AccountTaxItem> = {};
     if (items) {
-      const minYear = Math.min(...items.map((item) => item.year));
+      const minYear =
+        Math.min(...items.map((item) => item.year)) ?? new Date().getFullYear();
       const maxYear = new Date().getFullYear();
       for (let year = minYear; year <= maxYear; year++) {
         const maxQuarter = year === maxYear ? new Date().getMonth() / 3 + 1 : 4;
