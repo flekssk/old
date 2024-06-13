@@ -103,13 +103,14 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
   const data = useMemo(() => {
     // data should include items for each year and quarter from min year of response to current year and quarter. Each item should have value for each account
     const result: TableItem[] = [];
-    const items = listRequest.data?.taxes.sort((a, b) =>
-      `${a.year}_${a.quarter}` > `${b.year}_${b.quarter}` ? 1 : -1,
-    );
+    const items =
+      listRequest.data?.taxes.sort((a, b) =>
+        `${a.year}_${a.quarter}` > `${b.year}_${b.quarter}` ? 1 : -1,
+      ) ?? [];
     const lastExistItemsByAccountId: Record<string, AccountTaxItem> = {};
     if (items) {
       const minYear =
-        Math.min(...items.map((item) => item.year)) ?? new Date().getFullYear();
+        Math.min(...items.map((item) => item.year)) || new Date().getFullYear();
       const maxYear = new Date().getFullYear();
       for (let year = minYear; year <= maxYear; year++) {
         const maxQuarter = year === maxYear ? new Date().getMonth() / 3 + 1 : 4;
