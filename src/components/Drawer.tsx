@@ -51,7 +51,7 @@ const Drawer: React.FC<DrawerProps> = ({
 
       <div
         // eslint-disable-next-line tailwindcss/no-custom-classname
-        className={`fixed top-0 ${position}-0 h-full w-80 overflow-auto bg-white shadow-lg transition-transform duration-300 ${
+        className={`fixed top-0 ${position}-0 w-90 h-full overflow-auto bg-white shadow-lg transition-transform duration-300 ${
           isOpen
             ? "translate-x-0"
             : position === "right"

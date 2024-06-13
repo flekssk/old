@@ -344,7 +344,6 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
     <Card>
       <DataTable
         resizeColumns
-        columnSettings
         small
         wrapperClassName="max-h-statTable"
         storedSettingsName="week-report-table"
