@@ -19,7 +19,6 @@ import React from "react";
 import { useCellRangeSelection } from "./useRangeSelection";
 import { displayNumber } from "@/helpers/number";
 import { Button, Checkbox, theme } from "flowbite-react";
-import { ColumnSettings } from "./ColumnSettings";
 import { cn } from "@/utils/utils";
 import { GroupSettings } from "./GroupSettings";
 import { SaveGroupModal } from "./SaveGroupModal";
@@ -38,7 +37,6 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   wrapperClassName?: string;
   resizeColumns?: boolean;
-  columnSettings?: boolean;
   groupSettings?: boolean;
   orderSettings?: boolean;
   groupSettingsName?: string;
@@ -74,7 +72,6 @@ export function DataTable<TData, TValue>({
   className,
   wrapperClassName,
   resizeColumns,
-  columnSettings,
   groupSettings,
   orderSettings,
   columnPinning: initialColumnPinning,
@@ -105,7 +102,6 @@ export function DataTable<TData, TValue>({
       }, {} as VisibilityState);
     });
   const [isOpenSettingsDrawer, setIsOpenSettingsDrawer] = React.useState(false);
-
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const saveSettingsMutation =
     useSaveSettingsMutation<Record<string, StoredGroupSettings>>();
@@ -198,9 +194,17 @@ export function DataTable<TData, TValue>({
     setExportLoading(false);
   };
   React.useEffect(() => {
+    const visibility = localStorage.getItem(
+      `${orderColumnsSettingsName}-visibility`,
+    );
     const ordering = localStorage.getItem(
       `${orderColumnsSettingsName}-ordering`,
     );
+
+    if (visibility) {
+      setColumnVisibility(JSON.parse(visibility));
+    }
+
     if (ordering) {
       setColumnOrder(JSON.parse(ordering));
     } else {
@@ -227,16 +231,6 @@ export function DataTable<TData, TValue>({
             <GroupSettings groupSettingsName={groupSettingsName} />
           )}
         </div>
-        <div>
-          {columnSettings && (
-            <ColumnSettings
-              storedSettingsName={storedSettingsName}
-              table={table}
-              visibilityState={columnVisibility}
-            />
-          )}
-        </div>
-
         {onExport ? (
           <div>
             <Button onClick={hadleExport} isProcessing={exportLoading}>
@@ -407,8 +401,10 @@ export function DataTable<TData, TValue>({
         columns={columns}
         columnOrder={columnOrder}
         columnPinning={columnPinning}
+        columnVisibility={columnVisibility}
         onColumnOrderChange={setColumnOrder}
         onColumnPinningChange={setColumnPinning}
+        onColumnVisibilityChange={setColumnVisibility}
         onClose={() => setIsOpenSettingsDrawer(false)}
       />
     </div>

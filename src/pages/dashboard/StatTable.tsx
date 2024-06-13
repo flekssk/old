@@ -437,7 +437,6 @@ export const StatTable: FC<StatTableProps> = ({
       <DataTable
         onExport={onExport}
         resizeColumns
-        columnSettings
         groupSettings
         orderSettings
         small

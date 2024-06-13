@@ -1,5 +1,9 @@
-import type { ColumnDef, ColumnPinningState } from "@tanstack/react-table";
-import { Button, TextInput } from "flowbite-react";
+import type {
+  ColumnDef,
+  ColumnPinningState,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { Button, Checkbox, TextInput } from "flowbite-react";
 import { useState } from "react";
 import type { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -13,12 +17,14 @@ type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   columnOrder: string[];
   columnPinning: ColumnPinningState;
+  columnVisibility: VisibilityState;
   onClose: () => void;
   onColumnOrderChange: (newOrder: string[]) => void;
   onColumnPinningChange: (newPinning: {
     left?: string[];
     right?: string[];
   }) => void;
+  onColumnVisibilityChange: (newVisibility: Record<string, boolean>) => void;
 };
 
 export function TableSettings<TData, TValue>({
@@ -27,9 +33,11 @@ export function TableSettings<TData, TValue>({
   columns,
   columnOrder,
   columnPinning,
+  columnVisibility,
   onClose,
   onColumnOrderChange,
   onColumnPinningChange,
+  onColumnVisibilityChange,
 }: Props<TData, TValue>) {
   const [searchText, setSearchText] = useState("");
   const [isModalSaveOpen, setIsModalSaveOpen] = useState(false);
@@ -81,6 +89,15 @@ export function TableSettings<TData, TValue>({
     onColumnOrderChange(newOrder);
   };
 
+  const handleCheckColumn = (colId: string, checked: boolean) => {
+    const newVisibilityState = { ...columnVisibility, [colId]: checked };
+    localStorage.setItem(
+      `${orderColumnsSettingsName}-visibility`,
+      JSON.stringify(newVisibilityState),
+    );
+    onColumnVisibilityChange(newVisibilityState);
+  };
+
   const filteredColumns = columnOrder.filter((colId) => {
     const column = columns.find((col) => col.id === colId);
     const columnName = column?.header as string;
@@ -126,6 +143,14 @@ export function TableSettings<TData, TValue>({
                             {...provided.dragHandleProps}
                             className="flex items-center gap-2"
                           >
+                            <div className="mb-1">
+                              <Checkbox
+                                checked={columnVisibility[colId]}
+                                onChange={(e) =>
+                                  handleCheckColumn(colId, e.target.checked)
+                                }
+                              />
+                            </div>
                             <div>
                               <MdPushPin
                                 style={{
@@ -158,6 +183,7 @@ export function TableSettings<TData, TValue>({
         isOpen={isModalSaveOpen}
         columnOrder={columnOrder}
         columnPinning={columnPinning}
+        columnVisibility={columnVisibility}
         orderSettingsName={orderColumnsSettingsName}
         onClose={() => setIsModalSaveOpen(false)}
       />

@@ -1,4 +1,7 @@
-import type { ColumnPinningState } from "@tanstack/react-table";
+import type {
+  ColumnPinningState,
+  VisibilityState,
+} from "@tanstack/react-table";
 
 export type StoredGroupSettings = {
   name: string;
@@ -19,4 +22,5 @@ export type ColumnOrderSettings = {
   name: string;
   columnOrder: string[];
   columnPinning: ColumnPinningState;
+  columnVisibility: VisibilityState;
 };
