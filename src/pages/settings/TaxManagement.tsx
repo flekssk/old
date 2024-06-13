@@ -65,7 +65,7 @@ function convertFomDataToMutationPayload(
       converFormNameToAccountTaxFields(formName);
     if (data[formName]) {
       result.push({
-        taxTypeId: data[formName].value,
+        taxTypeId: data[formName]!.value,
         year,
         quarter,
         accountId,

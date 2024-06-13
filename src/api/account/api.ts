@@ -12,7 +12,14 @@ export const getAccountTaxList = (
   payload: AccountTaxListRequest,
 ): Promise<AccountTaxListResponse> =>
   api
-    .get<AccountTaxListResponse>(ENDPOINTS.accountTaxList, { params: payload })
+    .get<AccountTaxListResponse>(
+      ENDPOINTS.accountTaxList +
+        "?" +
+        new URLSearchParams({
+          page: payload.page?.toString() || "1",
+          limit: payload.limit?.toString() || "10",
+        }),
+    )
     .then((res) => res.data);
 
 export const setAccountTaxSetBatch = (
