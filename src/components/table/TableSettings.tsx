@@ -1,13 +1,14 @@
 import type { ColumnDef, ColumnPinningState } from "@tanstack/react-table";
-import { TextInput } from "flowbite-react";
+import { Button, TextInput } from "flowbite-react";
 import { useState } from "react";
 import type { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { MdPushPin, MdDragHandle } from "react-icons/md";
 import Drawer from "../Drawer";
+import { SaveOrderSettingsModal } from "./SaveOrderSettingsModal";
 
 type Props<TData, TValue> = {
-  tableName: string;
+  orderColumnsSettingsName: string;
   isOpen: boolean;
   columns: ColumnDef<TData, TValue>[];
   columnOrder: string[];
@@ -21,7 +22,7 @@ type Props<TData, TValue> = {
 };
 
 export function TableSettings<TData, TValue>({
-  tableName,
+  orderColumnsSettingsName,
   isOpen,
   columns,
   columnOrder,
@@ -31,6 +32,7 @@ export function TableSettings<TData, TValue>({
   onColumnPinningChange,
 }: Props<TData, TValue>) {
   const [searchText, setSearchText] = useState("");
+  const [isModalSaveOpen, setIsModalSaveOpen] = useState(false);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -39,7 +41,10 @@ export function TableSettings<TData, TValue>({
     const [removed] = newOrder.splice(result.source.index, 1);
     newOrder.splice(result.destination.index, 0, removed as string);
 
-    localStorage.setItem(`${tableName}-ordering`, JSON.stringify(newOrder));
+    localStorage.setItem(
+      `${orderColumnsSettingsName}-ordering`,
+      JSON.stringify(newOrder),
+    );
     onColumnOrderChange(newOrder);
   };
 
@@ -63,8 +68,14 @@ export function TableSettings<TData, TValue>({
       newOrder.splice(lastPinnedIndex, 0, colId);
     }
 
-    localStorage.setItem(`${tableName}-pinning`, JSON.stringify(newPinning));
-    localStorage.setItem(`${tableName}-ordering`, JSON.stringify(newOrder));
+    localStorage.setItem(
+      `${orderColumnsSettingsName}-pinning`,
+      JSON.stringify(newPinning),
+    );
+    localStorage.setItem(
+      `${orderColumnsSettingsName}-ordering`,
+      JSON.stringify(newOrder),
+    );
 
     onColumnPinningChange(newPinning);
     onColumnOrderChange(newOrder);
@@ -77,67 +88,79 @@ export function TableSettings<TData, TValue>({
   });
 
   return (
-    <Drawer
-      title="Настройки колонок"
-      isOpen={isOpen}
-      onClose={onClose}
-      position="right"
-    >
-      <TextInput
-        placeholder="Поиск колонок..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        className="mb-4"
+    <>
+      <Drawer
+        title="Настройки колонок"
+        isOpen={isOpen}
+        onClose={onClose}
+        position="right"
+      >
+        <TextInput
+          placeholder="Поиск колонок..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="mb-4"
+        />
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="columns">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {filteredColumns?.map((colId, index) => {
+                  const column = columns?.find((col) => col.id === colId);
+                  const columnName = column?.header as string;
+                  const isColumnPinned = columnPinning?.left?.find(
+                    (value) => value === colId,
+                  );
+                  return (
+                    <Draggable
+                      key={colId}
+                      draggableId={colId}
+                      index={index}
+                      isDragDisabled={!!isColumnPinned}
+                    >
+                      {(provided) => {
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="flex items-center gap-2"
+                          >
+                            <div>
+                              <MdPushPin
+                                style={{
+                                  cursor: "pointer",
+                                  color: isColumnPinned ? "black" : "#999",
+                                }}
+                                onClick={() => handlePinningChange(colId)}
+                              />
+                            </div>
+                            <div>
+                              <MdDragHandle />
+                            </div>
+                            <div className=" rounded  p-2">{columnName}</div>
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  );
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <div className="sticky inset-x-0 bottom-0 flex justify-end border-t border-gray-200 bg-white pb-2 pt-4">
+          <Button onClick={() => setIsModalSaveOpen(true)}>Сохранить</Button>
+        </div>
+      </Drawer>
+      <SaveOrderSettingsModal
+        isOpen={isModalSaveOpen}
+        columnOrder={columnOrder}
+        columnPinning={columnPinning}
+        orderSettingsName={orderColumnsSettingsName}
+        onClose={() => setIsModalSaveOpen(false)}
       />
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="columns">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {filteredColumns?.map((colId, index) => {
-                const column = columns?.find((col) => col.id === colId);
-                const columnName = column?.header as string;
-                const isColumnPinned = columnPinning?.left?.find(
-                  (value) => value === colId,
-                );
-                return (
-                  <Draggable
-                    key={colId}
-                    draggableId={colId}
-                    index={index}
-                    isDragDisabled={!!isColumnPinned}
-                  >
-                    {(provided) => {
-                      return (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="flex items-center gap-2"
-                        >
-                          <div>
-                            <MdPushPin
-                              style={{
-                                cursor: "pointer",
-                                color: isColumnPinned ? "black" : "#999",
-                              }}
-                              onClick={() => handlePinningChange(colId)}
-                            />
-                          </div>
-                          <div>
-                            <MdDragHandle />
-                          </div>
-                          <div className=" rounded  p-2">{columnName}</div>
-                        </div>
-                      );
-                    }}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </Drawer>
+    </>
   );
 }
