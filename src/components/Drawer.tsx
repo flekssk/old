@@ -31,9 +31,17 @@ const Drawer: React.FC<DrawerProps> = ({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [isOpen]);
+
   return (
     <div
-      className={`fixed inset-0 z-50 transition-transform duration-300 ${
+      className={`fixed inset-0 z-50   ${
         isOpen
           ? "translate-x-0"
           : position === "right"
@@ -59,7 +67,7 @@ const Drawer: React.FC<DrawerProps> = ({
               : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b p-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4">
           {title && <h2 className="text-lg font-semibold">{title}</h2>}
           <button
             onClick={onClose}

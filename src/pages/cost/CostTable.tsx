@@ -15,10 +15,12 @@ import { Button } from "flowbite-react";
 import { useIncomeCostSetBatchMutation } from "@/api/income";
 import { toast } from "react-toastify";
 import type { IncomeCostSetBatchRequest } from "@/api/income/types";
+import { useCostExportMutation } from "./useCostExport";
 
 type CostTableProps = {
   articles: ArticleWithCost[];
   refresh: () => void;
+  loading: boolean;
 };
 
 const formSchema = z.record(
@@ -51,12 +53,22 @@ function transformFormDataToBatchRequest(
   );
 }
 
-export const CostTable: FC<CostTableProps> = ({ articles }) => {
+export const CostTable: FC<CostTableProps> = ({
+  articles,
+  loading,
+  refresh,
+}) => {
   const setBatchMutation = useIncomeCostSetBatchMutation({
     onSuccess: () => {
+      refresh();
       toast.success("Себестоимость успешно обновлена");
     },
+    onError: () => {
+      toast.error("Ошибка, запрос не выполнен");
+    },
   });
+
+  const exportMutation = useCostExportMutation();
 
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<ArticleWithCost>();
@@ -130,16 +142,30 @@ export const CostTable: FC<CostTableProps> = ({ articles }) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const values = form.watch();
-
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FormProvider {...form}>
-        <TableList table={table} />
-      </FormProvider>
-      <div>
-        <Button type="submit">Отправить</Button>
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2"></div>
+        <div className="flex items-center gap-2 ">
+          <Button
+            color="gray"
+            isProcessing={exportMutation.isPending}
+            onClick={() => exportMutation.mutateAsync(undefined)}
+          >
+            Экспорт
+          </Button>
+          <Button
+            disabled={!Object.keys(form.formState.touchedFields).length}
+            type="submit"
+          >
+            Сохранить
+          </Button>
+        </div>
       </div>
+      <FormProvider {...form}>
+        <TableList loading={loading} table={table} />
+      </FormProvider>
+      <div></div>
     </form>
   );
 };

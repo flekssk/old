@@ -109,11 +109,13 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
       ) ?? [];
     const lastExistItemsByAccountId: Record<string, AccountTaxItem> = {};
     if (items) {
-      const minYear =
-        Math.min(...items.map((item) => item.year)) || new Date().getFullYear();
+      const minYear = items.length
+        ? Math.min(...items.map((item) => item.year))
+        : new Date().getFullYear();
       const maxYear = new Date().getFullYear();
       for (let year = minYear; year <= maxYear; year++) {
         const maxQuarter = year === maxYear ? new Date().getMonth() / 3 + 1 : 4;
+        console.log("🚀 ~ data ~ maxQuarter:", maxYear, maxQuarter, year);
         for (let quarter = 1; quarter <= maxQuarter; quarter++) {
           const quarterItems = items
             .filter((item) => item.year === year && item.quarter === quarter)
@@ -229,8 +231,6 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
     form.reset(defaultValues);
   }, [defaultValues]);
 
-  const values = form.watch();
-  console.log("🚀 ~ values:", values);
   return (
     <Card>
       <form onSubmit={form.handleSubmit(onSubmit)}>

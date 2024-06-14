@@ -3,13 +3,14 @@ import type {
   ColumnPinningState,
   VisibilityState,
 } from "@tanstack/react-table";
-import { Button, Checkbox, TextInput } from "flowbite-react";
+import { Button, Checkbox, ListGroup, TextInput } from "flowbite-react";
 import { useState } from "react";
 import type { DropResult } from "react-beautiful-dnd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { MdPushPin, MdDragHandle } from "react-icons/md";
 import Drawer from "../Drawer";
 import { SaveOrderSettingsModal } from "./SaveOrderSettingsModal";
+import { cn } from "@/utils/utils";
 
 type Props<TData, TValue> = {
   orderColumnsSettingsName: string;
@@ -118,65 +119,81 @@ export function TableSettings<TData, TValue>({
           onChange={(e) => setSearchText(e.target.value)}
           className="mb-4"
         />
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="columns">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {filteredColumns?.map((colId, index) => {
-                  const column = columns?.find((col) => col.id === colId);
-                  const columnName = column?.header as string;
-                  const isColumnPinned = columnPinning?.left?.find(
-                    (value) => value === colId,
-                  );
-                  return (
-                    <Draggable
-                      key={colId}
-                      draggableId={colId}
-                      index={index}
-                      isDragDisabled={!!isColumnPinned}
-                    >
-                      {(provided) => {
-                        return (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="flex items-center gap-2"
-                          >
-                            <div className="mb-1">
-                              <Checkbox
-                                checked={columnVisibility[colId]}
-                                onChange={(e) =>
-                                  handleCheckColumn(colId, e.target.checked)
-                                }
-                              />
+        <ListGroup>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="columns">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {filteredColumns?.map((colId, index) => {
+                    const column = columns?.find((col) => col.id === colId);
+                    const columnName = column?.header as string;
+                    const isColumnPinned = columnPinning?.left?.find(
+                      (value) => value === colId,
+                    );
+                    return (
+                      <Draggable
+                        key={colId}
+                        draggableId={colId}
+                        index={index}
+                        isDragDisabled={!!isColumnPinned}
+                      >
+                        {(provided, snapshot) => {
+                          return (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...(provided.draggableProps?.style || {}),
+                                left: 0,
+                              }}
+                              className={cn(
+                                "flex w-full items-center border-b  border-gray-200 px-4 py-2 dark:border-gray-600",
+                                {
+                                  "bg-gray-100 ": snapshot.isDragging,
+                                },
+                              )}
+                            >
+                              <div className="mb-1">
+                                <Checkbox
+                                  checked={columnVisibility[colId]}
+                                  onChange={(e) =>
+                                    handleCheckColumn(colId, e.target.checked)
+                                  }
+                                />
+                              </div>
+                              <div>
+                                <MdPushPin
+                                  style={{
+                                    cursor: "pointer",
+                                    color: isColumnPinned ? "black" : "#999",
+                                  }}
+                                  onClick={() => handlePinningChange(colId)}
+                                />
+                              </div>
+                              <div>
+                                <MdDragHandle />
+                              </div>
+                              <div className=" rounded  p-2">{columnName}</div>
                             </div>
-                            <div>
-                              <MdPushPin
-                                style={{
-                                  cursor: "pointer",
-                                  color: isColumnPinned ? "black" : "#999",
-                                }}
-                                onClick={() => handlePinningChange(colId)}
-                              />
-                            </div>
-                            <div>
-                              <MdDragHandle />
-                            </div>
-                            <div className=" rounded  p-2">{columnName}</div>
-                          </div>
-                        );
-                      }}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <div className="sticky inset-x-0 bottom-0 flex justify-end border-t border-gray-200 bg-white pb-2 pt-4">
-          <Button onClick={() => setIsModalSaveOpen(true)}>Сохранить</Button>
+                          );
+                        }}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </ListGroup>
+        <div className="sticky inset-x-0 bottom-0 flex justify-between border-t border-gray-200 bg-white pb-2 pt-4">
+          <Button outline onClick={onClose}>
+            Закрыть
+          </Button>
+          <Button onClick={() => setIsModalSaveOpen(true)}>
+            Сохранить настройки
+          </Button>
         </div>
       </Drawer>
       <SaveOrderSettingsModal

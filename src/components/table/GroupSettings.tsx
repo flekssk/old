@@ -65,16 +65,16 @@ export const GroupSettings = ({ groupSettingsName }: GroupSettingsProps) => {
         label: name,
         value: name,
       }));
-      setGroups([baseTableOption, ...groupsList]);
+      setGroups([...groupsList]);
     }
   }, [storedSettingsQuery.data]);
 
-  return (
+  return groups.length ? (
     <Select
       placeholder="Группы"
       selectedOption={selectedGroup}
       options={groups || []}
       setSelectedOption={handleGroupChange}
     />
-  );
+  ) : null;
 };

@@ -10,7 +10,6 @@ import { CostTable } from "./CostTable";
 import { useIncomeCost } from "@/api/income";
 import type { ArticleWithCost } from "./type";
 import { Pagination } from "@/components/Pagination";
-import { useCostExportMutation } from "./useCostExport";
 
 export const Cost: FC = () => {
   const [searchParam, setSearchParam] = useSearchParams();
@@ -32,8 +31,6 @@ export const Cost: FC = () => {
     setSearchParam,
     total: articlesRequest.data?.pagination.total,
   });
-
-  const exportMutation = useCostExportMutation();
 
   useEffect(() => {
     setLocalPagination({
@@ -84,22 +81,11 @@ export const Cost: FC = () => {
           </div>
         </div>
         <Card>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2"></div>
-            <div className="flex items-center gap-2">
-              <Button
-                isProcessing={exportMutation.isPending}
-                onClick={() => exportMutation.mutateAsync(undefined)}
-              >
-                Экспорт
-              </Button>
-            </div>
-          </div>
           <CostTable
             articles={articlesWithCost ?? []}
             refresh={costRequest.refetch}
+            loading={loading}
           />
-
           <Pagination {...pagination} showLimitSelector={true} />
         </Card>
       </ProfileSubscriptionInfo>

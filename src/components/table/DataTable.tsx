@@ -121,6 +121,7 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onColumnOrderChange: setColumnOrder,
     onColumnPinningChange: setColumnPinning,
+
     state: {
       columnPinning: columnPinning ?? {
         left: [],
@@ -233,15 +234,22 @@ export function DataTable<TData, TValue>({
         </div>
         {onExport ? (
           <div>
-            <Button onClick={hadleExport} isProcessing={exportLoading}>
+            <Button
+              color={"gray"}
+              onClick={hadleExport}
+              isProcessing={exportLoading}
+            >
               Экспорт
             </Button>
           </div>
         ) : null}
         <div>
           {orderSettings && (
-            <Button onClick={() => setIsOpenSettingsDrawer(true)}>
-              Настройки
+            <Button
+              color={"gray"}
+              onClick={() => setIsOpenSettingsDrawer(true)}
+            >
+              Настройки колонок
             </Button>
           )}
         </div>

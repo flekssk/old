@@ -182,3 +182,7 @@
 .fc .fc-daygrid-day-frame {
   @apply hover:bg-gray-50 cursor-pointer !important;
 }
+
+:root {
+  --anchor-max-height: 400px;
+}

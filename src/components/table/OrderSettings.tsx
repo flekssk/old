@@ -72,7 +72,7 @@ export function OrderSettings<TData, TValue>({
 
   return (
     <Select
-      placeholder="Колонки"
+      placeholder="Сохраненные настройки"
       selectedOption={selectedGroup}
       options={groups || []}
       setSelectedOption={handleGroupChange}

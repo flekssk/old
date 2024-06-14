@@ -10,6 +10,7 @@ import {
 import { HiChevronDown, HiCheck, HiChevronUp } from "react-icons/hi";
 import type { DateRange } from "react-day-picker";
 import type { AnchorProps } from "@headlessui/react/dist/internal/floating";
+import { cn } from "@/utils/utils";
 
 export type MultiSelectOption = {
   label: string;
@@ -119,7 +120,12 @@ export function MultiSelect<T extends MultiSelectOption | MultiSelectOption[]>({
                       <ComboboxOption
                         key={index}
                         className={({ active }) =>
-                          `block px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${active ? "text-bold" : ""}`
+                          cn(
+                            "block px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white",
+                            {
+                              "text-bold bg-gray-100": active,
+                            },
+                          )
                         }
                         value={option}
                       >
