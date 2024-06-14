@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SetStateAction } from "react";
 import { useState, useEffect, useMemo } from "react";
@@ -5,10 +7,10 @@ import type { Column } from "@tanstack/react-table";
 import { Popover, TextInput, Button } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
 import { HiSortDescending, HiSortAscending, HiFilter } from "react-icons/hi";
+import { MdCheck } from "react-icons/md";
 
 import { parse, stringify } from "qs";
 import type { MultiSelectOption } from "../MultiSelect";
-import { MultiSelect } from "../MultiSelect";
 import { useReportFilterAggregation } from "@/api/report";
 
 type ColumnSort = {
@@ -46,6 +48,7 @@ export const TableFilters = ({
   const [filterValues, setFilterValues] = useState<ColumnFilters>({});
   const [sort, setSort] = useState<ColumnSort>({});
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchText, setSearchText] = useState("");
 
   const filterType = column.columnDef.meta?.filterType;
 
@@ -134,26 +137,30 @@ export const TableFilters = ({
     setFilterValues(updatedFilters);
   };
 
-  const handleChangeFilter = (
-    options: MultiSelectOption[],
-    columnId: string,
-  ) => {
-    const searchParams = new URLSearchParams();
-    const updatedFilters = { ...filterValues };
+  const handleChangeFilter = (option: MultiSelectOption, columnId: string) => {
+    const existingValues = Array.isArray(filterValues[columnId])
+      ? filterValues[columnId]
+      : [];
+    const optionIsSelected = (existingValues as SelectFilter)?.find(
+      (value) => value === option.value,
+    );
 
-    const uniqueOptions = options.reduce<MultiSelectOption[]>((acc, option) => {
-      const exists = acc.find((o) => o.value === option.value);
-      return exists
-        ? acc.filter((o) => o.value !== option.value)
-        : [...acc, option];
-    }, []);
-
-    updatedFilters[columnId] = uniqueOptions.map(
-      ({ value }) => value,
-    ) as string[];
-
-    searchParams.set("filters", stringify(updatedFilters));
-    setSearchParams(searchParams);
+    let updatedFilters;
+    if (optionIsSelected) {
+      const newValues = (existingValues as SelectFilter).filter(
+        (value) => value !== option.value,
+      );
+      updatedFilters = {
+        ...filterValues,
+        [columnId]: [...newValues],
+      };
+    } else {
+      updatedFilters = {
+        ...filterValues,
+        [columnId]: [...(existingValues as SelectFilter), option.value],
+      };
+    }
+    setFilterValues(updatedFilters as ColumnFilters);
   };
 
   const updateSearchParams = () => {
@@ -184,6 +191,12 @@ export const TableFilters = ({
       setSort(parseOrderValues);
     }
   }, [searchParams]);
+
+  const filteredColumns = filterOptions[
+    column.id as keyof FilterOptions
+  ]?.filter((value) =>
+    value.label.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const renderTableFilters = () => {
     const columnFilters = filterValues[column.id];
@@ -223,23 +236,35 @@ export const TableFilters = ({
     }
 
     if (filterType === "string") {
-      const textFilters = columnFilters as SelectFilter;
-      const selectedOptions = textFilters?.map((value) => ({
-        label: value,
-        value,
-      }));
+      const textFilters = filterValues[column.id] as SelectFilter;
 
       return (
-        <div className="flex flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
-          <MultiSelect
-            placeholder="Выберите"
-            options={filterOptions[column.id as keyof FilterOptions]}
-            selectedOptions={selectedOptions}
-            setSelectedOptions={(options) =>
-              handleChangeFilter(options, column.id)
-            }
-            multiple
+        <div className="flex flex-col gap-2 p-4 text-sm text-gray-500 dark:text-gray-400">
+          <TextInput
+            placeholder="Поиск"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
+          <div className="max-h-32 overflow-auto">
+            {filteredColumns.map((value) => (
+              <div
+                key={value.value as string}
+                className="flex cursor-pointer items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white "
+                onClick={() => handleChangeFilter(value, column.id)}
+              >
+                {textFilters?.find(
+                  (findValue) => findValue === value.value,
+                ) && <MdCheck />}
+                {value.label}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <Button color="light" onClick={() => handleOpenPopover(false)}>
+              Отменить
+            </Button>
+            <Button onClick={updateSearchParams}>Применить</Button>
+          </div>
         </div>
       );
     }
