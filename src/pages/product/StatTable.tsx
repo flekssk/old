@@ -267,7 +267,6 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
     <Card>
       <DataTable
         resizeColumns
-        columnSettings
         storedSettingsName="barcode-report-table"
         columns={columns}
         columnPinning={{

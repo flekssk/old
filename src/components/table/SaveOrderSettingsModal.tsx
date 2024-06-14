@@ -3,7 +3,10 @@ import React from "react";
 import { Select } from "@/components/Select";
 import { useSaveSettingsMutation, useSettingsItemByName } from "@/api/user";
 import type { SelectOption } from "@/components/Select";
-import type { ColumnPinningState } from "@tanstack/react-table";
+import type {
+  ColumnPinningState,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import type { ColumnOrderSettings } from "@/types/types";
 
@@ -12,6 +15,7 @@ type Props = {
   isOpen: boolean;
   columnOrder: string[];
   columnPinning: ColumnPinningState;
+  columnVisibility: VisibilityState;
   onClose: () => void;
 };
 
@@ -20,6 +24,7 @@ export const SaveOrderSettingsModal = ({
   isOpen,
   columnOrder,
   columnPinning,
+  columnVisibility,
   onClose,
 }: Props) => {
   const [selectedGroup, setSelectedGroup] = React.useState<
@@ -56,6 +61,7 @@ export const SaveOrderSettingsModal = ({
             name: groupName,
             columnOrder: columnOrder,
             columnPinning: columnPinning,
+            columnVisibility,
           },
         },
       });
@@ -80,6 +86,7 @@ export const SaveOrderSettingsModal = ({
             name: groupName,
             columnOrder,
             columnPinning,
+            columnVisibility,
           },
         },
       });
