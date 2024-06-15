@@ -435,6 +435,7 @@ export const StatTable: FC<StatTableProps> = ({
   return (
     <Card>
       <DataTable
+        className="min-h-96"
         onExport={onExport}
         resizeColumns
         groupSettings
