@@ -22,6 +22,7 @@ import { useUserProfile } from "@/api/user";
 import { UserRolesVariant } from "@/api/auth/constants";
 import { SiAdminer } from "react-icons/si";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { cn } from "@/utils/utils";
 
 const ExampleSidebar: FC = function () {
   const userProfile = useUserProfile();
@@ -41,6 +42,8 @@ const ExampleSidebar: FC = function () {
     setCurrentPage(newPage);
   }, [setCurrentPage]);
 
+  const collapsed = !isOpenOnSmallScreens && !isSmallScreen();
+
   return (
     <div
       className={classNames("lg:!block relative", {
@@ -49,8 +52,10 @@ const ExampleSidebar: FC = function () {
     >
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
-        className="w-72"
-        collapsed={!isOpenOnSmallScreens && !isSmallScreen()}
+        className={cn({
+          "w-72": !collapsed,
+        })}
+        collapsed={collapsed}
       >
         <div className="flex h-full flex-col justify-between py-2">
           <div>

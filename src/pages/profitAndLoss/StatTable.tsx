@@ -79,24 +79,32 @@ const rowLabelAdditionalClasses: Record<string, string> = {
 export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
   const items = itemstest.filter((item) => item.month !== "2024-01-01");
 
-  console.log("🚀 ~ items:", items);
-
   const groupedByYear = useMemo(() => {
     const years: Record<string, YearReportItem> = {};
     const calculateMonthDataByYear: Record<string, MonthlyData> = {};
 
     // need to refill items to start of the year
     const prefilledItems: MonthlyData[] = [];
-    const minMonth = Math.min(
-      ...items.map((item) =>
-        parse(item.month, DATE_FORMAT.SERVER_DATE, new Date()).getMonth(),
-      ),
+    const minDate = items.reduce(
+      (acc, item) => {
+        if (item.month < acc) {
+          return item.month;
+        }
+        return acc;
+      },
+      format(new Date(), DATE_FORMAT.SERVER_DATE),
     );
+    const minMonth = parse(
+      minDate,
+      DATE_FORMAT.SERVER_DATE,
+      new Date(),
+    ).getMonth();
+    const parsedMinDate = parse(minDate, DATE_FORMAT.SERVER_DATE, new Date());
     for (let i = 0; i < minMonth; i++) {
-      const month = i + 1;
+      const month = i;
       prefilledItems.push({
         month: format(
-          new Date(new Date().getFullYear(), month, 1),
+          new Date(parsedMinDate.getFullYear(), month, 1),
           DATE_FORMAT.SERVER_DATE,
         ),
         realisation: 0,
@@ -138,40 +146,42 @@ export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
     }
     prefilledItems.push(...items);
 
-    prefilledItems.forEach((item) => {
-      const year = parse(item.month, DATE_FORMAT.SERVER_DATE, new Date())
-        .getFullYear()
-        .toString();
-      if (!years[year]) {
-        calculateMonthDataByYear[year] = item;
-        years[year] = {
-          yearData: calculateReportRow(item),
-          monthData: [
-            {
-              ...calculateReportRow(item),
-              month: item.month,
-            },
-          ],
-        };
-      } else {
-        const currentYear = years[year] as YearReportItem;
-        currentYear.monthData.push({
-          ...calculateReportRow(item),
-          month: item.month,
-        });
-        const monthData = calculateMonthDataByYear[year] as MonthlyData;
-        monthData.realisation += item.realisation;
-        monthData.costOfSales += item.costOfSales;
-        monthData.logistics += item.logistics;
-        monthData.commission += item.commission;
-        monthData.fines += item.fines;
-        monthData.storage += item.storage;
-        monthData.advertisingExpense += item.advertisingExpense;
-        monthData.otherDeductionSum += item.otherDeductionSum;
-        monthData.expensesSum += item.expensesSum;
-        monthData.tax += item.tax;
-      }
-    });
+    prefilledItems
+      .sort((a, b) => (a.month > b.month ? -1 : 1))
+      .forEach((item) => {
+        const year = parse(item.month, DATE_FORMAT.SERVER_DATE, new Date())
+          .getFullYear()
+          .toString();
+        if (!years[year]) {
+          calculateMonthDataByYear[year] = item;
+          years[year] = {
+            yearData: calculateReportRow(item),
+            monthData: [
+              {
+                ...calculateReportRow(item),
+                month: item.month,
+              },
+            ],
+          };
+        } else {
+          const currentYear = years[year] as YearReportItem;
+          currentYear.monthData.push({
+            ...calculateReportRow(item),
+            month: item.month,
+          });
+          const monthData = calculateMonthDataByYear[year] as MonthlyData;
+          monthData.realisation += item.realisation;
+          monthData.costOfSales += item.costOfSales;
+          monthData.logistics += item.logistics;
+          monthData.commission += item.commission;
+          monthData.fines += item.fines;
+          monthData.storage += item.storage;
+          monthData.advertisingExpense += item.advertisingExpense;
+          monthData.otherDeductionSum += item.otherDeductionSum;
+          monthData.expensesSum += item.expensesSum;
+          monthData.tax += item.tax;
+        }
+      });
 
     Object.keys(calculateMonthDataByYear).forEach((year) => {
       const monthData = calculateMonthDataByYear[year] as MonthlyData;
