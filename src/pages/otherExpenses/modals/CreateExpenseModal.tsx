@@ -25,20 +25,24 @@ const formSchema = z.object({
       message: "Сумма должна быть числом",
     })
     .transform((value) => parseFloat(value)),
-  categoryId: z.number().min(1, "Необходимо выбрать категорию"),
+  categoryId: z.object({
+    value: z.number().min(1, "Необходимо выбрать категорию"),
+  }),
   description: z.string().nonempty("Описание не может быть пустым"),
   date: z.date(),
-  accountId: z.number().min(1, "Необходимо выбрать аккаунт"),
+  accountId: z.object({
+    value: z.number().min(1, "Необходимо выбрать аккаунт"),
+  }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 const defaultValues = {
   amount: undefined,
-  categoryId: 0,
+  categoryId: { value: 0 },
   description: "",
   date: new Date(),
-  accountId: 0,
+  accountId: { value: 0 },
 };
 
 type Props = {
@@ -67,8 +71,11 @@ export const CreateExpenseModal = ({
     mode: "onTouched",
   });
 
-  const { watch, reset, formState } = form;
+  const { reset, formState, watch } = form;
+
   const { isDirty, isValid } = formState;
+  const values = watch();
+  console.log("🚀 ~ formState:", formState, isDirty, isValid, values);
 
   const isButtonDisabled = isEdit ? !isDirty : !isValid;
 
@@ -98,6 +105,8 @@ export const CreateExpenseModal = ({
           data: {
             ...data,
             date: format(data.date, DATE_FORMAT.SERVER_DATE),
+            categoryId: data.categoryId.value,
+            accountId: data.accountId.value,
           },
         });
         toast.success("Данные обновлены");
@@ -105,6 +114,8 @@ export const CreateExpenseModal = ({
         await createMutation.mutateAsync({
           ...data,
           date: format(data.date, DATE_FORMAT.SERVER_DATE),
+          categoryId: data.categoryId.value,
+          accountId: data.accountId.value,
         });
         toast.success("Данные добавлены");
       }
@@ -125,6 +136,12 @@ export const CreateExpenseModal = ({
         reset({
           ...expenseEditData,
           date: parseISO(expenseEditData.date),
+          categoryId: expensesCategoriesOptions?.find(
+            ({ value }) => value === expenseEditData.categoryId,
+          ),
+          accountId: accountsOptions?.find(
+            ({ value }) => value === expenseEditData.accountId,
+          ),
         });
       }
     }
@@ -136,25 +153,14 @@ export const CreateExpenseModal = ({
       <Modal.Body className="overflow-visible">
         <form className="flex flex-col gap-2">
           <FormProvider {...form}>
-            <InputControl
-              required
-              value={watch("amount")}
-              name="amount"
-              label="Сумма"
-              type="number"
-            />
+            <InputControl required name="amount" label="Сумма" type="number" />
             <SelectControl
               label="Статья"
               name="categoryId"
               placeholder="Статья расхода"
               options={expensesCategoriesOptions}
             />
-            <InputControl
-              required
-              name="description"
-              value={watch("description")}
-              label="Описание"
-            />
+            <InputControl required name="description" label="Описание" />
             <DatepickerControl
               name="date"
               label="Дата"
