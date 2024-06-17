@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
-import { Select } from "@/components/Select";
 import { DATE_FORMAT, getWeeksBetweenDates } from "@/helpers/date";
 import { formatDate, parse } from "date-fns";
 import { Badge, Button } from "flowbite-react";
@@ -18,6 +17,7 @@ import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
 import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
 import type { DateRange } from "react-day-picker";
+import { GroupSettings } from "@/components/table/GroupSettings";
 
 type FiltersProps = {
   params: ReportRequest;
@@ -46,6 +46,34 @@ export const Filters: FC<FiltersProps> = ({
     })) as MultiSelectOption[];
   }, [articles]);
 
+  const filterOptions = useMemo(() => {
+    const result = {
+      brands: [],
+      categories: [],
+    } as {
+      brands: SelectOption[];
+      categories: SelectOption[];
+    };
+
+    if (reportFilterAggregationRequest.data) {
+      result.brands = reportFilterAggregationRequest.data.brands.map(
+        (brand) => ({
+          value: brand,
+          label: brand,
+        }),
+      );
+
+      result.categories = reportFilterAggregationRequest.data.categories.map(
+        (category) => ({
+          value: category,
+          label: category,
+        }),
+      );
+    }
+
+    return result;
+  }, [reportFilterAggregationRequest.data]);
+
   const selectedArticles = useMemo(() => {
     const currentArticles = params.filters?.["article"];
 
@@ -59,23 +87,53 @@ export const Filters: FC<FiltersProps> = ({
     });
   }, [params, articlesOptions]);
 
+  const selectedBrands = useMemo(() => {
+    const currentBrands = params.filters?.["brand"];
+
+    if (!currentBrands || !Array.isArray(currentBrands)) return [];
+
+    return currentBrands.flatMap((brand) => {
+      const foundBrand = filterOptions.brands.find(
+        (brandItem) => brandItem.value === String(brand),
+      );
+      return foundBrand ? [foundBrand] : [];
+    });
+  }, [params, filterOptions.brands]);
+
+  const selectedCategories = useMemo(() => {
+    const currentCategories = params.filters?.["category"];
+
+    if (!currentCategories || !Array.isArray(currentCategories)) return [];
+
+    return currentCategories.flatMap((category) => {
+      const foundCategory = filterOptions.categories.find(
+        (categoryItem) => categoryItem.value === String(category),
+      );
+      return foundCategory ? [foundCategory] : [];
+    });
+  }, [params, filterOptions.categories]);
+
   const selectedFilters = useMemo(() => {
     const result: { keyForDelete: string; label: string; value?: string }[] =
       [];
 
-    if (params.category) {
-      result.push({
-        keyForDelete: "category",
-        label: "Категория",
-        value: params.category,
+    if (selectedCategories.length) {
+      selectedCategories.forEach((category, index) => {
+        result.push({
+          keyForDelete: `filters.category.${index}`,
+          label: "Категория",
+          value: category.label as string,
+        });
       });
     }
 
-    if (params.brand) {
-      result.push({
-        keyForDelete: "brand",
-        label: "Бренд",
-        value: params.brand,
+    if (selectedBrands.length) {
+      selectedBrands.forEach((brand, index) => {
+        result.push({
+          keyForDelete: `filters.brand.${index}`,
+          label: "Бренд",
+          value: brand.label as string,
+        });
       });
     }
 
@@ -122,34 +180,6 @@ export const Filters: FC<FiltersProps> = ({
     }
     return result;
   }, [params, selectedArticles]);
-
-  const filterOptions = useMemo(() => {
-    const result = {
-      brands: [],
-      categories: [],
-    } as {
-      brands: SelectOption[];
-      categories: SelectOption[];
-    };
-
-    if (reportFilterAggregationRequest.data) {
-      result.brands = reportFilterAggregationRequest.data.brands.map(
-        (brand) => ({
-          value: brand,
-          label: brand,
-        }),
-      );
-
-      result.categories = reportFilterAggregationRequest.data.categories.map(
-        (category) => ({
-          value: category,
-          label: category,
-        }),
-      );
-    }
-
-    return result;
-  }, [reportFilterAggregationRequest.data]);
 
   const optionsForDateFilter = useMemo(() => {
     const dates = getWeeksBetweenDates(
@@ -212,15 +242,18 @@ export const Filters: FC<FiltersProps> = ({
     }
   };
 
-  const handleCategoryChange = (category: string) => {
+  const handleMultiSelectChange = (
+    filterName: string,
+    selectedOptions: MultiSelectOption[],
+  ) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("category", category);
-    setSearchParams(newSearchParams);
-  };
 
-  const handleBrandChange = (brand: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("brand", brand);
+    const filters = { ...params.filters };
+
+    filters[filterName] = selectedOptions.map((option) =>
+      String(option.value),
+    ) as string[];
+    newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };
 
@@ -319,28 +352,25 @@ export const Filters: FC<FiltersProps> = ({
         <div>
           <h2 className="mb-2 text-lg">Фильтры</h2>
           <div className="flex flex-wrap items-center gap-2 ">
-            <Select
-              selectedOption={{
-                value: params.brand || "",
-                label: params.brand || "",
-              }}
-              setSelectedOption={(option) => {
-                handleBrandChange(option.value as string);
-              }}
+            <MultiSelect
               placeholder="Все бренды"
-              options={filterOptions.brands}
+              options={filterOptions.brands || []}
+              selectedOptions={selectedBrands}
+              setSelectedOptions={(selectedOptions) => {
+                handleMultiSelectChange("brand", selectedOptions);
+              }}
+              position="top-right"
+              multiple
             />
-
-            <Select
-              selectedOption={{
-                value: params.category || "",
-                label: params.category || "",
-              }}
-              setSelectedOption={(option) => {
-                handleCategoryChange(option.value as string);
-              }}
+            <MultiSelect
               placeholder="Все категории"
-              options={filterOptions.categories}
+              options={filterOptions.categories || []}
+              selectedOptions={selectedCategories}
+              setSelectedOptions={(selectedOptions) => {
+                handleMultiSelectChange("category", selectedOptions);
+              }}
+              position="top-right"
+              multiple
             />
             <MultiSelect
               placeholder="Все артикулы"
@@ -350,6 +380,7 @@ export const Filters: FC<FiltersProps> = ({
               setSelectedOptions={handleArticlesChange}
               multiple
             />
+            <GroupSettings groupSettingsName={"main-report-user-groups"} />
           </div>
         </div>
       </div>

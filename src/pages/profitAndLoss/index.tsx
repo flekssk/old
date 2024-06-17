@@ -64,7 +64,7 @@ const ProfitAndLossPage: FC = function () {
     <NavbarSidebarLayout>
       <ProfileSubscriptionInfo>
         <div className="flex flex-col gap-4 px-4 pt-6">
-          <h3 className="text-2xl">Отчет о пребылях и убытках</h3>
+          <h3 className="text-2xl">Отчет о прибылях и убытках</h3>
           <Filters
             params={params}
             setSearchParams={setSearchParams}

@@ -154,7 +154,7 @@ export function TableSettings<TData, TValue>({
                                 },
                               )}
                             >
-                              <div className="mb-1">
+                              <div className="mb-1 flex-shrink-0">
                                 <Checkbox
                                   checked={columnVisibility[colId]}
                                   onChange={(e) =>
@@ -162,8 +162,16 @@ export function TableSettings<TData, TValue>({
                                   }
                                 />
                               </div>
+
+                              <div className="flex-shrink-0 pl-2">
+                                <MdDragHandle />
+                              </div>
+                              <div className=" flex-grow rounded p-2">
+                                {columnName}
+                              </div>
                               <div>
                                 <MdPushPin
+                                  className="flex-shrink-0"
                                   style={{
                                     cursor: "pointer",
                                     color: isColumnPinned ? "black" : "#999",
@@ -171,10 +179,6 @@ export function TableSettings<TData, TValue>({
                                   onClick={() => handlePinningChange(colId)}
                                 />
                               </div>
-                              <div>
-                                <MdDragHandle />
-                              </div>
-                              <div className=" rounded  p-2">{columnName}</div>
                             </div>
                           );
                         }}

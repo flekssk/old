@@ -23,7 +23,12 @@ export const costExportRequest = async (dateFrom?: string) => {
     dateFrom,
     xls: true,
   });
-  console.log("🚀 ~ costExportRequest ~ response:", response);
+  /// blob response to trigger download file
+  const file = new Blob([response as any], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(file);
+  window.open(url);
 };
 
 export const useCostExportMutation = createCustomMutation(costExportRequest);

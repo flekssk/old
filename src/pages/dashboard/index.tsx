@@ -68,16 +68,6 @@ const DashboardPage: FC = function () {
       result.dateTo = dateTo;
     }
 
-    const category = searchParams.get("category");
-    if (category) {
-      result.category = category;
-    }
-
-    const brand = searchParams.get("brand");
-    if (brand) {
-      result.brand = brand;
-    }
-
     const orderBy = searchParams.get("orderBy");
     if (orderBy) {
       result.orderBy = qsParse(orderBy) as { field: string; direction: string };

@@ -286,13 +286,16 @@ export function DataTable<TData, TValue>({
                       ),
                     }}
                   >
-                    <div className="relative flex items-center justify-between">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                    <div className="relative flex max-w-full items-center justify-between">
+                      <span className="w-4/5 flex-shrink break-words">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </span>
+
                       <TableFilters
                         column={header.column}
                         visibleFilterColumn={visibleFilterColumn}

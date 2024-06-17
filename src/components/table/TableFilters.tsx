@@ -205,7 +205,7 @@ export const TableFilters = ({
       const numberFilters = columnFilters as NumberFilter;
 
       return (
-        <div className="flex w-64 flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex w-64 flex-shrink-0 flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
           <div>
             <TextInput
               type="number"

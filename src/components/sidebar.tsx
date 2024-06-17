@@ -49,6 +49,7 @@ const ExampleSidebar: FC = function () {
     >
       <Sidebar
         aria-label="Sidebar with multi-level dropdown example"
+        className="w-72"
         collapsed={!isOpenOnSmallScreens && !isSmallScreen()}
       >
         <div className="flex h-full flex-col justify-between py-2">
@@ -112,7 +113,7 @@ const ExampleSidebar: FC = function () {
                       : ""
                   }
                 >
-                  Прочие расходы
+                  Операционные расходы
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={Link}

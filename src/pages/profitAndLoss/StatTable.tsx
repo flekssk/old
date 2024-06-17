@@ -1,11 +1,12 @@
 import { DATE_FORMAT } from "@/helpers/date";
-import { parse } from "date-fns";
+import { format, parse } from "date-fns";
 import { Card, Table } from "flowbite-react";
 import React, { useMemo, type FC } from "react";
 
 import { displayNumber } from "@/helpers/number";
 import { cn } from "@/utils/utils";
 import type { MonthlyData, PnLResponse } from "@/api/report/types";
+import { ru } from "date-fns/locale";
 
 type StatTableProps = {
   items: PnLResponse["byMonth"];
@@ -75,11 +76,69 @@ const rowLabelAdditionalClasses: Record<string, string> = {
   totalIncome: "border-y-2 border-black",
 };
 
-export const StatTable: FC<StatTableProps> = ({ items }) => {
+export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
+  const items = itemstest.filter((item) => item.month !== "2024-01-01");
+
+  console.log("🚀 ~ items:", items);
+
   const groupedByYear = useMemo(() => {
     const years: Record<string, YearReportItem> = {};
     const calculateMonthDataByYear: Record<string, MonthlyData> = {};
-    items.forEach((item) => {
+
+    // need to refill items to start of the year
+    const prefilledItems: MonthlyData[] = [];
+    const minMonth = Math.min(
+      ...items.map((item) =>
+        parse(item.month, DATE_FORMAT.SERVER_DATE, new Date()).getMonth(),
+      ),
+    );
+    for (let i = 0; i < minMonth; i++) {
+      const month = i + 1;
+      prefilledItems.push({
+        month: format(
+          new Date(new Date().getFullYear(), month, 1),
+          DATE_FORMAT.SERVER_DATE,
+        ),
+        realisation: 0,
+        sales: 0,
+        toTransfer: 0,
+        returns: 0,
+        costOfSales: 0,
+        fines: 0,
+        commission: 0,
+
+        expensesSum: 0,
+        tax: 0,
+        profit: 0,
+        profitability: 0,
+        logistics: 0,
+        storage: 0,
+        rejectionsAndReturns: 0,
+        totalSales: 0,
+        averageRedemption: 0,
+        averageProfitPerPiece: 0,
+        roi: 0,
+        advertisingExpense: 0,
+        drr: 0,
+        compensationForSubstitutedGoods: 0,
+        reimbursementOfTransportationCosts: 0,
+        paymentForMarriageAndLostGoods: 0,
+        ordersCount: "",
+        returnsCount: "",
+        salesCount: "",
+        refunds: "",
+        cost: 0,
+        averagePriceBeforeSPP: 0,
+        averageLogisticsCost: 0,
+        marginality: 0,
+        otherDeductionSum: 0,
+        expenses: [],
+        otherDeductions: [],
+      });
+    }
+    prefilledItems.push(...items);
+
+    prefilledItems.forEach((item) => {
       const year = parse(item.month, DATE_FORMAT.SERVER_DATE, new Date())
         .getFullYear()
         .toString();
@@ -139,7 +198,17 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
                 {currentYear.monthData.map((item) => {
                   return (
                     <Table.HeadCell className="bg-white" key={item.month}>
-                      {item.month}
+                      {format(
+                        parse(
+                          item.month as string,
+                          DATE_FORMAT.SERVER_DATE,
+                          new Date(),
+                        ),
+                        DATE_FORMAT.MONTH_YEAR,
+                        {
+                          locale: ru,
+                        },
+                      )}
                     </Table.HeadCell>
                   );
                 })}

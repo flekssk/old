@@ -14,12 +14,14 @@ export const SelectControl: FC<InputControlProps> = ({
   label,
   ...selectProps
 }) => {
-  const { register, setValue, getValues } = useFormContext();
+  const { register, setValue, watch } = useFormContext();
 
   const setSelectedOption = (option: SelectOption) => {
     setValue(name, option);
   };
-  const value = getValues(name);
+
+  const value = watch(name);
+
   return (
     <ControlWrapper
       name={name}

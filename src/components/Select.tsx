@@ -29,6 +29,7 @@ export const Select: React.FC<SelectProps> = ({
     return option.label;
   },
 }) => {
+  console.log("🚀 ~ selectedOption:", selectedOption);
   return (
     <Listbox value={selectedOption} onChange={setSelectedOption}>
       {({ open }) => (

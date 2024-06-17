@@ -7,10 +7,10 @@ export function displayNumber(value: string | number): string {
     return value as string;
   }
   if (isFloat(value)) {
-    return Number(value).toLocaleString("en-US", {
+    return Number(value).toLocaleString("ru-RU", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
   }
-  return Number(value).toLocaleString("en-US");
+  return Number(value).toLocaleString("ru-RU");
 }

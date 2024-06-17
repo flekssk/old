@@ -220,8 +220,6 @@ export type Filters = Record<string, NumberFilter | ArticleFilter | TextFilter>;
 export interface ReportRequest {
   dateFrom?: string;
   dateTo?: string;
-  category?: string;
-  brand?: string;
   accountUid?: string;
   filters?: Filters;
   orderBy?: { field: string; direction: string };

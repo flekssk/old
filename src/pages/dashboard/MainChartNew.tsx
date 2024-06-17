@@ -153,7 +153,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Продажи пред. периуд",
+        label: "Продажи пред. период",
         data: prevSortedData.map((item) => item.sales),
         yAxisID: "y1",
         fill: {
@@ -178,7 +178,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Средняя цена  пред. периуд",
+        label: "Средняя цена  пред. период",
         data: prevSortedData.map((item) =>
           Math.ceil(item.averagePriceBeforeSPP),
         ),
@@ -232,7 +232,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "ДРР пред. периуд",
+        label: "ДРР пред. период",
         data: prevSortedData.map((item) => item.drr),
         yAxisID: "y3",
         fill: {
@@ -258,7 +258,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Логистика пред. периуд",
+        label: "Логистика пред. период",
         data: prevSortedData.map((item) => item.logistics),
         yAxisID: "y1",
         fill: {
@@ -284,7 +284,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Возвраты пред. периуд",
+        label: "Возвраты пред. период",
         data: prevSortedData.map((item) => Math.abs(item.returns)),
         yAxisID: "y1",
         fill: {
@@ -310,7 +310,7 @@ export const MainChartNew: FC<MainChartProps> = ({ data, prevData }) => {
 
     if (displayPrevData) {
       result.datasets.push({
-        label: "Прибыль пред. периуд",
+        label: "Прибыль пред. период",
         data: prevSortedData.map((item) => item.profit),
         yAxisID: "y1",
         fill: {
