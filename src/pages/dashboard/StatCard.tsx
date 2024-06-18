@@ -14,7 +14,7 @@ export interface StatCardProps {
   isCombined?: boolean;
   secondaryValue?: string;
   secondaryDiff?: {
-    value: string;
+    value?: string;
     percentage?: string;
     direction?: "up" | "down";
     isPositive: boolean;
@@ -40,7 +40,7 @@ export const StatCard: FC<StatCardProps> = ({
       }}
     >
       <p className="text-sm">{title}</p>
-      <p className="text-xl font-bold">
+      <p className="font-bold md:text-lg xl:text-xl">
         {value} {unitForValue ? `${unitForValue}` : ""}
         {isCombined && secondaryValue
           ? ` / ${secondaryValue} ${unitForSecondaryValue ? `${unitForSecondaryValue}` : ""}`
@@ -50,29 +50,12 @@ export const StatCard: FC<StatCardProps> = ({
         <div className="flex items-center gap-1">
           {diff && (
             <p
-              className={`flex items-center gap-1 text-sm ${
+              className={`flex items-center gap-1 md:text-xs xl:text-sm ${
                 diff.isPositive ? "text-green-500" : "text-red-500"
               }`}
             >
               {diff.direction === "up" ? <HiArrowUp /> : <HiArrowDown />}
               {`${diff.value} ${diff.percentage ? `(${diff.percentage}%)` : ""}`}
-            </p>
-          )}
-          {isCombined && secondaryDiff && (
-            <p
-              className={`flex items-center gap-1 text-sm ${
-                secondaryDiff.isPositive ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              /
-              {secondaryDiff.direction === "up" ? (
-                <HiArrowUp />
-              ) : (
-                <HiArrowDown />
-              )}
-              {`${secondaryDiff.value} ${
-                secondaryDiff.percentage ? `(${secondaryDiff.percentage}%)` : ""
-              }`}
             </p>
           )}
         </div>

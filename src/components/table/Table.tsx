@@ -204,7 +204,7 @@ export const Table = <T extends Record<string, any>>({
               {displayNumber(calculatedCellValues.count)}{" "}
             </span>
             <span>
-              <span className="font-bold">Средее:</span>{" "}
+              <span className="font-bold">Среднее:</span>{" "}
               {displayNumber(calculatedCellValues.avg)}{" "}
             </span>
             <span>

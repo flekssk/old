@@ -2,7 +2,7 @@
 import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { usePnLReport, useWeekReport } from "@/api/report";
+import { usePnLReport } from "@/api/report";
 import type {
   ArticleFilter,
   NumberFilter,

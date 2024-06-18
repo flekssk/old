@@ -53,6 +53,7 @@ const WeekReportPage: FC = function () {
 
   const mainReportRequest = useWeekReport(params, {
     enabled: true,
+    placeholderData: (previousData) => previousData,
   });
 
   const articleList = useArticleList();

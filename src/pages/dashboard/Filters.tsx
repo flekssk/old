@@ -2,10 +2,8 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
-import { DATE_FORMAT, getWeeksBetweenDates } from "@/helpers/date";
-import { formatDate, parse } from "date-fns";
 import { Badge, Button } from "flowbite-react";
-import { type FC, useMemo, useState } from "react";
+import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
 import { isNumberFilter, isTextFilter } from "@/utils/dashboard";
 import { REPORT_TABLE_COLUMNS_NAMES } from "@/constants/constants";
@@ -15,9 +13,8 @@ import { useSearchParams } from "react-router-dom";
 import type { MultiSelectOption } from "@/components/MultiSelect";
 import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
-import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
-import type { DateRange } from "react-day-picker";
 import { GroupSettings } from "@/components/table/GroupSettings";
+import { DateRangeFilters } from "@/components/DateRangeFilters";
 
 type FiltersProps = {
   params: ReportRequest;
@@ -32,9 +29,6 @@ export const Filters: FC<FiltersProps> = ({
 }) => {
   const reportFilterAggregationRequest = useReportFilterAggregation();
   const [searchParams] = useSearchParams();
-  const [selectedOptions, setSelectedOptions] = useState<
-    MultiSelectOption | undefined
-  >(undefined);
 
   const articlesOptions = useMemo(() => {
     if (!articles) return [];
@@ -181,67 +175,6 @@ export const Filters: FC<FiltersProps> = ({
     return result;
   }, [params, selectedArticles]);
 
-  const optionsForDateFilter = useMemo(() => {
-    const dates = getWeeksBetweenDates(
-      reportFilterAggregationRequest.data?.date?.minDate,
-      reportFilterAggregationRequest.data?.date?.maxDate,
-    );
-
-    const options = dates.map((value) => ({
-      label: `${value.weekNumber} неделя (${value.weekStart} - ${value.weekEnd})`,
-      value: {
-        from: parse(value.weekStart, "dd.MM.yyyy", new Date()),
-        to: parse(value.weekEnd, "dd.MM.yyyy", new Date()),
-      },
-    }));
-
-    return [
-      { label: "Произвольный период", value: "customPeriod" },
-      ...options,
-    ];
-  }, [
-    reportFilterAggregationRequest.data?.date?.minDate,
-    reportFilterAggregationRequest.data?.date?.maxDate,
-  ]);
-
-  const minDate = reportFilterAggregationRequest.data?.date?.minDate
-    ? parse(
-        reportFilterAggregationRequest.data?.date?.minDate,
-        DATE_FORMAT.SERVER_DATE,
-        new Date(),
-      )
-    : undefined;
-
-  const maxDate = reportFilterAggregationRequest.data?.date?.maxDate
-    ? parse(
-        reportFilterAggregationRequest.data?.date?.maxDate,
-        DATE_FORMAT.SERVER_DATE,
-        new Date(),
-      )
-    : new Date();
-
-  const handleDateFilterChange = (option: MultiSelectOption) => {
-    if (
-      typeof option.value === "object" &&
-      "from" in option.value &&
-      "to" in option.value
-    ) {
-      const newSearchParams = new URLSearchParams(params as URLSearchParams);
-
-      newSearchParams.set(
-        "dateFrom",
-        formatDate(option.value.from as Date, DATE_FORMAT.SERVER_DATE),
-      );
-      newSearchParams.set(
-        "dateTo",
-        formatDate(option.value.to as Date, DATE_FORMAT.SERVER_DATE),
-      );
-
-      setSelectedOptions(option);
-      setSearchParams(newSearchParams);
-    }
-  };
-
   const handleMultiSelectChange = (
     filterName: string,
     selectedOptions: MultiSelectOption[],
@@ -308,47 +241,10 @@ export const Filters: FC<FiltersProps> = ({
     setSearchParams(newSearchParams);
   };
 
-  const handleChangeDates = (range?: DateRange) => {
-    setSelectedOptions(optionsForDateFilter[0]);
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set(
-      "dateFrom",
-      formatDate(range?.from as Date, DATE_FORMAT.SERVER_DATE),
-    );
-    newSearchParams.set(
-      "dateTo",
-      formatDate(range?.to as Date, DATE_FORMAT.SERVER_DATE),
-    );
-    setSearchParams(newSearchParams);
-  };
-
   return (
     <div>
       <div className="flex flex-wrap justify-between">
-        <div>
-          <h2 className="mb-2 text-lg">Период отчета</h2>
-          <div className="flex items-center gap-2">
-            <MultiSelect
-              placeholder="Выберите период"
-              options={optionsForDateFilter}
-              selectedOptions={selectedOptions}
-              setSelectedOptions={handleDateFilterChange}
-            />
-            <DatePickerWithRange
-              minDate={minDate}
-              maxDate={maxDate}
-              date={{
-                from: params.dateFrom
-                  ? parse(params.dateFrom, DATE_FORMAT.SERVER_DATE, new Date())
-                  : undefined,
-                to: params.dateTo
-                  ? parse(params.dateTo, DATE_FORMAT.SERVER_DATE, new Date())
-                  : undefined,
-              }}
-              onChangeDate={handleChangeDates}
-            />
-          </div>
-        </div>
+        <DateRangeFilters params={params} setSearchParams={setSearchParams} />
         <div>
           <h2 className="mb-2 text-lg">Фильтры</h2>
           <div className="flex flex-wrap items-center gap-2 ">

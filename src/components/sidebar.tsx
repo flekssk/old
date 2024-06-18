@@ -88,7 +88,7 @@ const ExampleSidebar: FC = function () {
                   to={ROUTES.pnl}
                   icon={HiOutlinePresentationChartLine}
                   className={
-                    ROUTES.week === currentPage
+                    ROUTES.pnl === currentPage
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }

@@ -102,7 +102,7 @@ export function TableSettings<TData, TValue>({
   const filteredColumns = columnOrder.filter((colId) => {
     const column = columns.find((col) => col.id === colId);
     const columnName = column?.header as string;
-    return columnName.toLowerCase().includes(searchText.toLowerCase());
+    return columnName?.toLowerCase().includes(searchText.toLowerCase());
   });
 
   return (
@@ -154,7 +154,7 @@ export function TableSettings<TData, TValue>({
                                 },
                               )}
                             >
-                              <div className="mb-1 flex-shrink-0">
+                              <div className="mb-1 shrink-0">
                                 <Checkbox
                                   checked={columnVisibility[colId]}
                                   onChange={(e) =>
@@ -163,15 +163,15 @@ export function TableSettings<TData, TValue>({
                                 />
                               </div>
 
-                              <div className="flex-shrink-0 pl-2">
+                              <div className="shrink-0 pl-2">
                                 <MdDragHandle />
                               </div>
-                              <div className=" flex-grow rounded p-2">
+                              <div className=" grow rounded p-2">
                                 {columnName}
                               </div>
                               <div>
                                 <MdPushPin
-                                  className="flex-shrink-0"
+                                  className="shrink-0"
                                   style={{
                                     cursor: "pointer",
                                     color: isColumnPinned ? "black" : "#999",

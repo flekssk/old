@@ -40,7 +40,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
       columnHelper.accessor("image", {
         id: "photo",
         header: "Фото",
-        size: 50,
+        minSize: 75,
         cell: () => {
           return image ? (
             <div>
@@ -235,7 +235,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
       }),
       columnHelper.accessor("profitability", {
         id: "profitability",
-        header: "Прибыльность",
+        header: "Маржинальность",
         meta: {
           suffix: "%",
         },
@@ -267,7 +267,9 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
     <Card>
       <DataTable
         resizeColumns
+        orderSettings
         storedSettingsName="barcode-report-table"
+        orderColumnsSettingsName="barcode-report-table-order"
         columns={columns}
         columnPinning={{
           left: ["photo", "barcode"],
