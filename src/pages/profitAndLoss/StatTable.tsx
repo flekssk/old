@@ -73,12 +73,21 @@ type YearReportItem = {
 const rowLabelAdditionalClasses: Record<string, string> = {
   realisation: "border-y-2  border-black",
   operatingIncome: "border-y-2  border-black",
+
   totalIncome: "border-y-2 border-black",
 };
 
-export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
-  const items = itemstest.filter((item) => item.month !== "2024-01-01");
+const inCollapse: string[] = [
+  "costOfSales",
+  "logistics",
+  "commission",
+  "fines",
+  "storage",
+  "advertisingExpense",
+  "otherDeduction",
+];
 
+export const StatTable: FC<StatTableProps> = ({ items }) => {
   const groupedByYear = useMemo(() => {
     const years: Record<string, YearReportItem> = {};
     const calculateMonthDataByYear: Record<string, MonthlyData> = {};
@@ -191,10 +200,10 @@ export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
     return years;
   }, [items]);
   return (
-    <Card>
+    <Card className="overflow-x-auto">
       <Table>
         <Table.Head>
-          <Table.HeadCell className="bg-gray-200 font-bold text-gray-900">
+          <Table.HeadCell className="sticky left-0 bg-gray-200 font-bold text-gray-900">
             Статья
           </Table.HeadCell>
           {Object.keys(groupedByYear).map((year) => {
@@ -235,7 +244,14 @@ export const StatTable: FC<StatTableProps> = ({ items: itemstest }) => {
                 className={cn("border-b", additionalClass)}
                 key={label}
               >
-                <Table.Cell className="bg-gray-200 font-bold text-gray-900">
+                <Table.Cell
+                  className={cn(
+                    "sticky left-0 bg-gray-200 font-bold min-w-56 text-gray-900",
+                    {
+                      "pl-11": inCollapse.includes(label as ReportRowLabel),
+                    },
+                  )}
+                >
                   {ReportRowLabels[label as ReportRowLabel]}
                 </Table.Cell>
                 {Object.keys(groupedByYear).map((year) => {

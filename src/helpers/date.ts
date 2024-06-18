@@ -12,7 +12,7 @@ import {
 export const DATE_FORMAT = {
   SERVER_DATE: "yyyy-MM-dd",
   DAY_MONTH: "dd MMM",
-  MONTH_YEAR: " MMMM yyyy",
+  MONTH_YEAR: "LLLL yyyy",
   DATE: "dd.MM.yyyy",
 } as const;
 

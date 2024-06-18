@@ -2,51 +2,30 @@
 import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { usePnLReport, useWeekReport } from "@/api/report";
-import type {
-  ArticleFilter,
-  NumberFilter,
-  TextFilter,
-  WeekReportRequest,
-} from "@/api/report/types";
+import { usePnLReport } from "@/api/report";
+import type { PnLRequest } from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/profitAndLoss/StatTable";
 import { Filters } from "@/pages/weekReport/Filters";
 import { ReportSkeleton } from "@/pages/weekReport/ReportSkeleton";
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
-
-import { parse as qsParse } from "qs";
 import { useArticleList } from "@/api/wb";
 
 const ProfitAndLossPage: FC = function () {
   const [searchParams, setSearchParams] = useSearchParams({});
 
   const params = useMemo(() => {
-    const result: WeekReportRequest = {};
+    const result: PnLRequest = {};
 
-    const category = searchParams.get("category");
-    if (category) {
-      result.category = category;
-    }
-
-    const brand = searchParams.get("brand");
-    if (brand) {
-      result.brand = brand;
-    }
-
-    const filters = searchParams.get("filters");
-
-    if (filters) {
-      result.filters = qsParse(filters) as Record<
-        string,
-        NumberFilter | ArticleFilter | TextFilter
-      >;
+    const account = searchParams.get("accountUid");
+    if (account) {
+      result.accountUid = account;
     }
 
     return result;
   }, [searchParams]);
 
-  const pnlRequest = usePnLReport({});
+  const pnlRequest = usePnLReport(params);
 
   const articleList = useArticleList();
 

@@ -1,3 +1,4 @@
+import { Axios, AxiosResponse } from "axios";
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {
@@ -6,7 +7,6 @@ import type {
   IncomeCostSetBatchRequest,
   IncomeCostSetBatchResponse,
   IncomeDiagramRequest,
-  IncomeDiagramResponse,
   IncomeListRequest,
   IncomeListResponse,
   IncomeSyncResponse,
@@ -38,7 +38,8 @@ export const incomeCost = (
 
 export const incomeDiagram = (
   payload: IncomeDiagramRequest,
-): Promise<IncomeDiagramResponse> =>
-  api
-    .get<IncomeDiagramResponse>(ENDPOINTS.incomeDiagram, { params: payload })
-    .then((res) => res.data);
+): Promise<AxiosResponse<Blob>> =>
+  api.get<Blob>(ENDPOINTS.incomeDiagram, {
+    params: payload,
+    responseType: "blob",
+  });

@@ -405,6 +405,7 @@ export interface MonthlyData {
 
 export interface PnLRequest {
   dateFrom?: string;
+  accountUid?: string;
 }
 
 export interface PnLResponse {
