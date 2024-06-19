@@ -7,6 +7,7 @@ import type { MultiSelectOption } from "@/components/MultiSelect";
 import { MultiSelect } from "@/components/MultiSelect";
 import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
 import type { DateRange } from "react-day-picker";
+import { useSearchParams } from "react-router-dom";
 
 export type DateFilterValue = {
   dateFrom: string;
@@ -20,10 +21,11 @@ export type DateFilter = Partial<DateFilterValue> & {
 
 type Props = {
   params: ReportRequest;
-  setSearchParams: (searchParams: URLSearchParams) => void;
 };
 
-export const DateRangeFilters = ({ params, setSearchParams }: Props) => {
+export const DateRangeFilters = ({ params }: Props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const reportFilterAggregationRequest = useReportFilterAggregation();
   const [selectedOptions, setSelectedOptions] = useState<
     MultiSelectOption | undefined
@@ -73,7 +75,7 @@ export const DateRangeFilters = ({ params, setSearchParams }: Props) => {
       "from" in option.value &&
       "to" in option.value
     ) {
-      const newSearchParams = new URLSearchParams(params as URLSearchParams);
+      const newSearchParams = new URLSearchParams(searchParams);
 
       newSearchParams.set(
         "dateFrom",
@@ -91,7 +93,7 @@ export const DateRangeFilters = ({ params, setSearchParams }: Props) => {
 
   const handleChangeDates = (range?: DateRange) => {
     setSelectedOptions(optionsForDateFilter[0]);
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
+    const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(
       "dateFrom",
       formatDate(range?.from as Date, DATE_FORMAT.SERVER_DATE),

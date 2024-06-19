@@ -244,7 +244,7 @@ export const Filters: FC<FiltersProps> = ({
   return (
     <div>
       <div className="flex flex-wrap justify-between">
-        <DateRangeFilters params={params} setSearchParams={setSearchParams} />
+        <DateRangeFilters params={params} />
         <div>
           <h2 className="mb-2 text-lg">Фильтры</h2>
           <div className="flex flex-wrap items-center gap-2 ">
