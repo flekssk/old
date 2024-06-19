@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
-import { Select } from "@/components/Select";
 import { Badge, Button } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
@@ -12,7 +11,6 @@ import { MdClose } from "react-icons/md";
 import { parse as qsParse, stringify } from "qs";
 import { useSearchParams } from "react-router-dom";
 import type { MultiSelectOption } from "@/components/MultiSelect";
-import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
 
 type FiltersProps = {

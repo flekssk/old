@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { useReportFilterAggregation } from "@/api/report";
 import type { SelectOption } from "@/components/Select";
 import { Select } from "@/components/Select";
 import { Badge, Button } from "flowbite-react";
 import { type FC, useMemo } from "react";
 import type { ReportRequest } from "@/api/report/types";
-import { isNumberFilter, isTextFilter } from "@/utils/dashboard";
-import { REPORT_TABLE_COLUMNS_NAMES } from "@/constants/constants";
 import { MdClose } from "react-icons/md";
 import { parse as qsParse, stringify } from "qs";
 import { useSearchParams } from "react-router-dom";
 import type { MultiSelectOption } from "@/components/MultiSelect";
-import { MultiSelect } from "@/components/MultiSelect";
 import type { Article } from "@/api/wb/types";
 import { useAccountList } from "@/api/wb";
 
@@ -39,7 +35,6 @@ export const Filters: FC<FiltersProps> = ({
     })) as SelectOption[];
   }, [accounts]);
 
-  const reportFilterAggregationRequest = useReportFilterAggregation();
   const [searchParams] = useSearchParams();
 
   const articlesOptions = useMemo(() => {
@@ -75,22 +70,6 @@ export const Filters: FC<FiltersProps> = ({
     const result: { keyForDelete: string; label: string; value?: string }[] =
       [];
 
-    if (params.category) {
-      result.push({
-        keyForDelete: "category",
-        label: "Категория",
-        value: params.category,
-      });
-    }
-
-    if (params.brand) {
-      result.push({
-        keyForDelete: "brand",
-        label: "Бренд",
-        value: params.brand,
-      });
-    }
-
     if (selectedAccount) {
       result.push({
         keyForDelete: "accountUid",
@@ -99,102 +78,12 @@ export const Filters: FC<FiltersProps> = ({
       });
     }
 
-    if (selectedArticles) {
-      selectedArticles.forEach((item, index) => {
-        result.push({
-          keyForDelete: `filters.article.${index}`,
-          label: "Артикул",
-          value: item.label,
-        });
-      });
-    }
-
-    if (params.filters && Object.keys(params.filters).length > 0) {
-      for (const key in params.filters) {
-        const filter = params.filters[key];
-        if (filter && isNumberFilter(filter)) {
-          if (filter.min !== undefined) {
-            result.push({
-              keyForDelete: `filters.${key}.min`,
-              label: `${REPORT_TABLE_COLUMNS_NAMES[key]} (Min)`,
-              value: String(filter.min),
-            });
-          }
-          if (filter.max !== undefined) {
-            result.push({
-              keyForDelete: `filters.${key}.max`,
-              label: `${REPORT_TABLE_COLUMNS_NAMES[key]} (Max)`,
-              value: String(filter.max),
-            });
-          }
-        }
-
-        if (filter && isTextFilter(filter)) {
-          if (filter.value !== undefined) {
-            result.push({
-              keyForDelete: `filters.${key}`,
-              label: `${REPORT_TABLE_COLUMNS_NAMES[key]}`,
-              value: filter.value,
-            });
-          }
-        }
-      }
-    }
     return result;
   }, [params, selectedArticles, selectedAccount]);
-
-  const filterOptions = useMemo(() => {
-    const result = {
-      brands: [],
-      categories: [],
-    } as {
-      brands: SelectOption[];
-      categories: SelectOption[];
-    };
-
-    if (reportFilterAggregationRequest.data) {
-      result.brands = reportFilterAggregationRequest.data.brands.map(
-        (brand) => ({
-          value: brand,
-          label: brand,
-        }),
-      );
-
-      result.categories = reportFilterAggregationRequest.data.categories.map(
-        (category) => ({
-          value: category,
-          label: category,
-        }),
-      );
-    }
-
-    return result;
-  }, [reportFilterAggregationRequest.data]);
-
-  const handleCategoryChange = (category: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("category", category);
-    setSearchParams(newSearchParams);
-  };
-
-  const handleBrandChange = (brand: string) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    newSearchParams.set("brand", brand);
-    setSearchParams(newSearchParams);
-  };
 
   const handleAccountChange = (account: string) => {
     const newSearchParams = new URLSearchParams(params as URLSearchParams);
     newSearchParams.set("accountUid", account);
-    setSearchParams(newSearchParams);
-  };
-
-  const handleArticlesChange = (options: MultiSelectOption[]) => {
-    const newSearchParams = new URLSearchParams(params as URLSearchParams);
-    const filters = qsParse(newSearchParams.get("filters") || "");
-    const articles = options.map((option) => String(option.value));
-    filters["article"] = articles;
-    newSearchParams.set("filters", stringify(filters));
     setSearchParams(newSearchParams);
   };
 
@@ -250,37 +139,6 @@ export const Filters: FC<FiltersProps> = ({
               }}
               placeholder="Все аккаунты"
               options={accountOptions}
-            />
-            <Select
-              selectedOption={{
-                value: params.brand || "",
-                label: params.brand || "",
-              }}
-              setSelectedOption={(option) => {
-                handleBrandChange(option.value as string);
-              }}
-              placeholder="Все бренды"
-              options={filterOptions.brands}
-            />
-
-            <Select
-              selectedOption={{
-                value: params.category || "",
-                label: params.category || "",
-              }}
-              setSelectedOption={(option) => {
-                handleCategoryChange(option.value as string);
-              }}
-              placeholder="Все категории"
-              options={filterOptions.categories}
-            />
-            <MultiSelect
-              placeholder="Все артикулы"
-              position="top-right"
-              options={articlesOptions || []}
-              selectedOptions={selectedArticles}
-              setSelectedOptions={handleArticlesChange}
-              multiple
             />
           </div>
         </div>
