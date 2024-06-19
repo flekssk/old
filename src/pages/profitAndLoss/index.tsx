@@ -3,7 +3,13 @@ import { type FC, useMemo } from "react";
 import "svgmap/dist/svgMap.min.css";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { usePnLReport } from "@/api/report";
-import type { PnLRequest } from "@/api/report/types";
+import type {
+  ArticleFilter,
+  NumberFilter,
+  TextFilter,
+  WeekReportRequest,
+    PnLRequest,
+} from "@/api/report/types";
 import { useSearchParams } from "react-router-dom";
 import { StatTable } from "@/pages/profitAndLoss/StatTable";
 import { Filters } from "@/pages/weekReport/Filters";

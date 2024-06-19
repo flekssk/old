@@ -101,7 +101,7 @@ export const CostTable: FC<CostTableProps> = ({
         size: 220,
       }),
       columnHelper.accessor("id", {
-        header: "Фулфилиент",
+        header: "Фулфилмент",
         cell: (cell) => {
           const name = `${cell.row.original.nmId}.fulfillment`;
           return <InputControl name={name} type="number" />;

@@ -84,7 +84,9 @@ export const StructureOfIncomeChart: FC<StructureOfIncomeChartProps> = ({
   }, [structure]);
 
   const options: ApexCharts.ApexOptions = {
-    labels: data.map((item) => item.title),
+    labels: data
+      .sort((prev, next) => next.value - prev.value)
+      .map((item) => item.title),
     colors: [
       "#16BDCA",
       "#FDBA8C",

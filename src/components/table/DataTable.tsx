@@ -284,10 +284,14 @@ export function DataTable<TData, TValue>({
                         header.column as Column<unknown, unknown>,
                         true,
                       ),
+                      borderRight:
+                        header.index !== headerGroup.headers.length - 1
+                          ? "1px solid rgb(231 231 231)"
+                          : "",
                     }}
                   >
                     <div className="relative flex max-w-full items-center justify-between">
-                      <span className="w-4/5 flex-shrink break-words">
+                      <span className="shrink break-words">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -389,7 +393,7 @@ export function DataTable<TData, TValue>({
               {displayNumber(calculatedCellValues.count)}{" "}
             </span>
             <span>
-              <span className="font-bold">Средее:</span>{" "}
+              <span className="font-bold">Среднее:</span>{" "}
               {displayNumber(calculatedCellValues.avg)}{" "}
             </span>
             <span>

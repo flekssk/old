@@ -72,7 +72,6 @@ const App: FC = function () {
                       <WeekReportPage />
                     </ProtectedRoute>
                   }
-                  index
                 />
                 <Route
                   path={ROUTES.pnl}
@@ -81,7 +80,6 @@ const App: FC = function () {
                       <ProfitAndLossPage />
                     </ProtectedRoute>
                   }
-                  index
                 />
                 <Route path={ROUTES.authVk} element={<AuthVk />} />
                 <Route path={ROUTES.authYandex} element={<AuthYandex />} />

@@ -76,7 +76,10 @@ export const OtherDeductions = () => {
     return res;
   }, [date, selectedAccount, pagination]);
 
-  const otherDeductionsList = useGetOtherDeductionList(params);
+  const otherDeductionsList = useGetOtherDeductionList(params, {
+    placeholderData: (previousData) => previousData,
+  });
+
   const otherDeductions = otherDeductionsList.data?.items ?? [];
 
   const isLoading = otherDeductionsList.isLoading;

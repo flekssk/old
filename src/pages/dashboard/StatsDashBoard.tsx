@@ -42,7 +42,10 @@ export const StatsDashBoard = ({ data }: StatProps) => (
       value={data.ddr.value}
       diff={data.ddr.diff}
       secondaryValue={data.advertisingExpenses.value}
-      secondaryDiff={data.advertisingExpenses.diff}
+      secondaryDiff={{
+        ...data.advertisingExpenses.diff,
+        isPositive: !data.advertisingExpenses.diff?.isPositive,
+      }}
       unitForValue="%"
       unitForSecondaryValue="р"
       isCombined
