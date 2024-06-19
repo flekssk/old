@@ -54,6 +54,7 @@ const ProfileSubscriptionInfo = ({
     | "subscriptionExpired"
     | "noAccounts"
     | "onBoardingInProcess"
+    | "updateInProcess"
     | null
   >(() => {
     const formattedDate = new Date().toISOString();
@@ -65,6 +66,10 @@ const ProfileSubscriptionInfo = ({
     }
     if (userProfile.isSuccess && !userProfile.data?.orders.length) {
       return "noSubscription";
+    }
+
+    if (userProfile.data?.updateInProcess) {
+      return "updateInProcess";
     }
 
     if (!userProfile?.data?.accountsCount) {
@@ -113,6 +118,26 @@ const ProfileSubscriptionInfo = ({
     );
   }
 
+  if (typeOfContent === "updateInProcess") {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center">
+        <div className="flex w-5/12 flex-wrap justify-center align-middle">
+          <div className="w-full text-center">
+            Выполняется обновление данных, это может занять несколько минут
+          </div>
+          {/* <Button
+            isProcessing={userProfile.isLoading}
+            onClick={() => {
+              userProfile.refetch();
+            }}
+            className="mt-2"
+          >
+            Обновить
+          </Button> */}
+        </div>
+      </div>
+    );
+  }
   if (typeOfContent === "noAccounts") {
     return (
       <div className="flex h-screen flex-col items-center justify-center">

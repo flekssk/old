@@ -1,6 +1,7 @@
 export type UserProfileResponse = {
   accountsCount: number;
   taxationTypeId?: number;
+  updateInProcess: boolean;
   orders: Orders[];
   roles: UserRoles[];
   settings?: {
