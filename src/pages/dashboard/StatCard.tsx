@@ -33,6 +33,8 @@ export const StatCard: FC<StatCardProps> = ({
   unitForValue,
   unitForSecondaryValue,
 }) => {
+  if (value === "0") return null;
+
   return (
     <Card
       theme={{

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Button, Card } from "flowbite-react";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Card, Pagination } from "flowbite-react";
 import { ExpensesTable } from "./tables/ExpensesTable";
 import { CreateExpenseModal } from "./modals/CreateExpenseModal";
 import {
@@ -13,10 +13,15 @@ import { MultiSelect } from "@/components/MultiSelect";
 import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
 import { ExpensesSkeleton } from "@/components/skeletons";
 import type { DateRange } from "react-day-picker";
-import { addDays, isWithinInterval } from "date-fns";
+import { format } from "date-fns";
 import { toast } from "react-toastify";
+import { usePagination } from "@/hooks/usePagination";
+import { useSearchParams } from "react-router-dom";
+import type { ExpenseListRequest } from "@/api/otherExpenses/types";
+import { DATE_FORMAT } from "@/helpers/date";
 
 export const Expenses = () => {
+  const [searchParam, setSearchParam] = useSearchParams();
   const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [selectedExpensesCategories, setSelectedExpensesCategories] = useState<
     MultiSelectOption[] | undefined
@@ -27,15 +32,43 @@ export const Expenses = () => {
   const [expenseUpdateId, setExpenseUpdateId] = useState<number | undefined>(
     undefined,
   );
+  const [totalPages, setTotalPages] = useState(0);
   const [isOpenCreateExpenseModal, setIsOpenCreateExpenseModal] =
     useState(false);
   const [isOpenDeleteExpenseModal, setIsOpenDeleteExpenseModal] =
     useState(false);
 
+  const pagination = usePagination({
+    searchParam,
+    setSearchParam,
+    total: totalPages,
+  });
+
+  const params = useMemo<ExpenseListRequest>(() => {
+    const res: ExpenseListRequest = {
+      page: pagination.page,
+      limit: pagination.limit,
+    };
+    if (date?.from) {
+      res.dateFrom = format(date.from, DATE_FORMAT.SERVER_DATE);
+    }
+
+    if (date?.to) {
+      res.dateTo = format(date.to, DATE_FORMAT.SERVER_DATE);
+    }
+
+    return res;
+  }, [date, pagination]);
+
+  const expensesList = useExpensesList(params, {
+    placeholderData: (previousData) => previousData,
+  });
+
   const deleteExpense = useDeleteExpense();
-  const expensesList = useExpensesList();
+
   const expenseCategories = useExpenseCategories();
 
+  const expensesListData = expensesList.data?.items ?? [];
   const isLoading = expensesList.isLoading;
 
   const expensesCategoriesOptions = useMemo(() => {
@@ -46,34 +79,6 @@ export const Expenses = () => {
       value: id,
     }));
   }, [expenseCategories.data]);
-
-  const filteredExpensesData = useMemo(() => {
-    if (!expensesList.data?.items) return [];
-
-    const filteredByDate = expensesList.data?.items.filter((value) => {
-      if (date && date.from && date.to)
-        return isWithinInterval(value.date, {
-          start: date?.from,
-          end: addDays(date?.to, 1),
-        });
-
-      return value;
-    });
-
-    if (selectedExpensesCategories?.length) {
-      const categoryIds = new Set(
-        selectedExpensesCategories.map((category) => category.value),
-      );
-
-      const filteredExpenses = filteredByDate.filter((expense) =>
-        categoryIds.has(expense.categoryId),
-      );
-
-      return filteredExpenses;
-    }
-
-    return filteredByDate;
-  }, [expensesList.data?.items, selectedExpensesCategories, date]);
 
   const handleOpenDeleteModal = (id: number) => {
     setExpenseDeleteId(id);
@@ -113,6 +118,12 @@ export const Expenses = () => {
     setExpenseDeleteId(undefined);
   };
 
+  useEffect(() => {
+    if (expensesList.data?.total) {
+      setTotalPages(expensesList.data.total);
+    }
+  }, [expensesList.data?.total]);
+
   if (isLoading) {
     return <ExpensesSkeleton />;
   }
@@ -145,10 +156,11 @@ export const Expenses = () => {
         </div>
         <div>
           <ExpensesTable
-            data={filteredExpensesData}
+            data={expensesListData}
             onOpenDeleteModal={handleOpenDeleteModal}
             onOpenEditModal={handleOpenEditModal}
           />
+          {pagination.totalPages > 1 ? <Pagination {...pagination} /> : null}
         </div>
       </Card>
       <CreateExpenseModal

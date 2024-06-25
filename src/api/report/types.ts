@@ -190,6 +190,8 @@ export interface ReportStats {
   roi: number;
   totalSales?: number;
   toTransfer: number;
+  logistics: number;
+  storage: number;
 }
 
 export interface RevenueStructure {

@@ -134,7 +134,7 @@ export const OtherDeductions = () => {
     <>
       <Card>
         <div className="flex items-center justify-between">
-          <h3 className="mb-4 text-2xl font-bold dark:text-white">Расходы</h3>
+          <h3 className="mb-4 text-2xl font-bold dark:text-white">Удержания</h3>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex gap-5">

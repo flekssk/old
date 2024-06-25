@@ -24,6 +24,14 @@ export type Expense = {
 
 export type CreateExpenseRequest = Omit<Expense, "id">;
 
+export type ExpenseListRequest = {
+  page?: number;
+  limit?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  wbAccountId?: number;
+};
+
 export type ExpenseListResponse = {
   items: Array<Expense>;
   limit: number;

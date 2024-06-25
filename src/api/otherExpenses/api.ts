@@ -5,6 +5,7 @@ import type {
   CreateExpenseCategoryResponse,
   CreateExpenseRequest,
   ExpenseCategoriesResponse,
+  ExpenseListRequest,
   ExpenseListResponse,
   UpdateExpenseCategoryRequest,
   UpdateExpenseCategoryResponse,
@@ -32,8 +33,12 @@ export const updateExpenseCategory = (
     )
     .then((res) => res.data);
 
-export const getExpensesList = (): Promise<ExpenseListResponse> =>
-  api.get<ExpenseListResponse>(ENDPOINTS.expenses).then((res) => res.data);
+export const getExpensesList = (
+  payload: ExpenseListRequest,
+): Promise<ExpenseListResponse> =>
+  api
+    .get<ExpenseListResponse>(ENDPOINTS.expenses, { params: payload })
+    .then((res) => res.data);
 
 export const createExpense = (
   data: CreateExpenseRequest,

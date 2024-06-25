@@ -78,6 +78,10 @@ const Product: FC = function () {
   });
   const prevArticleRequest = useArticleV2Report(+entityId, prevParams);
 
+  const isNotOneSizeProduct =
+    articleRequest.data?.byBarcode &&
+    Object.values(articleRequest.data?.byBarcode).length > 1;
+
   const statsData = useProductStatsData(
     articleRequest.data,
     prevArticleRequest.data,
@@ -107,8 +111,10 @@ const Product: FC = function () {
           />
         </Accordion>
 
-        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-          {articleRequest.data?.byBarcode && (
+        <div
+          className={`grid w-full grid-cols-1 gap-4 ${isNotOneSizeProduct ? "md:grid-cols-2" : "md:grid-cols-1"}`}
+        >
+          {articleRequest.data?.byBarcode && isNotOneSizeProduct && (
             <Accordion title="Размеры по прибыли" id="chart-profit-sizes">
               <SizesChart data={Object.values(articleRequest.data.byBarcode)} />
             </Accordion>
