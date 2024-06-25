@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {
@@ -20,6 +21,16 @@ export const getMainReportV2 = (
   }
   return api.post<ReportResponse>(endpoint, payload).then((res) => {
     return res.data;
+  });
+};
+
+export const exportMainReportV2 = (
+  payload: ReportRequest = {},
+): Promise<AxiosResponse<Blob>> => {
+  const endpoint = ENDPOINTS.mainV2 + "?xls=true";
+
+  return api.post<Blob>(endpoint, payload, {
+    responseType: "blob",
   });
 };
 
@@ -51,6 +62,17 @@ export const getArticleV2 = (
   api
     .post<ReportItemResponse>(ENDPOINTS.articleV2(id), payload)
     .then((res) => res.data);
+
+export const exportArticleV2 = (
+  id: number,
+  payload: ReportRequest = {},
+): Promise<AxiosResponse<Blob>> => {
+  const endpoint = ENDPOINTS.articleV2(id) + "?xls=true";
+
+  return api.post<Blob>(endpoint, payload, {
+    responseType: "blob",
+  });
+};
 
 export const getWeekReport = (
   payload: WeekReportRequest = {},
