@@ -8,8 +8,6 @@ import {
   useExpensesList,
 } from "@/api/otherExpenses";
 import { DeleteExpenseModal } from "./modals/DeleteExpenseModal";
-import type { MultiSelectOption } from "@/components/MultiSelect";
-import { MultiSelect } from "@/components/MultiSelect";
 import { DatePickerWithRange } from "@/components/shadcnUi/Datepicker";
 import { ExpensesSkeleton } from "@/components/skeletons";
 import type { DateRange } from "react-day-picker";
@@ -19,12 +17,14 @@ import { usePagination } from "@/hooks/usePagination";
 import { useSearchParams } from "react-router-dom";
 import type { ExpenseListRequest } from "@/api/otherExpenses/types";
 import { DATE_FORMAT } from "@/helpers/date";
+import type { SelectOption } from "@/components/Select";
+import { Select } from "@/components/Select";
 
 export const Expenses = () => {
   const [searchParam, setSearchParam] = useSearchParams();
   const [date, setDate] = useState<DateRange | undefined>(undefined);
-  const [selectedExpensesCategories, setSelectedExpensesCategories] = useState<
-    MultiSelectOption[] | undefined
+  const [selectExpensesCategory, setSelectExpensesCategory] = useState<
+    SelectOption | undefined
   >(undefined);
   const [expenseDeleteId, setExpenseDeleteId] = useState<number | undefined>(
     undefined,
@@ -50,15 +50,19 @@ export const Expenses = () => {
       limit: pagination.limit,
     };
     if (date?.from) {
-      res.dateFrom = format(date.from, DATE_FORMAT.SERVER_DATE);
+      res.fromDate = format(date.from, DATE_FORMAT.SERVER_DATE);
     }
 
     if (date?.to) {
-      res.dateTo = format(date.to, DATE_FORMAT.SERVER_DATE);
+      res.toDate = format(date.to, DATE_FORMAT.SERVER_DATE);
+    }
+
+    if (selectExpensesCategory) {
+      res.categoryId = selectExpensesCategory.value as number;
     }
 
     return res;
-  }, [date, pagination]);
+  }, [date, pagination, selectExpensesCategory]);
 
   const expensesList = useExpensesList(params, {
     placeholderData: (previousData) => previousData,
@@ -92,7 +96,7 @@ export const Expenses = () => {
 
   const handleResetFilters = () => {
     setDate(undefined);
-    setSelectedExpensesCategories(undefined);
+    setSelectExpensesCategory(undefined);
   };
 
   const handleConfirmDeleteExpense = async () => {
@@ -139,12 +143,11 @@ export const Expenses = () => {
         <div className="flex items-center justify-between">
           <div className="flex gap-5">
             <DatePickerWithRange date={date} onChangeDate={setDate} />
-            <MultiSelect
+            <Select
               placeholder="Выберите статьи"
               options={expensesCategoriesOptions}
-              selectedOptions={selectedExpensesCategories}
-              setSelectedOptions={setSelectedExpensesCategories}
-              multiple
+              selectedOption={selectExpensesCategory}
+              setSelectedOption={setSelectExpensesCategory}
             />
             <Button color="light" onClick={handleResetFilters}>
               Сбросить
