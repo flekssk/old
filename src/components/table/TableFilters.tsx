@@ -123,14 +123,14 @@ export const TableFilters = ({
     if (filter === "min") {
       updatedFilters[columnId] = {
         ...updatedFilters[columnId],
-        min: Number(value),
+        min: value ? Number(value) : undefined,
       };
     }
 
     if (filter === "max") {
       updatedFilters[columnId] = {
         ...updatedFilters[columnId],
-        max: Number(value),
+        max: value ? Number(value) : undefined,
       };
     }
 
@@ -205,7 +205,7 @@ export const TableFilters = ({
       const numberFilters = columnFilters as NumberFilter;
 
       return (
-        <div className="flex w-64 flex-shrink-0 flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex w-64 shrink-0 flex-col gap-4 p-4 text-sm text-gray-500 dark:text-gray-400">
           <div>
             <TextInput
               type="number"

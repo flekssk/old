@@ -5,7 +5,6 @@ export const calculateDiff = (
   prev: number,
   {
     positiveIfGrow,
-    isPercentage,
   }: {
     positiveIfGrow: boolean;
     isPercentage?: boolean;
@@ -23,12 +22,14 @@ export const calculateDiff = (
     };
   }
 
+  const difference = current - prev;
+  const percentageChange = prev !== 0 ? (difference / prev) * 100 : 0;
+
   return {
-    value: displayNumber(prev),
-    percentage: isPercentage
-      ? displayNumber(current - prev)
-      : displayNumber((current / prev) * 100 - 100),
-    direction: current > prev ? "up" : "down",
-    isPositive: current > prev ? positiveIfGrow : !positiveIfGrow,
+    value: displayNumber(difference),
+    percentage: displayNumber(percentageChange),
+    direction: difference > 0 ? "up" : difference < 0 ? "down" : undefined,
+    isPositive:
+      difference > 0 ? positiveIfGrow : difference < 0 ? !positiveIfGrow : true,
   };
 };

@@ -50,6 +50,12 @@ export const useDashBoardStatsData = (
     toTransfer: {
       value: displayNumber(currentData.stats.toTransfer || 0),
     },
+    logistics: {
+      value: displayNumber(currentData.stats.logistics),
+    },
+    storage: {
+      value: displayNumber(currentData.stats.storage),
+    },
   };
   if (prevData) {
     if (prevData.stats.profitability) {
@@ -135,6 +141,20 @@ export const useDashBoardStatsData = (
       result.toTransfer.diff = calculateDiff(
         currentData.stats.toTransfer,
         prevData.stats.toTransfer,
+      );
+    }
+
+    if (prevData.stats.logistics) {
+      result.logistics.diff = calculateDiff(
+        currentData.stats.logistics || 0,
+        prevData.stats.logistics,
+      );
+    }
+
+    if (prevData.stats.storage) {
+      result.storage.diff = calculateDiff(
+        currentData.stats.storage || 0,
+        prevData.stats.storage,
       );
     }
   }

@@ -14,6 +14,8 @@ export type DashBoardStatsData = {
   profitability: Omit<StatCardProps, "title">;
   salesCount: Omit<StatCardProps, "title">;
   toTransfer: Omit<StatCardProps, "title">;
+  logistics: Omit<StatCardProps, "title">;
+  storage: Omit<StatCardProps, "title">;
 };
 
 type StatProps = {
@@ -50,5 +52,7 @@ export const StatsDashBoard = ({ data }: StatProps) => (
       unitForSecondaryValue="р"
       isCombined
     />
+    <StatCard title="Логистика" {...data.logistics} />
+    <StatCard title="Хранение" {...data.storage} />
   </div>
 );

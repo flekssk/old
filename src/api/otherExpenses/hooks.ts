@@ -2,7 +2,11 @@ import type { UseQueryOptions } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "./constants";
-import type { ExpenseCategoriesResponse, ExpenseListResponse } from "./types";
+import type {
+  ExpenseCategoriesResponse,
+  ExpenseListRequest,
+  ExpenseListResponse,
+} from "./types";
 import {
   createExpense,
   createExpenseCategory,
@@ -32,12 +36,13 @@ export const useUpdateExpenseCategoryMutation = createCustomMutation(
 );
 
 export const useExpensesList = (
+  payload: ExpenseListRequest,
   options: Partial<UseQueryOptions<ExpenseListResponse, Error>> = {},
 ) =>
   useQuery({
     ...options,
-    queryKey: [QUERY_KEYS.expenses],
-    queryFn: getExpensesList,
+    queryKey: [QUERY_KEYS.expenses, payload],
+    queryFn: () => getExpensesList(payload),
   });
 
 export const useCreateExpenseMutation = createCustomMutation(createExpense);
