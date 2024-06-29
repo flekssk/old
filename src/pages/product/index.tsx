@@ -22,6 +22,9 @@ import { SizesChart } from "./SizesChart";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "../dashboard/MainChartNew";
 import { Accordion } from "@/components/Accordion";
+import { exportArticleV2 } from "@/api/report/api";
+import { toast } from "react-toastify";
+import { downloadFromBinary } from "@/helpers/common";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -87,6 +90,23 @@ const Product: FC = function () {
     prevArticleRequest.data,
   );
 
+  const handleExportData = async (visibleColumns: string[]) => {
+    try {
+      const { data } = await exportArticleV2(+entityId, {
+        ...params,
+        page: 1,
+        limit: 1000,
+        xls: true,
+        columns: visibleColumns,
+      });
+
+      downloadFromBinary(data, "article");
+      toast.success("Файл успешно загружен");
+    } catch {
+      toast.error("Произошла ошибка при загрузке файла");
+    }
+  };
+
   if (articleRequest.isLoading) {
     return (
       <NavbarSidebarLayout>
@@ -144,6 +164,7 @@ const Product: FC = function () {
                 ? Object.values(prevArticleRequest.data.byBarcode)
                 : undefined
             }
+            onExport={handleExportData}
           />
         )}
         {/*<SizeComparison />*/}

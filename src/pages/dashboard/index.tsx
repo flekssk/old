@@ -26,7 +26,9 @@ import { useArticleList } from "@/api/wb";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "./MainChartNew";
 import { Accordion } from "@/components/Accordion";
-import { getMainReportV2 } from "@/api/report/api";
+import { exportMainReportV2 } from "@/api/report/api";
+import { downloadFromBinary } from "@/helpers/common";
+import { toast } from "react-toastify";
 
 function getDefaultDates(
   data?: ReportFilterAggregationResponse,
@@ -113,15 +115,21 @@ const DashboardPage: FC = function () {
     placeholderData: (previousData) => previousData,
   });
 
-  const onExport = async (visibleColumns: string[]) => {
-    const res = await getMainReportV2({
-      ...params,
-      page: 1,
-      limit: mainReportRequest.data?.pagination.total,
-      xls: true,
-      columns: visibleColumns,
-    });
-    console.log("🚀 ~ onExport ~ res:", res);
+  const handleExportData = async (visibleColumns: string[]) => {
+    try {
+      const { data } = await exportMainReportV2({
+        ...params,
+        page: 1,
+        limit: 1000,
+        xls: true,
+        columns: visibleColumns,
+      });
+
+      downloadFromBinary(data, "dashboard");
+      toast.success("Файл успешно загружен");
+    } catch {
+      toast.error("Произошла ошибка при загрузке файла");
+    }
   };
 
   const prevMainReportRequest = useMainReportV2(prevParams, {
@@ -195,7 +203,7 @@ const DashboardPage: FC = function () {
           </div>
           {mainReportRequest.data?.byProduct && (
             <StatTable
-              onExport={onExport}
+              onExport={handleExportData}
               redirectFilters={filtersForRedirect}
               pagination={mainReportRequest.data?.pagination}
               items={mainReportRequest.data?.byProduct}

@@ -95,10 +95,10 @@ export const useCellRangeSelection = <T>(
 
   const {
     cellsSelected,
-    startRowIndex,
-    endRowIndex,
-    startCellIndex,
-    endCellIndex,
+    // startRowIndex,
+    // endRowIndex,
+    // startCellIndex,
+    // endCellIndex,
   } = useMemo(() => {
     const result: Record<string, boolean> = {};
     const pointers = {
@@ -130,20 +130,20 @@ export const useCellRangeSelection = <T>(
     };
   }, [selectedStartCell, selectedEndCell, table]);
 
-  const model = table.getRowModel();
-  const cellKeysByIndex: Record<number, string> = useMemo(() => {
-    return enabled && model.rows[0]
-      ? model.rows[0]?.getVisibleCells().reduce(
-          (acc, cell) => {
-            const cellId = cell.id.split("_")[1] as string;
-            acc[cell.column.getIndex()] = cellId;
+  // const model = table.getRowModel();
+  // const cellKeysByIndex: Record<number, string> = useMemo(() => {
+  //   return enabled && model.rows[0]
+  //     ? model.rows[0]?.getVisibleCells().reduce(
+  //         (acc, cell) => {
+  //           const cellId = cell.id.split("_")[1] as string;
+  //           acc[cell.column.getIndex()] = cellId;
 
-            return acc;
-          },
-          {} as Record<number, string>,
-        )
-      : {};
-  }, [model.rows[0], enabled]);
+  //           return acc;
+  //         },
+  //         {} as Record<number, string>,
+  //       )
+  //     : {};
+  // }, [model.rows[0], enabled]);
 
   const getCellProps = (cell: Cell<T, unknown>, row: Row<T>, index: number) => {
     const onPointerEnter = () => {
@@ -164,24 +164,24 @@ export const useCellRangeSelection = <T>(
       }, 50);
     };
     const className = classNames("select-none", {
-      "bg-primary-100": cellsSelected[cell.id],
+      "!bg-primary-100": cellsSelected[cell.id],
       "hover:bg-primary-100": isSelectionEnabled.current,
-      "border-r border-primary-300":
-        `${row.id}_${cellKeysByIndex[endCellIndex]}` === cell.id &&
-        row.index >= startRowIndex &&
-        row.index <= endRowIndex,
-      "border-l border-primary-300":
-        `${row.id}_${cellKeysByIndex[startCellIndex]}` === cell.id &&
-        row.index >= startRowIndex &&
-        row.index <= endRowIndex,
-      "border-t border-primary-300":
-        row.index === startRowIndex &&
-        index >= startCellIndex &&
-        index <= endCellIndex,
-      "border-b border-primary-300":
-        row.index === endRowIndex &&
-        index >= startCellIndex &&
-        index <= endCellIndex,
+      // "border-r border-primary-300":
+      //   `${row.id}_${cellKeysByIndex[endCellIndex]}` === cell.id &&
+      //   row.index >= startRowIndex &&
+      //   row.index <= endRowIndex,
+      // "border-l border-primary-300":
+      //   `${row.id}_${cellKeysByIndex[startCellIndex]}` === cell.id &&
+      //   row.index >= startRowIndex &&
+      //   row.index <= endRowIndex,
+      // "border-t border-primary-300":
+      //   row.index === startRowIndex &&
+      //   index >= startCellIndex &&
+      //   index <= endCellIndex,
+      // "border-b border-primary-300":
+      //   row.index === endRowIndex &&
+      //   index >= startCellIndex &&
+      //   index <= endCellIndex,
     });
 
     return enabled
