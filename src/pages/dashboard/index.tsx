@@ -125,7 +125,7 @@ const DashboardPage: FC = function () {
         columns: visibleColumns,
       });
 
-      downloadFromBinary(data, "dashboard");
+      downloadFromBinary(data, `report_${params.dateFrom}_${params.dateTo}`);
       toast.success("Файл успешно загружен");
     } catch {
       toast.error("Произошла ошибка при загрузке файла");

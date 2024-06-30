@@ -75,7 +75,6 @@ const Product: FC = function () {
   }, [searchParams]);
 
   //const mainReportRequest = useMainReport(params);
-
   const articleRequest = useArticleV2Report(+entityId, params, {
     placeholderData: (previousData) => previousData,
   });
@@ -91,6 +90,7 @@ const Product: FC = function () {
   );
 
   const handleExportData = async (visibleColumns: string[]) => {
+    const vendorCode = articleRequest.data?.productData.vendorCode;
     try {
       const { data } = await exportArticleV2(+entityId, {
         ...params,
@@ -100,7 +100,10 @@ const Product: FC = function () {
         columns: visibleColumns,
       });
 
-      downloadFromBinary(data, "article");
+      downloadFromBinary(
+        data,
+        `${vendorCode}_${params.dateFrom}_${params.dateTo}`,
+      );
       toast.success("Файл успешно загружен");
     } catch {
       toast.error("Произошла ошибка при загрузке файла");
