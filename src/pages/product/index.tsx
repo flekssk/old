@@ -22,6 +22,9 @@ import { SizesChart } from "./SizesChart";
 import { DisplayDateRange } from "@/components/DisplayDateRange";
 import { MainChartNew } from "../dashboard/MainChartNew";
 import { Accordion } from "@/components/Accordion";
+import { exportArticleV2 } from "@/api/report/api";
+import { toast } from "react-toastify";
+import { downloadFromBinary } from "@/helpers/common";
 
 const Product: FC = function () {
   const { entityId } = useParams<{
@@ -72,7 +75,6 @@ const Product: FC = function () {
   }, [searchParams]);
 
   //const mainReportRequest = useMainReport(params);
-
   const articleRequest = useArticleV2Report(+entityId, params, {
     placeholderData: (previousData) => previousData,
   });
@@ -86,6 +88,27 @@ const Product: FC = function () {
     articleRequest.data,
     prevArticleRequest.data,
   );
+
+  const handleExportData = async (visibleColumns: string[]) => {
+    const vendorCode = articleRequest.data?.productData.vendorCode;
+    try {
+      const { data } = await exportArticleV2(+entityId, {
+        ...params,
+        page: 1,
+        limit: 1000,
+        xls: true,
+        columns: visibleColumns,
+      });
+
+      downloadFromBinary(
+        data,
+        `${vendorCode}_${params.dateFrom}_${params.dateTo}`,
+      );
+      toast.success("Файл успешно загружен");
+    } catch {
+      toast.error("Произошла ошибка при загрузке файла");
+    }
+  };
 
   if (articleRequest.isLoading) {
     return (
@@ -144,6 +167,7 @@ const Product: FC = function () {
                 ? Object.values(prevArticleRequest.data.byBarcode)
                 : undefined
             }
+            onExport={handleExportData}
           />
         )}
         {/*<SizeComparison />*/}

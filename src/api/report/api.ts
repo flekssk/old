@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import { api } from "../instance";
 import { ENDPOINTS } from "./constants";
 import type {

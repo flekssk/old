@@ -11,13 +11,19 @@ export type StatTableProps = {
   items: BarcodeReportItem[];
   prevItems?: BarcodeReportItem[];
   image: string | null;
+  onExport?: (visibleColumns: string[]) => Promise<void>;
 };
 
 type BarcodeReportItemWithPrev = BarcodeReportItem & {
   prev?: BarcodeReportItem;
 };
 
-export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
+export const StatTable: FC<StatTableProps> = ({
+  items,
+  prevItems,
+  image,
+  onExport,
+}) => {
   const data = useMemo<BarcodeReportItemWithPrev[]>(() => {
     return items.map((item) => {
       return {
@@ -276,6 +282,7 @@ export const StatTable: FC<StatTableProps> = ({ items, prevItems, image }) => {
         }}
         data={data}
         cellRangeSelection={true}
+        onExport={onExport}
       />
     </Card>
   );

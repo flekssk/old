@@ -27,21 +27,9 @@ export function OrderSettings<TData, TValue>({
 
   const handleGroupChange = (selectedGroup: SelectOption) => {
     if (selectedGroup.value === "baseTable") {
-      const ordering = localStorage.getItem(`${orderSettingsName}-ordering`);
-      const pinning = localStorage.getItem(`${orderSettingsName}-pinning`);
-
-      if (pinning) {
-        table.setColumnPinning(JSON.parse(pinning));
-      }
-
-      if (ordering) {
-        table.setColumnOrder(JSON.parse(ordering));
-      } else {
-        const filterColumns = columns.filter(({ id }) => id !== "select");
-        const orderColumns = filterColumns.map((col) => col.id as string);
-        table.setColumnOrder(orderColumns);
-      }
-
+      const filterColumns = columns.filter(({ id }) => id !== "select");
+      const orderColumns = filterColumns.map((col) => col.id as string);
+      table.setColumnOrder(orderColumns);
       setSelectedGroup(selectedGroup);
     } else {
       const selectedGroupName = selectedGroup.value;
