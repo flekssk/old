@@ -349,7 +349,7 @@ type Article = {
 
 export type ReportFilterAggregationResponse = {
   articles: Article[];
-  date: { minDate: string; maxDate: string } | null;
+  date?: { minDate: string; maxDate: string };
   brands: string[];
   categories: string[];
 };

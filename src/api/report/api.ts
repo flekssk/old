@@ -45,7 +45,17 @@ export const getReportFilterAggregation =
   (): Promise<ReportFilterAggregationResponse> =>
     api
       .get<ReportFilterAggregationResponse>(ENDPOINTS.filterAggregation)
-      .then((res) => res.data);
+      .then((res) => res.data)
+      .then((res) => ({
+        ...res,
+        date: res.date
+          ? {
+              ...res.date,
+              maxDate: (res.date.maxDate.split(" ") as [string, string])[0],
+              minDate: (res.date.minDate.split(" ") as [string, string])[0],
+            }
+          : undefined,
+      }));
 
 export const getArticle = (
   id: number,

@@ -11,6 +11,7 @@ import {
 
 export const DATE_FORMAT = {
   SERVER_DATE: "yyyy-MM-dd",
+  SERVER_DATE_TIME: "yyyy-MM-dd HH:mm:ss",
   DAY_MONTH: "dd MMM",
   MONTH_YEAR: "LLLL yyyy",
   DATE: "dd.MM.yyyy",

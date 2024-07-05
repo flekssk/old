@@ -17,6 +17,8 @@ import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
 
 import { parse as qsParse } from "qs";
 import { useArticleList } from "@/api/wb";
+import { format, parse } from "date-fns";
+import { DATE_FORMAT } from "@/helpers/date";
 
 const WeekReportPage: FC = function () {
   const [searchParams, setSearchParams] = useSearchParams({});
@@ -57,8 +59,20 @@ const WeekReportPage: FC = function () {
   });
 
   const articleList = useArticleList();
+  const byWeekData = useMemo(() => {
+    if (!mainReportRequest.data?.byWeek) {
+      return null;
+    }
+    return mainReportRequest.data.byWeek.map((item) => ({
+      ...item,
+      startWeek: format(
+        parse(item.startWeek, DATE_FORMAT.SERVER_DATE_TIME, new Date()),
+        DATE_FORMAT.SERVER_DATE,
+      ),
+    }));
+  }, [mainReportRequest.data?.byWeek]);
 
-  if (!mainReportRequest.data?.byWeek) {
+  if (!byWeekData) {
     return (
       <NavbarSidebarLayout>
         <ProfileSubscriptionInfo>
@@ -79,9 +93,7 @@ const WeekReportPage: FC = function () {
             articles={articleList.data?.items}
           />
 
-          {mainReportRequest.data?.byWeek && (
-            <StatTable items={mainReportRequest.data.byWeek} />
-          )}
+          {byWeekData && <StatTable items={byWeekData} />}
         </div>
       </ProfileSubscriptionInfo>
     </NavbarSidebarLayout>

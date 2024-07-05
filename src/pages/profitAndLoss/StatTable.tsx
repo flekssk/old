@@ -220,7 +220,7 @@ export const StatTable: FC<StatTableProps> = ({ items }) => {
                       {format(
                         parse(
                           item.month as string,
-                          DATE_FORMAT.SERVER_DATE,
+                          DATE_FORMAT.SERVER_DATE_TIME,
                           new Date(),
                         ),
                         DATE_FORMAT.MONTH_YEAR,
