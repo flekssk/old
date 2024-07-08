@@ -115,6 +115,7 @@ export const Expenses = () => {
   const handleCloseCreateExpenseModal = () => {
     setIsOpenCreateExpenseModal(false);
     setExpenseUpdateId(undefined);
+    expensesList.refetch();
   };
 
   const handleCloseDeleteExepenseModal = () => {
@@ -167,6 +168,7 @@ export const Expenses = () => {
         </div>
       </Card>
       <CreateExpenseModal
+        expensesList={expensesListData}
         expensesCategoriesData={expenseCategories.data}
         expenseId={expenseUpdateId}
         isOpen={isOpenCreateExpenseModal}

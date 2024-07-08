@@ -1,8 +1,10 @@
 import { useAccountList } from "@/api/wb";
 import type { WbAccount } from "@/api/wb/types";
-import { Button, Card } from "flowbite-react";
+import { Alert, Button, Card } from "flowbite-react";
 import { useState, type FC, useEffect } from "react";
 import { ApiKeysRow } from "./ApiKeysRow";
+import { useSubscriptionOrders } from "@/api/subscription";
+import { HiInformationCircle } from "react-icons/hi";
 
 export const ApiKeys: FC = function () {
   const [keys, setKeys] = useState<Array<{ id: string; account?: WbAccount }>>(
@@ -10,6 +12,20 @@ export const ApiKeys: FC = function () {
   );
   const [disableCreate, setDisableCreate] = useState(false);
   const apiKeysRequest = useAccountList();
+
+  const subscriptionOrdersQuery = useSubscriptionOrders();
+  const isOrdersExist = subscriptionOrdersQuery.data?.length;
+
+  const onCreate = () => {
+    setKeys((current) => [
+      {
+        id: Math.random().toString(),
+      },
+      ...current,
+    ]);
+    setDisableCreate(true);
+  };
+
   useEffect(() => {
     if (apiKeysRequest.data) {
       setKeys((current) => {
@@ -42,16 +58,6 @@ export const ApiKeys: FC = function () {
     }
   }, [apiKeysRequest.data]);
 
-  const onCreate = () => {
-    setKeys((current) => [
-      {
-        id: Math.random().toString(),
-      },
-      ...current,
-    ]);
-    setDisableCreate(true);
-  };
-
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
@@ -66,7 +72,11 @@ export const ApiKeys: FC = function () {
         </a>
       </div>
       <div className="flex justify-start">
-        <Button disabled={disableCreate} color="blue" onClick={onCreate}>
+        <Button
+          disabled={disableCreate || !isOrdersExist}
+          color="blue"
+          onClick={onCreate}
+        >
           Добавить
         </Button>
       </div>
@@ -94,6 +104,14 @@ export const ApiKeys: FC = function () {
           <div>Добавьте свой первый API ключ</div>
         )}
       </div>
+      {!isOrdersExist && (
+        <div>
+          <Alert color="warning" icon={HiInformationCircle}>
+            Перед созданием токена приобретите подписку
+            {/* TODO: текст какой? */}
+          </Alert>
+        </div>
+      )}
     </Card>
   );
 };

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import type { Table as TanstackTable, Cell, Row } from "@tanstack/react-table";
+import type { Table as TanstackTable, Cell } from "@tanstack/react-table";
 import classNames from "classnames";
 
 function getCellsBetweenId<T>(
@@ -93,13 +93,7 @@ export const useCellRangeSelection = <T>(
   const [selectedStartCell, setSelectedStartCell] = useState<string | null>();
   const [selectedEndCell, setSelectedEndCell] = useState<string | null>();
 
-  const {
-    cellsSelected,
-    // startRowIndex,
-    // endRowIndex,
-    // startCellIndex,
-    // endCellIndex,
-  } = useMemo(() => {
+  const { cellsSelected } = useMemo(() => {
     const result: Record<string, boolean> = {};
     const pointers = {
       startRowIndex: 0,
@@ -130,22 +124,7 @@ export const useCellRangeSelection = <T>(
     };
   }, [selectedStartCell, selectedEndCell, table]);
 
-  // const model = table.getRowModel();
-  // const cellKeysByIndex: Record<number, string> = useMemo(() => {
-  //   return enabled && model.rows[0]
-  //     ? model.rows[0]?.getVisibleCells().reduce(
-  //         (acc, cell) => {
-  //           const cellId = cell.id.split("_")[1] as string;
-  //           acc[cell.column.getIndex()] = cellId;
-
-  //           return acc;
-  //         },
-  //         {} as Record<number, string>,
-  //       )
-  //     : {};
-  // }, [model.rows[0], enabled]);
-
-  const getCellProps = (cell: Cell<T, unknown>, row: Row<T>, index: number) => {
+  const getCellProps = (cell: Cell<T, unknown>) => {
     const onPointerEnter = () => {
       if (isSelectionEnabled.current) {
         setSelectedEndCell(cell.id);
@@ -166,22 +145,6 @@ export const useCellRangeSelection = <T>(
     const className = classNames("select-none", {
       "!bg-primary-100": cellsSelected[cell.id],
       "hover:bg-primary-100": isSelectionEnabled.current,
-      // "border-r border-primary-300":
-      //   `${row.id}_${cellKeysByIndex[endCellIndex]}` === cell.id &&
-      //   row.index >= startRowIndex &&
-      //   row.index <= endRowIndex,
-      // "border-l border-primary-300":
-      //   `${row.id}_${cellKeysByIndex[startCellIndex]}` === cell.id &&
-      //   row.index >= startRowIndex &&
-      //   row.index <= endRowIndex,
-      // "border-t border-primary-300":
-      //   row.index === startRowIndex &&
-      //   index >= startCellIndex &&
-      //   index <= endCellIndex,
-      // "border-b border-primary-300":
-      //   row.index === endRowIndex &&
-      //   index >= startCellIndex &&
-      //   index <= endCellIndex,
     });
 
     return enabled

@@ -1,5 +1,5 @@
 import NavbarSidebarLayout from "@/layouts/navbar-sidebar";
-import { Breadcrumb, Button, Card } from "flowbite-react";
+import { Alert, Breadcrumb, Card } from "flowbite-react";
 import { useEffect, useMemo, useState, type FC } from "react";
 import { HiHome } from "react-icons/hi";
 import ProfileSubscriptionInfo from "@/components/ProfileSubscriptionInfo";
@@ -79,6 +79,13 @@ export const Cost: FC = () => {
               <Breadcrumb.Item>Себестоимость</Breadcrumb.Item>
             </Breadcrumb>
           </div>
+        </div>
+        <div className="mb-3">
+          <Alert color="info">
+            После сохранения данных страница с оцифровкой будет отправлена на
+            обновление данных, что может занять некоторое время. Пожалуйста,
+            подождите.
+          </Alert>
         </div>
         <Card>
           <CostTable

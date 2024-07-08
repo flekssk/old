@@ -1,49 +1,45 @@
 import type { FC, ReactNode } from "react";
 import { Button, Dropdown, Pagination, TextInput } from "flowbite-react";
 import { useForm } from "react-hook-form";
-import type { UsersListResponse } from "@/api/usersList/types";
 import type { SetURLSearchParams } from "react-router-dom";
 import { usePagination } from "@/hooks/usePagination";
 
 type UserListFiltersProps = {
   children: ReactNode;
-  userList: UsersListResponse;
   searchParam: URLSearchParams;
   setSearchParam: SetURLSearchParams;
   searchValue: string;
   selectValue: string;
-  pageValue: string;
+  totalPages: number;
 };
 
 const UserListFilters: FC<UserListFiltersProps> = ({
   children,
-  userList,
   setSearchParam,
   searchParam,
   searchValue,
   selectValue,
-  pageValue,
+  totalPages,
 }) => {
   const { reset, register } = useForm({
     mode: "onChange",
     defaultValues: { search: searchValue },
   });
 
-  const {
-    clearFilter,
-    totalPages,
-    onChangePage,
-    onChangeSelect,
-    onChangeSearchUser,
-  } = usePagination({ setSearchParam, searchParam });
+  const { onChangeSelect, clearFilter, onChangeSearchUser, ...pagination } =
+    usePagination({
+      setSearchParam,
+      searchParam,
+      total: totalPages,
+    });
+
   const availableSearchLength = searchValue.length >= 3;
 
   const clearFilterHandler = async () => {
     await clearFilter();
     reset({ search: "" });
   };
-  const paginationValidation =
-    totalPages && userList?.items.length !== userList?.pagination.total;
+
   return (
     <div>
       <div>
@@ -64,24 +60,8 @@ const UserListFilters: FC<UserListFiltersProps> = ({
       </div>
       <div>{children}</div>
       <div className="mt-5 flex items-center gap-5 ">
-        {paginationValidation ? (
-          <Pagination
-            currentPage={Number(pageValue)}
-            totalPages={totalPages}
-            onPageChange={onChangePage}
-            previousLabel={""}
-            nextLabel={""}
-            showIcons
-          />
-        ) : (
-          <Button
-            onClick={() => onChangePage(1)}
-            color={"gray"}
-            className="mt-2 size-10"
-          >
-            1
-          </Button>
-        )}
+        {pagination.totalPages > 1 ? <Pagination {...pagination} /> : null}
+
         <div className="mt-2">
           <Dropdown
             value={selectValue}
@@ -92,21 +72,21 @@ const UserListFilters: FC<UserListFiltersProps> = ({
           >
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("5");
+                onChangeSelect(5);
               }}
             >
               5
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("10");
+                onChangeSelect(10);
               }}
             >
               10
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("15");
+                onChangeSelect(15);
               }}
             >
               15
