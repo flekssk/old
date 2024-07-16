@@ -1,22 +1,15 @@
 import { useState, type FC, useRef, useEffect } from "react";
-import { Breadcrumb, Button, Tabs, type TabsRef } from "flowbite-react";
+import { Breadcrumb, Tabs, type TabsRef } from "flowbite-react";
 
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { ApiKeys } from "./apiKeys/ApiKeys";
-import { Select } from "@/components/Select";
-import {
-  useReportTaxation,
-  useSaveUserTaxationMutation,
-  useUserProfile,
-} from "@/api/user";
+import { useReportTaxation, useUserProfile } from "@/api/user";
 import type { UserProfileResponse } from "@/api/user/types";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { HiHome } from "react-icons/hi";
-import { Controller, useForm } from "react-hook-form";
-import { ServerSuccess } from "@/components/ServerSuccess";
-import { ServerError } from "@/components/ServerError";
+import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { Subscriptions } from "./Subscriptions";
 import { TaxManagement } from "./TaxManagement";
@@ -47,8 +40,6 @@ export const TABS_TITLES = {
 export const Settings: FC = () => {
   const tabsRef = useRef<TabsRef>(null);
 
-  const resetTaxationMutation = useSaveUserTaxationMutation();
-
   const [searchParams, setSearchParams] = useSearchParams({
     tab: TABS.profile.toString(),
   });
@@ -69,17 +60,9 @@ export const Settings: FC = () => {
     (item) => item.id === profile?.taxationTypeId,
   );
 
-  const isLoading = resetTaxationMutation.status === "pending";
-
-  const { control, handleSubmit, setValue } = useForm<FormSchema>({
+  const { setValue } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   });
-
-  const onSubmit = async (data: FormSchema) => {
-    const taxationTypeId = data.taxationTypeId.id;
-    await resetTaxationMutation.mutateAsync({ taxationTypeId: taxationTypeId });
-    userProfile.refetch();
-  };
 
   useEffect(() => {
     setProfile(userProfile.data);

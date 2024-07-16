@@ -6,15 +6,25 @@ import { useGetCommands } from "@/api/taskQueue";
 import TableList from "@/components/table/TableList";
 import type { CommandBody } from "@/api/taskQueue/types";
 import TaskQueueFilter from "@/pages/taskQueue/TaskQueueFilter";
-import { Button } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import { UniverseModalWindow } from "@/components/universalModal";
 import CreateCommand from "@/pages/taskQueue/CreateCommand";
 import { DeleteTask } from "./TaskDelete";
 import { STATUSES } from "./constant";
 import { useDebounce } from "@/hooks/useDebounce";
 
+const truncateString = (str: string) => {
+  if (str.length > 30) {
+    return str.slice(0, 40 - 3) + "...";
+  } else {
+    return str;
+  }
+};
+
 const TaskQueueTable = () => {
   const [searchParam, setSearchParam] = useSearchParams({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<string | null>(null);
   const pageValue = searchParam.get("page") || "1";
   const selectValue = searchParam.get("limit") || "10";
   const id = searchParam.get("id") || undefined;
@@ -42,6 +52,16 @@ const TaskQueueTable = () => {
   const [isCreateActive, setIsCreateActive] = useState(false);
   const onCreateCommand = () => {
     setIsCreateActive(true);
+  };
+
+  const handelOpenModal = (content: string) => {
+    setModalContent(content);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalContent(null);
+    setIsModalOpen(false);
   };
 
   console.log("🚀 ~ TaskQueueTable ~ commandsResponse:", commandsResponse, {
@@ -83,7 +103,23 @@ const TaskQueueTable = () => {
       accessorKey: "result",
       header: "Результат",
       cell: (info) => (
-        <span>{`${info.getValue() ? info.getValue() : "Нет"}`}</span>
+        <div>
+          <div className="mb-2">
+            <span>
+              {`${info.getValue() ? truncateString(info.getValue() as string) : "Нет"}`}
+            </span>
+          </div>
+          <div>
+            {info.getValue() && (
+              <Button
+                size="xs"
+                onClick={() => handelOpenModal(info.getValue() as string)}
+              >
+                Подробнее
+              </Button>
+            )}
+          </div>
+        </div>
       ),
     },
     {
@@ -135,11 +171,10 @@ const TaskQueueTable = () => {
       </div>
       {commandsList ? (
         <TaskQueueFilter
-          commandList={commandsList}
           searchParam={searchParam}
           setSearchParam={setSearchParam}
           selectValue={selectValue}
-          pageValue={pageValue}
+          totalPages={commandsList.pagination.total}
         >
           <TableList table={table} />
         </TaskQueueFilter>
@@ -152,6 +187,15 @@ const TaskQueueTable = () => {
       >
         <CreateCommand setActive={setIsCreateActive} />
       </UniverseModalWindow>
+      <Modal show={isModalOpen} onClose={handleCloseModal}>
+        <Modal.Header>Результат</Modal.Header>
+        <Modal.Body className="max-h-96 overflow-auto">
+          <div>{modalContent}</div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleCloseModal}>Закрыть</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

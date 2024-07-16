@@ -1,9 +1,11 @@
 import {
   useCreateExpenseMutation,
-  useExpensesList,
   useUpdateExpenseMutation,
 } from "@/api/otherExpenses";
-import type { ExpenseCategoriesResponse } from "@/api/otherExpenses/types";
+import type {
+  Expense,
+  ExpenseCategoriesResponse,
+} from "@/api/otherExpenses/types";
 import { useUserProfile } from "@/api/user";
 import { DatepickerControl } from "@/components/forms/DatepickerControl";
 import { InputControl } from "@/components/forms/InputControl";
@@ -46,6 +48,7 @@ const defaultValues = {
 };
 
 type Props = {
+  expensesList: Expense[];
   expensesCategoriesData?: ExpenseCategoriesResponse;
   expenseId?: number;
   isOpen: boolean;
@@ -53,6 +56,7 @@ type Props = {
 };
 
 export const CreateExpenseModal = ({
+  expensesList,
   expensesCategoriesData,
   expenseId,
   isOpen,
@@ -62,7 +66,6 @@ export const CreateExpenseModal = ({
 
   const createMutation = useCreateExpenseMutation();
   const userProfile = useUserProfile();
-  const expensesList = useExpensesList();
   const updateMutation = useUpdateExpenseMutation();
 
   const form = useForm<FormSchema>({
@@ -122,15 +125,12 @@ export const CreateExpenseModal = ({
     } catch {
       toast.error("Ошибка, запрос не выполнен");
     }
-    expensesList.refetch();
     handleOnClose();
   };
 
   useEffect(() => {
     if (expenseId) {
-      const expenseEditData = expensesList.data?.items.find(
-        ({ id }) => expenseId === id,
-      );
+      const expenseEditData = expensesList.find(({ id }) => expenseId === id);
       if (expenseEditData) {
         setIsEdit(true);
         reset({
@@ -145,7 +145,7 @@ export const CreateExpenseModal = ({
         });
       }
     }
-  }, [expenseId, form, expensesList.data?.items, reset]);
+  }, [expenseId, form, expensesList, reset]);
 
   return (
     <Modal show={isOpen} onClose={handleOnClose}>

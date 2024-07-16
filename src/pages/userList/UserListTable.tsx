@@ -5,10 +5,11 @@ import { useGetUserList } from "@/api/usersList";
 import type { UserBody } from "@/api/usersList/types";
 import { Link, useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/hooks/useDebounce";
-import { HiUser } from "react-icons/hi";
+import { HiHome, HiUser } from "react-icons/hi";
 import { ROUTES } from "@/constants/routes";
 import UserListFilters from "@/pages/userList/UserListFilters";
 import TableList from "@/components/table/TableList";
+import { Breadcrumb, Card } from "flowbite-react";
 
 const UserListTable = () => {
   const [searchParam, setSearchParam] = useSearchParams({});
@@ -22,6 +23,7 @@ const UserListTable = () => {
     search: debounceSearchValue,
     limit: selectValue,
   });
+
   const { data: userList } = userListData;
   useEffect(() => {
     const fetchData = async () => {
@@ -94,26 +96,40 @@ const UserListTable = () => {
 
   return (
     <div className="m-3">
-      {userList ? (
-        <UserListFilters
-          userList={userList}
-          searchValue={searchValue}
-          pageValue={pageValue}
-          selectValue={selectValue}
-          searchParam={searchParam}
-          setSearchParam={setSearchParam}
-        >
-          {noUsers ? (
-            <span className="flex justify-center text-2xl">
-              Пользователи не найдены
-            </span>
-          ) : (
-            <TableList table={table} />
-          )}
-        </UserListFilters>
-      ) : (
-        <div>Loading...</div>
-      )}
+      <Breadcrumb className="mb-4">
+        <Breadcrumb.Item href="/">
+          <div className="flex items-center gap-x-3">
+            <HiHome className="text-xl" />
+          </div>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="">
+          <span className="dark:text-white">Пользователи</span>
+        </Breadcrumb.Item>
+      </Breadcrumb>
+      <Card>
+        <h3 className="mb-4 text-2xl font-bold dark:text-white">
+          Пользователи
+        </h3>
+        {userList ? (
+          <UserListFilters
+            searchValue={searchValue}
+            selectValue={selectValue}
+            searchParam={searchParam}
+            totalPages={userList.pagination.total}
+            setSearchParam={setSearchParam}
+          >
+            {noUsers ? (
+              <span className="flex justify-center text-2xl">
+                Пользователи не найдены
+              </span>
+            ) : (
+              <TableList table={table} />
+            )}
+          </UserListFilters>
+        ) : (
+          <div>Loading...</div>
+        )}
+      </Card>
     </div>
   );
 };

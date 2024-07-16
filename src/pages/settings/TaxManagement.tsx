@@ -14,7 +14,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Button, Card } from "flowbite-react";
+import { Alert, Button, Card } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -232,19 +232,28 @@ export const TaxManagement: FC<TaxManagementProps> = ({ profile }) => {
   }, [defaultValues]);
 
   return (
-    <Card>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormProvider {...form}>
-          <div className="mb-2 flex justify-between">
-            <div className="text-2xl font-bold">Налоговые ставки</div>
-            <div>
-              <Button type="submit">Сохранить</Button>
+    <>
+      <div className="mb-3">
+        <Alert color="info">
+          После сохранения данных страница с оцифровкой будет отправлена на
+          обновление данных, что может занять некоторое время. Пожалуйста,
+          подождите.
+        </Alert>
+      </div>
+      <Card>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormProvider {...form}>
+            <div className="mb-2 flex justify-between">
+              <div className="text-2xl font-bold">Налоговые ставки</div>
+              <div>
+                <Button type="submit">Сохранить</Button>
+              </div>
             </div>
-          </div>
 
-          <TableList table={table} loading={loading} />
-        </FormProvider>
-      </form>
-    </Card>
+            <TableList table={table} loading={loading} />
+          </FormProvider>
+        </form>
+      </Card>
+    </>
   );
 };

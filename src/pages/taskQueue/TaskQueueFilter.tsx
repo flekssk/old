@@ -1,7 +1,6 @@
 import type { FC, ReactNode } from "react";
 import type { SetURLSearchParams } from "react-router-dom";
-import type { CommandsBodyResponse } from "@/api/taskQueue/types";
-import { Button, Dropdown, Pagination, TextInput } from "flowbite-react";
+import { Dropdown, Pagination, TextInput } from "flowbite-react";
 import { usePagination } from "@/hooks/usePagination";
 import { STATUSES } from "./constant";
 import type { SelectOption } from "@/components/Select";
@@ -9,11 +8,10 @@ import { Select } from "@/components/Select";
 
 type TaskQueueFilterProps = {
   children: ReactNode;
-  commandList: CommandsBodyResponse;
   searchParam: URLSearchParams;
   setSearchParam: SetURLSearchParams;
   selectValue: string;
-  pageValue: string;
+  totalPages: number;
 };
 
 const statusOptions: SelectOption[] = Object.entries(STATUSES).map(
@@ -26,18 +24,16 @@ const statusOptions: SelectOption[] = Object.entries(STATUSES).map(
 statusOptions.unshift({ label: "Все", value: "" });
 const TaskQueueFilter: FC<TaskQueueFilterProps> = ({
   children,
-  commandList,
-  pageValue,
   selectValue,
   setSearchParam,
   searchParam,
+  totalPages,
 }) => {
-  const { onChangeSelect, onChangePage, totalPages } = usePagination({
+  const { onChangeSelect, ...pagination } = usePagination({
     searchParam,
     setSearchParam,
+    total: totalPages,
   });
-  const paginationValidation =
-    totalPages && commandList?.items.length !== commandList?.pagination.total;
 
   const currentStatus = statusOptions.find(
     (status) => status.value === searchParam.get("status"),
@@ -76,24 +72,8 @@ const TaskQueueFilter: FC<TaskQueueFilterProps> = ({
 
       <div>{children}</div>
       <div className="mt-5 flex items-center gap-5">
-        {paginationValidation ? (
-          <Pagination
-            currentPage={Number(pageValue)}
-            totalPages={totalPages}
-            onPageChange={onChangePage}
-            previousLabel={""}
-            nextLabel={""}
-            showIcons
-          />
-        ) : (
-          <Button
-            onClick={() => onChangePage(1)}
-            color={"gray"}
-            className="mt-2 size-10"
-          >
-            1
-          </Button>
-        )}
+        {pagination.totalPages > 1 ? <Pagination {...pagination} /> : null}
+
         <div className="mt-2">
           <Dropdown
             value={selectValue}
@@ -104,21 +84,21 @@ const TaskQueueFilter: FC<TaskQueueFilterProps> = ({
           >
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("5");
+                onChangeSelect(5);
               }}
             >
               5
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("50");
+                onChangeSelect(50);
               }}
             >
               50
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
-                onChangeSelect("100");
+                onChangeSelect(100);
               }}
             >
               100
